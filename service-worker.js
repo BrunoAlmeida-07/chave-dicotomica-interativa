@@ -1,12 +1,14 @@
-const CACHE_NAME = "chave-bio-v3";
+const CACHE_NAME = "chave-bio-v4";
 
 const urlsToCache = [
-  "/",
-  "/index.html",
-  "/css/estilo.css",
-  "/aranhas/pergunta1.html",
-  "/escorpioes/pergunta1.html",
-  "/serpentes/pergunta1.html"
+  "./",
+  "./index.html",
+  "./css/estilo.css",
+  "./icone-192.png",
+  "./icone-512.png",
+  "./aranhas/pergunta1.html",
+  "./escorpioes/pergunta1.html",
+  "./serpentes/pergunta1.html"
 ];
 
 self.addEventListener("install", event => {
