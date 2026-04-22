@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chave Dicotômica Interativa</title>
+   <link rel="stylesheet" href="css/estilo.css">
+   <link rel="manifest" href="manifest.json">
+   <meta name="theme-color" content="#2e7d32">
+</head>
+
+<body>
+
+<header>
+  <h1>Chave Dicotômica Interativa</h1>
+  <p>
+    Recurso didático digital para identificação de animais peçonhentos,
+    promovendo educação científica e ambiental.
+  </p>
+</header>
+
+<main>
+
+  <section class="menu-principal">
+
+    <!-- ARANHAS -->
+    <div class="card-animal">
+      <img src="aranhas/imagens/imagem1.png"
+           alt="Aranha"
+           class="imagem-card">
+
+      <h2>Aranhas</h2>
+
+      <p>
+        Utilize a chave dicotômica para identificar diferentes tipos de aranhas e compreender se são peçonhentas ou não, a partir de características observáveis.
+      </p>
+
+      <a href="aranhas/pergunta1.html">Iniciar identificação</a>
+    </div>
+
+    <!-- ESCORPIÕES -->
+    <div class="card-animal">
+      <img src="escorpioes/imagens/image.png"
+           alt="Escorpião"
+           class="imagem-card">
+
+      <h2>Escorpiões</h2>
+
+      <p>
+        Explore as características morfológicas dos escorpiões e identifique
+        espécies de importância médica de forma segura e educativa.
+      </p>
+
+      <a href="escorpioes/pergunta1.html">Iniciar identificação</a>
+    </div>
+
+    <!-- SERPENTES -->
+    <div class="card-animal">
+      <img src="serpentes/imagens/image.png"
+           alt="Serpente"
+           class="imagem-card">
+
+      <h2>Serpentes</h2>
+
+      <p>
+        A partir da observação de padrões corporais, descubra se a serpente
+        identificada é peçonhenta ou não, valorizando a preservação da fauna.
+      </p>
+
+      <a href="serpentes/pergunta1.html">Iniciar identificação</a>
+    </div>
+
+  </section>
+
+  <section class="conservacao">
+    <p>
+      Este recurso tem finalidade exclusivamente educativa. A informação
+      científica é fundamental para evitar acidentes e promover o respeito
+      e a preservação dos animais, sejam eles peçonhentos ou não.
+    </p>
+  </section>
+
+</main>
+
+<footer>
+  <p>
+    Projeto educacional desenvolvido como recurso didático para o ensino de Ciências sobre a identificação de animais peçonhentos.
+  </p>
+</footer>
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("service-worker.js")
+    .then(() => console.log("Service Worker registrado com sucesso"))
+    .catch(error => console.log("Erro ao registrar:", error));
+}
+</script>
+</body>
+</html>

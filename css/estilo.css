@@ -1,0 +1,220 @@
+/* RESET BÁSICO */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ESTILO GERAL */
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f4f7f6;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* CABEÇALHO */
+header {
+  background-color: #2e7d32;
+  color: #fff;
+  padding: 20px;
+  text-align: center;
+}
+
+header h1 {
+  font-size: 1.6rem;
+  margin-bottom: 8px;
+}
+
+header p {
+  font-size: 1rem;
+}
+
+/* CONTEÚDO PRINCIPAL */
+main {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 15px;
+}
+
+/* SEÇÃO DE PERGUNTAS */
+.pergunta {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.pergunta h2 {
+  color: #2e7d32;
+  margin-bottom: 15px;
+}
+
+/* IMAGENS */
+.imagem-chave {
+  width: 100%;
+  max-width: 400px;
+  display: block;
+  margin: 0 auto 1px auto;
+  border-radius: 10px;
+}
+/* LEGENDA DO NOME CIENTÍFICO */
+.imagem-container {
+  max-width: 400px;
+  margin: 0 auto 15px auto;
+}
+
+.nome-cientifico {
+  display: block;
+  text-align: right;
+  margin-top: 6px;
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+/* TEXTO */
+section p {
+  font-size: 1rem;
+  margin-bottom: 15px;
+  text-align: justify;
+}
+
+/* BOTÕES */
+.botoes {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.botao {
+  background-color: #4caf50;
+  color: #ffffff;
+  text-decoration: none;
+  padding: 12px 25px;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.botao:hover {
+  background-color: #388e3c;
+}
+  
+
+/* SEÇÃO DE CONSERVAÇÃO */
+.conservacao {
+  background-color: #e8f5e9;
+  padding: 15px;
+  border-left: 6px solid #2e7d32;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+.conservacao p {
+  font-size: 0.95rem;
+}
+
+/* RODAPÉ */
+footer {
+  text-align: center;
+  padding: 20px;
+  font-size: 0.9rem;
+}
+
+footer a {
+  color: #2e7d32;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 600px) {
+  header h1 {
+    font-size: 1.3rem;
+  }
+
+  .botao {
+    padding: 10px 18px;
+    font-size: 0.9rem;
+  }
+}
+
+/* ===== ESTILO DA PÁGINA INICIAL ===== */
+
+.menu-principal {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 25px;
+  margin-top: 30px;
+}
+
+.card-animal {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+  transition: transform 0.3s, box-shadow 0.3s;
+
+  /* ALTERAÇÃO PRINCIPAL */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  min-height: 430px;
+}
+
+.card-animal:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.18);
+}
+
+.card-animal img {
+  width: 100%;
+  max-width: 180px;
+  height: 120px;
+  object-fit: cover;
+  margin: 0 auto 15px auto;
+  display: block;
+  border-radius: 12px;
+}
+
+.card-animal h2 {
+  color: #2e7d32;
+  margin-bottom: 12px;
+  font-size: 1.3rem;
+}
+
+.card-animal p {
+  font-size: 0.95rem;
+  margin-bottom: 20px;
+  text-align: justify;
+  line-height: 1.7;
+
+  /* PADRONIZA ALTURA DO TEXTO */
+  min-height: 120px;
+}
+
+.card-animal a {
+  display: inline-block;
+  background-color: #4caf50;
+  color: #ffffff;
+  text-decoration: none;
+  padding: 12px 22px;
+  border-radius: 25px;
+  font-weight: bold;
+  transition: background-color 0.3s;
+
+  /* GARANTE ALINHAMENTO INFERIOR */
+  margin-top: auto;
+}
+
+.card-animal a:hover {
+  background-color: #388e3c;
+}
