@@ -1,23 +1,26 @@
-{
-  "name": "Chave Dicotômica Interativa",
-  "short_name": "Chave Bio",
-  "id": "./",
-  "start_url": "./",
-  "scope": "./",
-  "display": "standalone",
-  "background_color": "#f4f7f6",
-  "theme_color": "#2e7d32",
-  "orientation": "portrait",
-  "icons": [
-    {
-      "src": "icone-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "icone-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
-}
+const CACHE_NAME = "chave-bio-v4";
+
+const urlsToCache = [
+  "./",
+  "./index.html",
+  "./css/estilo.css",
+  "./icone-192.png",
+  "./icone-512.png",
+  "./aranhas/pergunta1.html",
+  "./escorpioes/pergunta1.html",
+  "./serpentes/pergunta1.html"
+];
+
+self.addEventListener("install", event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(urlsToCache))
+  );
+});
+
+self.addEventListener("fetch", event => {
+  event.respondWith(
+    caches.match(event.request)
+      .then(response => response || fetch(event.request))
+  );
+});
