@@ -1,4 +1,4 @@
-const CACHE_NAME = "chave-bio-v7"; // MUDE sempre que atualizar
+const CACHE_NAME = "chave-bio-v8"; // MUDE sempre que atualizar
 
 const urlsToCache = [
   "./",
