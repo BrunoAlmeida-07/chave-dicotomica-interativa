@@ -1,10 +1,10 @@
-const CACHE_NAME = "chave-bio-v4"; // MUDE sempre que atualizar
+const CACHE_NAME = "chave-bio-v6"; // MUDE sempre que atualizar
 
 const urlsToCache = [
   "./",
   "./index.html",
   "./manifest.json",
-  "./css/estilo.css",
+  "./css/estilo.css?v=2026",
   "./icone-192.png",
   "./icone-512.png",
 
