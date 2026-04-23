@@ -1,4 +1,4 @@
-const CACHE_NAME = "chave-bio-v4";
+const CACHE_NAME = "chave-bio-v2"; // MUDE sempre que atualizar
 
 const urlsToCache = [
   "./",
@@ -74,16 +74,54 @@ const urlsToCache = [
   "./serpentes/imagens/jiboia.webp"
 ];
 
+
+// 🔽 INSTALAÇÃO (cache inicial)
 self.addEventListener("install", event => {
+  self.skipWaiting(); // ativa imediatamente
+
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => cache.addAll(urlsToCache))
   );
 });
 
+
+// 🔽 ATIVAÇÃO (limpa cache antigo)
+self.addEventListener("activate", event => {
+  event.waitUntil(
+    caches.keys().then(keys => {
+      return Promise.all(
+        keys.map(key => {
+          if (key !== CACHE_NAME) {
+            return caches.delete(key);
+          }
+        })
+      );
+    })
+  );
+
+  self.clients.claim(); // assume controle das páginas
+});
+
+
+// 🔽 FETCH (estratégia: online primeiro)
 self.addEventListener("fetch", event => {
   event.respondWith(
-    caches.match(event.request)
-      .then(response => response || fetch(event.request))
+    fetch(event.request)
+      .then(response => {
+        return caches.open(CACHE_NAME).then(cache => {
+          cache.put(event.request, response.clone());
+          return response;
+        });
+      })
+      .catch(() => {
+        return caches.match(event.request);
+      })
   );
+});
+// 🔔 escuta mensagens da página
+self.addEventListener("message", event => {
+  if (event.data === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
 });

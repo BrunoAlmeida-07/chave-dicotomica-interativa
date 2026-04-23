@@ -94,5 +94,56 @@ if ("serviceWorker" in navigator) {
     .catch(error => console.log("Erro ao registrar:", error));
 }
 </script>
+
+<script>
+let newWorker;
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("./service-worker.js").then(reg => {
+
+    // detecta atualização
+    reg.onupdatefound = () => {
+      newWorker = reg.installing;
+
+      newWorker.onstatechange = () => {
+        if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
+          
+          // mostra botão de atualizar
+          showUpdateButton();
+        }
+      };
+    };
+  });
+}
+
+// função do botão
+function showUpdateButton() {
+  const btn = document.createElement("button");
+  btn.innerText = "Atualizar app";
+  
+  btn.style.position = "fixed";
+  btn.style.bottom = "20px";
+  btn.style.left = "50%";
+  btn.style.transform = "translateX(-50%)";
+  btn.style.padding = "10px 20px";
+  btn.style.background = "#28a745";
+  btn.style.color = "#fff";
+  btn.style.border = "none";
+  btn.style.borderRadius = "8px";
+  btn.style.zIndex = "9999";
+
+  btn.onclick = () => {
+    newWorker.postMessage("SKIP_WAITING");
+  };
+
+  document.body.appendChild(btn);
+}
+
+// recarrega quando atualizar
+navigator.serviceWorker.addEventListener("controllerchange", () => {
+  window.location.reload();
+});
+</script>
+
 </body>
 </html>
