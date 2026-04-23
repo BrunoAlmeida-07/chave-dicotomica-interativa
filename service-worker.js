@@ -1,4 +1,4 @@
-const CACHE_NAME = "chave-bio-v8"; // MUDE sempre que atualizar
+const CACHE_NAME = "chave-bio-v9"; // MUDE sempre que atualizar
 
 const urlsToCache = [
   "./",
@@ -107,16 +107,9 @@ self.addEventListener("activate", event => {
 // 🔽 FETCH (estratégia: online primeiro)
 self.addEventListener("fetch", event => {
   event.respondWith(
-    fetch(event.request)
-      .then(response => {
-        return caches.open(CACHE_NAME).then(cache => {
-          cache.put(event.request, response.clone());
-          return response;
-        });
-      })
-      .catch(() => {
-        return caches.match(event.request);
-      })
+    caches.match(event.request).then(response => {
+      return response || fetch(event.request);
+    })
   );
 });
 // 🔔 escuta mensagens da página
