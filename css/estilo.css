@@ -57,10 +57,9 @@ main {
 /* IMAGENS */
 .imagem-chave {
   width: 100%;
-  max-width: 450px;
+  height: auto;
   display: block;
-  margin: 0 auto 5px auto;
-  border-radius: 10px;
+  border-radius: 12px;
 }
 .imagem-pergunta {
   width: 100%;
@@ -73,6 +72,9 @@ main {
 .imagem-container {
   max-width: 450px;
   margin: 0 auto 20px auto;
+  background-color: #f1f3f2; /* leve cinza esverdeado */
+  padding: 15px;
+  border-radius: 16px;
 }
 
 .nome-cientifico {
