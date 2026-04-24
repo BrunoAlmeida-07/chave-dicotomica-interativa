@@ -49,7 +49,7 @@ main {
 }
 
 .pergunta h2 {
-  color: #2e7d32;
+  color: #2e7d32; /* ALTERADO */
   margin-bottom: 18px;
   font-size: 1.5rem;
 }
@@ -62,7 +62,13 @@ main {
   margin: 0 auto 5px auto;
   border-radius: 10px;
 }
-
+.imagem-pergunta {
+  width: 100%;
+  max-width: 300px;
+  display: block;
+  margin: 10px auto 15px auto;
+  border-radius: 10px;
+}
 /* LEGENDA DO NOME CIENTÍFICO */
 .imagem-container {
   max-width: 450px;
@@ -88,7 +94,7 @@ section p {
 section h2 {
   font-size: 1.4rem;
   margin-bottom: 12px;
-  color: #2e7d32;
+  color: #2e7d32; /* ALTERADO */
 }
 
 /* BOTÕES */
@@ -100,12 +106,12 @@ section h2 {
 }
 
 .botao {
-  background-color: #4caf50;
+  background-color: #4caf50; /* ALTERADO */
   color: #ffffff;
   text-decoration: none;
-  padding: 14px 35px;
-  border-radius: 25px;
-  font-size: 1.1rem;
+  padding: 10px 18px; /* LEVEMENTE AJUSTADO */
+  border-radius: 18px; /* LEVEMENTE AJUSTADO */
+  font-size: 0.95rem; /* LEVEMENTE AJUSTADO */
   font-weight: bold;
   transition: background-color 0.3s;
   min-width: 110px;
@@ -113,14 +119,14 @@ section h2 {
 }
 
 .botao:hover {
-  background-color: #388e3c;
+  background-color: #388e3c; /* ALTERADO */
 }
 
 /* SEÇÃO DE CONSERVAÇÃO */
 .conservacao {
-  background-color: #e8f5e9;
+  background-color: #e8f5e9;; /* leve tom de laranja suave */
   padding: 18px;
-  border-left: 6px solid #2e7d32;
+  border-left: 6px solid #2e7d32; /* ALTERADO */
   border-radius: 8px;
   margin-top: 20px;
 }
@@ -185,9 +191,7 @@ footer a:hover {
 }
 
 .card-animal h2 {
-  color: #2e7d32;
-  margin-bottom: 12px;
-  font-size: 1.5rem;
+  color: #2e7d32; /* ALTERADO */
 }
 
 .card-animal p {
@@ -200,7 +204,7 @@ footer a:hover {
 
 .card-animal a {
   display: inline-block;
-  background-color: #4caf50;
+  background-color: #4caf50; /* ALTERADO */
   color: #ffffff;
   text-decoration: none;
   padding: 14px 24px;
@@ -212,7 +216,7 @@ footer a:hover {
 }
 
 .card-animal a:hover {
-  background-color: #388e3c;
+  background-color: #388e3c; /* ALTERADO */
 }
 
 /* RESPONSIVIDADE */
@@ -262,8 +266,8 @@ footer a:hover {
 
   .botao {
     width: 100%;
-    padding: 18px;
-    font-size: 1.2rem;
+    padding: 14px;
+    font-size: 1.05rem;
   }
 
   /* IMAGEM MAIS IMPACTANTE */
@@ -301,4 +305,21 @@ footer a:hover {
     padding: 16px;
     font-size: 1.1rem;
   }
+}
+/* ESTILO PARA PÁGINAS DE RESULTADO */
+.resultado h2 {
+  color: #ff6f00;
+}
+
+.resultado .conservacao {
+  border-left: 6px solid #ff6f00;
+  background-color: #fff3e0;
+}
+
+.resultado .botao {
+  background-color: #ff6f00;
+}
+
+.resultado .botao:hover {
+  background-color: #e65100;
 }

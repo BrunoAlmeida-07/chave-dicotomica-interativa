@@ -4,7 +4,7 @@ const urlsToCache = [
   "./",
   "./index.html",
   "./manifest.json",
-  "./css/estilo.css?v=2026",
+  "./css/estilo.css",
   "./icone-192.png",
   "./icone-512.png",
 
@@ -107,9 +107,16 @@ self.addEventListener("activate", event => {
 // 🔽 FETCH (estratégia: online primeiro)
 self.addEventListener("fetch", event => {
   event.respondWith(
-    caches.match(event.request).then(response => {
-      return response || fetch(event.request);
-    })
+    fetch(event.request)
+      .then(response => {
+        return caches.open(CACHE_NAME).then(cache => {
+          cache.put(event.request, response.clone());
+          return response;
+        });
+      })
+      .catch(() => {
+        return caches.match(event.request);
+      })
   );
 });
 // 🔔 escuta mensagens da página
