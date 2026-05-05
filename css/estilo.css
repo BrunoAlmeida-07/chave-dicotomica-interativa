@@ -103,7 +103,7 @@ section h2 {
 .botoes {
   display: flex;
   justify-content: center; /* centraliza melhor que space-around */
-  gap: 12px; /* espaço mais equilibrado */
+  gap: 50px; /* espaço mais equilibrado */
   margin-top: 20px;
   flex-wrap: wrap; /* evita quebrar layout em telas pequenas */
 }
