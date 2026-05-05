@@ -8,6 +8,8 @@ const urlsToCache = [
   "./icone-192.png",
   "./icone-512.png",
 
+  "./css/imagens/fundo.png",
+  
   // ARANHAS
   "./aranhas/pergunta1.html",
   "./aranhas/pergunta2.html",
