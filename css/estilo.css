@@ -28,8 +28,13 @@ header h1 {
 }
 
 header p {
-  font-size: 1.1rem;
-  line-height: 1.6;
+  margin-top: 15px;
+  padding: 10px 15px;
+  background-color: rgba(255,255,255,0.1);
+  border-radius: 8px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* CONTEÚDO PRINCIPAL */
