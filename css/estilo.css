@@ -16,7 +16,7 @@ body {
 
 /* CABEÇALHO */
 header {
-  background-color: #2e7d32;
+  background-color: #145516;
   color: #fff;
   padding: 25px 20px;
   text-align: center;
@@ -108,14 +108,14 @@ section h2 {
 .botoes {
   display: flex;
   justify-content: center; /* centraliza melhor que space-around */
-  gap: 50px; /* espaço mais equilibrado */
+  gap: 12px; /* espaço mais equilibrado */
   margin-top: 20px;
   flex-wrap: wrap; /* evita quebrar layout em telas pequenas */
 }
 
 .botao {
   display: inline-block; /* garante comportamento correto */
-  background-color: #4caf50;
+  background-color: #145516;
   color: #ffffff;
   text-decoration: none;
   padding: 10px 18px;
@@ -184,21 +184,21 @@ footer a:hover {
 .menu-principal {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 25px;
-  margin-top: 30px;
+  gap: 20px; /* levemente menor */
+  margin-top: 10px; /* 🔽 REDUZIDO (era 30px) */
 }
 
 .card-animal {
   background-color: #ffffff;
   border-radius: 16px;
-  padding: 20px;
+  padding: 18px; /* levemente menor */
   text-align: center;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
   transition: transform 0.3s, box-shadow 0.3s;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 460px;
+  min-height: 420px; /* 🔽 REDUZIDO (era 460px) */
 }
 
 .card-animal:hover {
@@ -209,40 +209,41 @@ footer a:hover {
 .card-animal img {
   width: 100%;
   max-width: 220px;
-  height: 140px;
+  height: 130px; /* 🔽 levemente menor */
   object-fit: cover;
-  margin: 0 auto 15px auto;
+  margin: 0 auto 10px auto; /* 🔽 menos espaço abaixo */
   display: block;
   border-radius: 12px;
 }
 
 .card-animal h2 {
-  color: #2e7d32; /* ALTERADO */
+  color: #145516;
+  margin-bottom: 10px; /* 🔽 controla espaço */
 }
 
 .card-animal p {
   font-size: 1rem;
-  margin-bottom: 20px;
+  margin-bottom: 15px; /* 🔽 menor */
   text-align: justify;
-  line-height: 1.8;
-  min-height: 130px;
+  line-height: 1.6; /* 🔽 mais compacto */
+  min-height: 110px; /* 🔽 menor */
 }
 
 .card-animal a {
   display: inline-block;
-  background-color: #4caf50; /* ALTERADO */
+  background-color: #145516;
   color: #ffffff;
   text-decoration: none;
-  padding: 14px 24px;
+  padding: 12px 20px; /* 🔽 menor */
   border-radius: 25px;
   font-weight: bold;
-  font-size: 1.05rem;
+  font-size: 1rem; /* 🔽 menor */
   transition: background-color 0.3s;
   margin-top: auto;
 }
 
 .card-animal a:hover {
-  background-color: #388e3c; /* ALTERADO */
+  background-color: #388e3c;
 }
 
 /* RESPONSIVIDADE */
@@ -285,16 +286,18 @@ footer a:hover {
   }
 
   /* BOTÕES MAIS GRANDES E FÁCEIS DE TOCAR */
+ @media (max-width: 600px) {
   .botoes {
-    flex-direction: column;
-    gap: 15px;
+    flex-wrap: nowrap; /* impede quebrar linha */
   }
 
   .botao {
-    width: 100%;
-    padding: 14px;
-    font-size: 1.05rem;
+    min-width: auto; /* remove largura mínima */
+    padding: 8px 12px; /* reduz tamanho */
+    font-size: 0.9rem;
+    flex: 1; /* divide espaço igualmente */
   }
+}
 
   /* IMAGEM MAIS IMPACTANTE */
   .imagem-chave {
@@ -349,12 +352,15 @@ footer a:hover {
 
 .pagina {
   min-width: 100%;
-  height: calc(100vh - 160px);
+  
   scroll-snap-align: start;
+  
   display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
+  justify-content: flex-start; /* 🔽 antes era center */
+  align-items: flex-start;     /* 🔽 antes era center */
+
+  padding: 10px 15px; /* 🔽 reduz espaço interno */
+  box-sizing: border-box;
 }
 
 /* ===== NAVEGAÇÃO SUPERIOR ===== */
@@ -363,11 +369,11 @@ footer a:hover {
   display: flex;
   justify-content: center;
   gap: 10px;
-  margin: 10px 0;
+  margin: 8px 0;
 }
 
 .navegacao button {
-  padding: 8px 14px;
+  padding: 8px 10px;
   border: none;
   border-radius: 20px;
   background: #2e7d32;
@@ -387,11 +393,12 @@ footer a:hover {
   justify-content: center;
   gap: 8px;
   margin-bottom: 10px;
+  
 }
 
 .dot {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: #bbb;
   cursor: pointer;
@@ -400,7 +407,7 @@ footer a:hover {
 
 .dot.ativo {
   background: #2e7d32;
-  transform: scale(1.2);
+  transform: scale(1.1);
 }
 /* ESTILO PARA PÁGINAS DE RESULTADO */
 .resultado h2 {
@@ -420,18 +427,26 @@ footer a:hover {
   background-color: #e65100;
 }
 /* BOTÃO VOLTAR (DISCRETO) */
+/* CONTAINER (se ainda não tiver) */
 .voltar-container {
   text-align: center;
   margin-top: 15px;
 }
 
+/* BOTÃO VOLTAR */
 .botao-voltar {
-  color: #2e7d32;
+  display: inline-block;
+  padding: 2px 5px;
+  border: 1.5px solid #2e7d32; /* contorno */
+  border-radius: 18px;
+  background-color: transparent; /* sem preenchimento */
+  color: #2e7d32; /* mantém legível */
   text-decoration: none;
   font-size: 0.9rem;
-  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
+/* HOVER */
 .botao-voltar:hover {
-  text-decoration: underline;
+  background-color: rgba(46, 125, 50, 0.1);
 }
