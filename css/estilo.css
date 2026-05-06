@@ -168,25 +168,24 @@ section h2 {
 /* SEÇÃO DE CONSERVAÇÃO */
 .conservacao {
   background-color: #e8f5e9;; /* leve tom de laranja suave */
-  padding: 18px;
+  padding: 5px;
   border-left: 6px solid #123b14; /* ALTERADO */
   border-radius: 8px;
   margin-top: 20px;
- 
 }
 
 .conservacao p {
   font-size: 1rem;
   line-height: 1.6;
   margin: 0 auto 0px auto;
-  
+  font-size: 15px;
 }
 
 /* RODAPÉ */
 footer {
   text-align: center;
   padding: 10px;
-  font-size: 0.7rem;
+  font-size: 0.9rem;
 }
 
 footer a {
@@ -274,7 +273,7 @@ footer a:hover {
   }
 
   header {
-    padding: 8px 10px;
+    padding: 10px 10px;
   }
 
   header h1 {
@@ -294,7 +293,7 @@ footer a:hover {
   }
 
   .pergunta {
-    padding: 25px 18px;
+    padding: 20px 16px;
     border-radius: 16px;
   }
 
@@ -315,7 +314,7 @@ footer a:hover {
 
   .botao {
     min-width: auto; /* remove largura mínima */
-    padding: 8px 12px; /* reduz tamanho */
+    padding: 10px 12px; /* reduz tamanho */
     font-size: 0.9rem;
     flex: 1; /* divide espaço igualmente */
   }
