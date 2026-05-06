@@ -169,21 +169,24 @@ section h2 {
 .conservacao {
   background-color: #e8f5e9;; /* leve tom de laranja suave */
   padding: 18px;
-  border-left: 6px solid #2e7d32; /* ALTERADO */
+  border-left: 6px solid #123b14; /* ALTERADO */
   border-radius: 8px;
   margin-top: 20px;
+ 
 }
 
 .conservacao p {
   font-size: 1rem;
-  line-height: 1.7;
+  line-height: 1.6;
+  margin: 0 auto 0px auto;
+  
 }
 
 /* RODAPÉ */
 footer {
   text-align: center;
-  padding: 20px;
-  font-size: 1rem;
+  padding: 10px;
+  font-size: 0.7rem;
 }
 
 footer a {
