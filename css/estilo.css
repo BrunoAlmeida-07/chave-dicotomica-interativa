@@ -45,8 +45,8 @@ header h1 {
 }
 
 header p {
-  margin-top: 15px;
-  padding: 10px 15px;
+  margin-top: 10px;
+  padding: 4px 10px;
   background-color: rgba(255,255,255,0.1);
   border-radius: 8px;
   max-width: 600px;
@@ -66,13 +66,13 @@ main {
   background-color: #ffffff;
   border-radius: 14px;
   padding: 25px;
-  margin-bottom: 25px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  margin-bottom: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.0);
 }
 
 .pergunta h2 {
   color: #2e7d32; /* ALTERADO */
-  margin-bottom: 18px;
+  margin-bottom: 16px;
   font-size: 1.5rem;
 }
 
@@ -271,15 +271,17 @@ footer a:hover {
   }
 
   header {
-    padding: 30px 15px;
+    padding: 15px 10px;
   }
 
   header h1 {
-    font-size: 1.9rem;
+    font-size: 2.0rem;
   }
 
   header p {
+    padding: 4px 1px; /* 🔽 reduz altura */
     font-size: 1.1rem;
+    font-size: 0.95rem; /* 🔽 menor */
   }
 
   main {
