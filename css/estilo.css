@@ -66,8 +66,12 @@ main {
   background-color: #ffffff;
   border-radius: 14px;
   padding: 25px;
-  margin-bottom: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.0);
+
+  max-width: 850px;
+  width: 95%;
+  margin: 0 auto 20px auto;
+
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
 
 .pergunta h2 {
@@ -204,6 +208,7 @@ footer a:hover {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 20px; /* levemente menor */
+  justify-items: center;
   margin-top: 10px; /* 🔽 REDUZIDO (era 30px) */
 }
 
@@ -357,6 +362,11 @@ footer a:hover {
     padding: 16px;
     font-size: 1.1rem;
   }
+  .card-animal {
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
+}
 }
 
 /* ===== SCROLL HORIZONTAL (PÁGINA INICIAL) ===== */
@@ -375,14 +385,14 @@ footer a:hover {
 
 .pagina {
   min-width: 100%;
-  
-  scroll-snap-align: start;
-  
-  display: flex;
-  justify-content: flex-start; /* 🔽 antes era center */
-  align-items: flex-start;     /* 🔽 antes era center */
 
-  padding: 10px 15px; /* 🔽 reduz espaço interno */
+  scroll-snap-align: start;
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+
+  padding: 10px 15px;
   box-sizing: border-box;
 }
 
