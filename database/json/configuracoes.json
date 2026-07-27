@@ -1,1 +1,8 @@
-{}
+{
+  "versaoBaseDados": "1.3.0",
+  "grupoDisponiveis": ["aranhas", "escorpioes", "serpentes"],
+  "funcionalidades": {
+    "missoesHabilitadas": false,
+    "conquistasHabilitadas": false
+  }
+}

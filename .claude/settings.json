@@ -6,7 +6,8 @@
       "Bash(echo \"EXIT:$?\")",
       "Bash(git ls-tree *)",
       "Bash(rm database/json)",
-      "Bash(mkdir database/json)"
+      "Bash(mkdir database/json)",
+      "PowerShell(attrib \"aranhas\\\\pergunta6.html\" \"aranhas\\\\pergunta7.html\" \"aranhas\\\\pergunta8.html\" \"serpentes\\\\pergunta2.html\" \"serpentes\\\\pergunta4.html\" \"serpentes\\\\pergunta5.html\" \"serpentes\\\\pergunta6.html\" \"serpentes\\\\pergunta8.html\")"
     ]
   }
 }

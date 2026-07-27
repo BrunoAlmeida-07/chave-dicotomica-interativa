@@ -1,1 +1,29 @@
-[]
+[
+  {
+    "id": "aranhas",
+    "nome": "Aranhas",
+    "nomeCientificoOrdem": "Araneae",
+    "descricao": "Utilize a chave dicotômica para identificar diferentes tipos de aranhas e compreender se são peçonhentas ou não.",
+    "imagemCard": "aranhas/imagens/imagem1.jpg",
+    "perguntaInicialId": "aranhas-p1",
+    "ordemExibicao": 0
+  },
+  {
+    "id": "escorpioes",
+    "nome": "Escorpiões",
+    "nomeCientificoOrdem": "Scorpiones",
+    "descricao": "Explore as características dos escorpiões e identifique espécies de importância médica.",
+    "imagemCard": "escorpioes/imagens/escorpiao_amarelo.jpg",
+    "perguntaInicialId": "escorpioes-p1",
+    "ordemExibicao": 1
+  },
+  {
+    "id": "serpentes",
+    "nome": "Serpentes",
+    "nomeCientificoOrdem": "Squamata (subordem Serpentes)",
+    "descricao": "Observe padrões corporais e identifique se a serpente é peçonhenta.",
+    "imagemCard": "serpentes/imagens/coral_verdadeira.jpg",
+    "perguntaInicialId": "serpentes-p1",
+    "ordemExibicao": 2
+  }
+]

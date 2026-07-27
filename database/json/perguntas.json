@@ -1,1 +1,170 @@
-[]
+[
+  {
+    "id": "aranhas-p1",
+    "grupoId": "aranhas",
+    "texto": "A aranha apresenta corpo grande?",
+    "imagem": "aranhas/imagens/img-pergunta1.png",
+    "opcaoSim": { "tipo": "pergunta", "destinoId": "aranhas-p2" },
+    "opcaoNao": { "tipo": "pergunta", "destinoId": "aranhas-p3" }
+  },
+  {
+    "id": "aranhas-p2",
+    "grupoId": "aranhas",
+    "texto": "As pernas são grossas e o corpo apresenta muitos pelos visíveis?",
+    "imagem": "aranhas/imagens/img-pergunta2.png",
+    "opcaoSim": { "tipo": "especie", "destinoId": "caranguejeira_sem_importancia_medica" },
+    "opcaoNao": { "tipo": "pergunta", "destinoId": "aranhas-p3" }
+  },
+  {
+    "id": "aranhas-p3",
+    "grupoId": "aranhas",
+    "texto": "A aranha possui quelíceras avermelhadas?",
+    "imagem": "aranhas/imagens/img-pergunta3.png",
+    "opcaoSim": { "tipo": "pergunta", "destinoId": "aranhas-p4" },
+    "opcaoNao": { "tipo": "pergunta", "destinoId": "aranhas-p5" }
+  },
+  {
+    "id": "aranhas-p4",
+    "grupoId": "aranhas",
+    "texto": "A aranha costuma erguer as patas dianteiras em posição de defesa?",
+    "imagem": "aranhas/imagens/img-pergunta4.png",
+    "opcaoSim": { "tipo": "especie", "destinoId": "aranha_armadeira" },
+    "opcaoNao": { "tipo": "pergunta", "destinoId": "aranhas-p5" }
+  },
+  {
+    "id": "aranhas-p5",
+    "grupoId": "aranhas",
+    "texto": "A aranha é pequena, de coloração marrom clara, com pernas finas e alongadas?",
+    "imagem": "aranhas/imagens/img-pergunta5.png",
+    "opcaoSim": { "tipo": "pergunta", "destinoId": "aranhas-p6" },
+    "opcaoNao": { "tipo": "pergunta", "destinoId": "aranhas-p7" }
+  },
+  {
+    "id": "aranhas-p6",
+    "grupoId": "aranhas",
+    "texto": "A aranha apresenta uma mancha marrom no tórax em formato semelhante a um violino?",
+    "imagem": "aranhas/imagens/img-pergunta6.png",
+    "opcaoSim": { "tipo": "especie", "destinoId": "aranha_marrom" },
+    "opcaoNao": { "tipo": "pergunta", "destinoId": "aranhas-p7" }
+  },
+  {
+    "id": "aranhas-p7",
+    "grupoId": "aranhas",
+    "texto": "A aranha apresenta coloração preta brilhante e lisa (sem pelos visíveis)?",
+    "imagem": "aranhas/imagens/img-pergunta7.png",
+    "opcaoSim": { "tipo": "pergunta", "destinoId": "aranhas-p8" },
+    "opcaoNao": { "tipo": "especie", "destinoId": "aranha_nao_peconhenta" }
+  },
+  {
+    "id": "aranhas-p8",
+    "grupoId": "aranhas",
+    "texto": "A aranha apresenta abdômen arredondado, podendo ter uma mancha avermelhada?",
+    "imagem": "aranhas/imagens/img-pergunta8.png",
+    "opcaoSim": { "tipo": "especie", "destinoId": "viuva_negra" },
+    "opcaoNao": { "tipo": "especie", "destinoId": "aranha_nao_peconhenta" }
+  },
+  {
+    "id": "escorpioes-p1",
+    "grupoId": "escorpioes",
+    "texto": "O animal apresenta corpo segmentado, duas pinças frontais e cauda articulada com ferrão na extremidade?",
+    "imagem": "escorpioes/imagens/img-pergunta1.png",
+    "opcaoSim": { "tipo": "pergunta", "destinoId": "escorpioes-p2" },
+    "opcaoNao": { "tipo": "especie", "destinoId": "nao_escorpiao" }
+  },
+  {
+    "id": "escorpioes-p2",
+    "grupoId": "escorpioes",
+    "texto": "A coloração do corpo é predominantemente amarela ou amarelo-clara?",
+    "imagem": "escorpioes/imagens/img-pergunta2.png",
+    "opcaoSim": { "tipo": "pergunta", "destinoId": "escorpioes-p3" },
+    "opcaoNao": { "tipo": "pergunta", "destinoId": "escorpioes-p4" }
+  },
+  {
+    "id": "escorpioes-p3",
+    "grupoId": "escorpioes",
+    "texto": "O dorso apresenta uma listra escura central e um desenho triangular escuro na região da cabeça?",
+    "imagem": "escorpioes/imagens/img-pergunta3.png",
+    "opcaoSim": { "tipo": "especie", "destinoId": "escorpiao_nordeste" },
+    "opcaoNao": { "tipo": "especie", "destinoId": "escorpiao_amarelo" }
+  },
+  {
+    "id": "escorpioes-p4",
+    "grupoId": "escorpioes",
+    "texto": "A coloração do corpo é escura, variando entre marrom intenso e preto?",
+    "imagem": "escorpioes/imagens/img-pergunta4.png",
+    "opcaoSim": { "tipo": "pergunta", "destinoId": "escorpioes-p5" },
+    "opcaoNao": { "tipo": "especie", "destinoId": "outro_escorpiao" }
+  },
+  {
+    "id": "escorpioes-p5",
+    "grupoId": "escorpioes",
+    "texto": "O corpo apresenta coloração totalmente preta ou preto-acinzentada?",
+    "imagem": "escorpioes/imagens/img-pergunta5.png",
+    "opcaoSim": { "tipo": "especie", "destinoId": "escorpiao_preto" },
+    "opcaoNao": { "tipo": "especie", "destinoId": "escorpiao_marrom" }
+  },
+  {
+    "id": "serpentes-p1",
+    "grupoId": "serpentes",
+    "texto": "O corpo apresenta coloração marrom ou acinzentada com manchas em formato de losangos ao longo do dorso?",
+    "imagem": "serpentes/imagens/img-pergunta1.png",
+    "opcaoSim": { "tipo": "pergunta", "destinoId": "serpentes-p2" },
+    "opcaoNao": { "tipo": "pergunta", "destinoId": "serpentes-p3" }
+  },
+  {
+    "id": "serpentes-p2",
+    "grupoId": "serpentes",
+    "texto": "A serpente apresenta chocalho na extremidade da cauda?",
+    "imagem": "serpentes/imagens/img-pergunta2.png",
+    "opcaoSim": { "tipo": "especie", "destinoId": "cascavel" },
+    "opcaoNao": { "tipo": "pergunta", "destinoId": "serpentes-p3" }
+  },
+  {
+    "id": "serpentes-p3",
+    "grupoId": "serpentes",
+    "texto": "O corpo apresenta anéis coloridos em vermelho, preto e amarelo ou branco?",
+    "imagem": "serpentes/imagens/img-pergunta3.png",
+    "opcaoSim": { "tipo": "pergunta", "destinoId": "serpentes-p4" },
+    "opcaoNao": { "tipo": "pergunta", "destinoId": "serpentes-p7" }
+  },
+  {
+    "id": "serpentes-p4",
+    "grupoId": "serpentes",
+    "texto": "Os anéis coloridos circundam completamente todo o corpo da serpente?",
+    "imagem": "serpentes/imagens/img-pergunta4.png",
+    "opcaoSim": { "tipo": "pergunta", "destinoId": "serpentes-p5" },
+    "opcaoNao": { "tipo": "especie", "destinoId": "coral_falsa" }
+  },
+  {
+    "id": "serpentes-p5",
+    "grupoId": "serpentes",
+    "texto": "Os anéis vermelhos tocam diretamente os anéis amarelos ou brancos?",
+    "imagem": "serpentes/imagens/img-pergunta5.png",
+    "opcaoSim": { "tipo": "pergunta", "destinoId": "serpentes-p6" },
+    "opcaoNao": { "tipo": "especie", "destinoId": "coral_falsa" }
+  },
+  {
+    "id": "serpentes-p6",
+    "grupoId": "serpentes",
+    "texto": "A serpente apresenta cabeça pequena, pouco destacada do pescoço, e olhos pequenos totalmente pretos?",
+    "imagem": "serpentes/imagens/img-pergunta6.png",
+    "opcaoSim": { "tipo": "especie", "destinoId": "coral_verdadeira" },
+    "opcaoNao": { "tipo": "especie", "destinoId": "coral_falsa" }
+  },
+  {
+    "id": "serpentes-p7",
+    "grupoId": "serpentes",
+    "texto": "A serpente apresenta cabeça triangular e manchas escuras ao longo do corpo?",
+    "imagem": "serpentes/imagens/img-pergunta7.png",
+    "opcaoSim": { "tipo": "pergunta", "destinoId": "serpentes-p8" },
+    "opcaoNao": { "tipo": "especie", "destinoId": "serpente_sem_importancia_medica" }
+  },
+  {
+    "id": "serpentes-p8",
+    "grupoId": "serpentes",
+    "texto": "A cabeça apresenta uma pequena cavidade entre o olho e a narina (fosseta loreal)?",
+    "imagem": "serpentes/imagens/img-pergunta8.png",
+    "opcaoSim": { "tipo": "especie", "destinoId": "jararaca" },
+    "opcaoNao": { "tipo": "especie", "destinoId": "serpente_sem_importancia_medica" }
+  }
+]
