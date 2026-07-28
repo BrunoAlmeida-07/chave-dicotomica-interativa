@@ -11,7 +11,8 @@
       "Bash(rm database/scripts)",
       "Bash(mkdir database/scripts)",
       "Bash(node --check database/scripts/importer.js)",
-      "Bash(node --check database/scripts/database.js)"
+      "Bash(node --check database/scripts/database.js)",
+      "Bash(node --check database/scripts/indexeddb.js)"
     ]
   }
 }
