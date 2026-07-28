@@ -4,9 +4,13 @@
  * Laboratório do Pesquisador: coleção de espécies descobertas pelo jogador.
  * Placeholder nesta etapa — funcionalidade completa (busca, filtros,
  * progresso de descoberta) fica para uma etapa futura.
+ *
+ * "Voltar" leva explicitamente para a Tela Inicial (`irPara`), não para o
+ * histórico de navegação: é uma tela de menu, e seu destino de retorno deve
+ * ser sempre o mesmo, previsível, independente de como foi alcançada.
  */
 
-import { voltar } from "../navegacao.js";
+import { irPara } from "../navegacao.js";
 import { criarIcone } from "../componentes/icone.js";
 
 export function renderLaboratorio(container) {
@@ -25,5 +29,7 @@ export function renderLaboratorio(container) {
     </section>
   `;
 
-  container.querySelector('[data-acao="voltar"]').addEventListener("click", voltar);
+  container.querySelector('[data-acao="voltar"]').addEventListener("click", () => {
+    irPara("telaInicial");
+  });
 }

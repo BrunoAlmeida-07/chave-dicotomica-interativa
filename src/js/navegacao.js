@@ -7,6 +7,14 @@
  * o conteúdo de cada tela — só chama a função de renderização registrada
  * para o nome da tela pedida, dentro do elemento container definido em
  * `iniciar`.
+ *
+ * Diretriz de navegação do projeto: telas de menu (Tela Inicial, Mapa de
+ * Missões, Laboratório) têm destino de "voltar" fixo e previsível — usam
+ * `irPara(nomeFixo)` explicitamente, não `voltar()`, porque podem ser
+ * alcançadas de vários lugares e devem sempre retornar ao mesmo lugar. Só as
+ * telas do fluxo de investigação (Introdução da Missão, Investigação,
+ * Explicação Científica) usam `voltar()`, porque ali o retorno depender do
+ * caminho percorrido pelo jogador é o comportamento desejado.
  */
 
 /** @type {Map<string, (container: HTMLElement, dados?: object) => void>} */

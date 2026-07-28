@@ -7,9 +7,15 @@
  * (já com status calculado) para nucleo/missoes.js. Nenhuma missão fica
  * fixa no código: a ordem, o título, a descrição e o status vêm todos da
  * camada de missões.
+ *
+ * "Voltar" leva explicitamente para a Tela Inicial (`irPara`), não para o
+ * histórico de navegação (`voltar()`): é uma tela de menu, alcançável a
+ * partir de vários lugares (Tela Inicial, Resultado, Encerramento), e seu
+ * destino de retorno deve ser sempre o mesmo, independente de como o
+ * jogador chegou aqui.
  */
 
-import { irPara, voltar } from "../navegacao.js";
+import { irPara } from "../navegacao.js";
 import { criarCartaoMissao } from "../componentes/cartaoMissao.js";
 import { criarIcone } from "../componentes/icone.js";
 import { listarMissoes } from "../nucleo/missoes.js";
@@ -27,7 +33,9 @@ export async function renderMapaMissoes(container) {
     </section>
   `;
 
-  container.querySelector('[data-acao="voltar"]').addEventListener("click", voltar);
+  container.querySelector('[data-acao="voltar"]').addEventListener("click", () => {
+    irPara("telaInicial");
+  });
 
   const listaMissoes = container.querySelector("[data-lista-missoes]");
   const missoes = await listarMissoes();
