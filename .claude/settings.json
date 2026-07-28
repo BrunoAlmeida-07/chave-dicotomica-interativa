@@ -7,7 +7,11 @@
       "Bash(git ls-tree *)",
       "Bash(rm database/json)",
       "Bash(mkdir database/json)",
-      "PowerShell(attrib \"aranhas\\\\pergunta6.html\" \"aranhas\\\\pergunta7.html\" \"aranhas\\\\pergunta8.html\" \"serpentes\\\\pergunta2.html\" \"serpentes\\\\pergunta4.html\" \"serpentes\\\\pergunta5.html\" \"serpentes\\\\pergunta6.html\" \"serpentes\\\\pergunta8.html\")"
+      "PowerShell(attrib \"aranhas\\\\pergunta6.html\" \"aranhas\\\\pergunta7.html\" \"aranhas\\\\pergunta8.html\" \"serpentes\\\\pergunta2.html\" \"serpentes\\\\pergunta4.html\" \"serpentes\\\\pergunta5.html\" \"serpentes\\\\pergunta6.html\" \"serpentes\\\\pergunta8.html\")",
+      "Bash(rm database/scripts)",
+      "Bash(mkdir database/scripts)",
+      "Bash(node --check database/scripts/importer.js)",
+      "Bash(node --check database/scripts/database.js)"
     ]
   }
 }
