@@ -131,8 +131,9 @@ Onde `tipo` em `opcaoSim`/`opcaoNao` é `"pergunta"` (segue para outro nó da á
 | `descricaoCurta` | string | Sim | Texto curto usado no cartão da Tela/Mapa de Missões. |
 | `grupoId` | string (FK → Grupo) | Sim | Grupo zoológico envolvido no caso. |
 | `perguntaInicialId` | string (FK → Pergunta) | Sim | Ponto de entrada na chave dicotômica desta missão. |
-| `ordemProgressao` | number | Sim | Posição da missão na trilha (0, 1, 2...). |
-| `sempreDisponivel` | boolean | Não (padrão `false`) | Quando `true`, a missão nunca fica bloqueada, independente de progresso — usado pela Missão 0 (treinamento). |
+| `ordemProgressao` | number | Sim | Posição de exibição da missão na trilha (0, 1, 2...). Não é o que desbloqueia a próxima — ver `preRequisito`. |
+| `sempreDisponivel` | boolean | Não (padrão `false`) | Quando `true`, a missão nunca fica bloqueada nem mostra "concluída" (o que a tornaria não clicável), independente de progresso ou de `preRequisito` — usado pela Missão 0 (treinamento), que deve continuar jogável mesmo depois de concluída. |
+| `preRequisito` | string ou null (FK → Missão) | Não | Id da missão que precisa estar concluída para esta ficar disponível. `null` = sem pré-requisito (disponível desde o início, sujeito a `sempreDisponivel`). É o campo que define o desbloqueio — não há nenhuma cadeia fixa no código. |
 | `contextoNarrativo` | string | Sim | Texto de introdução/história do caso. |
 | `descricaoOcorrencia` | string | Sim | Descrição da ocorrência a ser investigada. |
 | `imagemCaso` | string (caminho) | Não | Imagem ilustrativa do caso. |
@@ -144,7 +145,7 @@ Onde `tipo` em `opcaoSim`/`opcaoNao` é `"pergunta"` (segue para outro nó da á
 | `recompensaXp` | number | Não | Experiência concedida ao concluir. |
 | `conquistasAssociadas` | array de string (FK → Conquista) | Não | Conquistas que podem ser desbloqueadas por esta missão. |
 
-**`status` não é um campo desta entidade.** `disponível` / `bloqueada` / `concluída` é um valor **calculado**, não armazenado — depende de `ordemProgressao`/`sempreDisponivel` (conteúdo) cruzados com o progresso do jogador (que ainda não existe como camada de dados, ver seção 9). Essa lógica fica isolada em `src/js/nucleo/missoes.js`, não em `missoes.json` nem nas telas.
+**`status` não é um campo desta entidade.** `disponível` / `bloqueada` / `concluída` é um valor **calculado** em `src/js/nucleo/missoes.js`, não armazenado em `missoes.json` nem nas telas — cruza `sempreDisponivel`/`preRequisito` (conteúdo, acima) com a store de progresso do jogador `progressoMissoes` (ver seção 9): `sempreDisponivel` sempre vence; senão, concluída se há registro de progresso; senão, disponível se não há `preRequisito` ou se o `preRequisito` já foi concluído; bloqueada nos demais casos.
 
 **Nota temporária:** a Missão 0 (`missao-0`) reaproveita a árvore de perguntas de Escorpiões (`grupoId: "escorpioes"`) só porque ainda não existe uma missão de treinamento própria, focada em ensinar a mecânica do jogo (observar, responder, interpretar) em vez de conteúdo zoológico específico. Isso é uma solução temporária, registrada para ser revisitada quando o conteúdo real de missões for escrito — nesse momento, `missao-escorpioes` continua existindo como a missão dedicada ao grupo, independente do que acontecer com a Missão 0.
 
@@ -186,7 +187,16 @@ Objeto único e global (não é uma coleção de registros).
 
 Este schema descreve **apenas o conteúdo científico e estrutural** do aplicativo (o que existe, independente de quem joga).
 
-Dados de **progresso do jogador** — missões concluídas, espécies descobertas no Laboratório, XP, sequência de acertos, conquistas obtidas por um usuário específico — são gerados em tempo de uso e vivem **somente no IndexedDB local**, em coleções separadas das coleções de conteúdo. Eles não fazem parte deste documento e serão modelados quando o Sistema de Missões e o Laboratório do Pesquisador forem implementados (v2.x).
+Dados de **progresso do jogador** — missões concluídas, espécies descobertas no Laboratório, XP, sequência de acertos, conquistas obtidas por um usuário específico — são gerados em tempo de uso e vivem **somente no IndexedDB local**, em coleções separadas das coleções de conteúdo. O restante (espécies descobertas, XP, conquistas) ainda será modelado quando o Laboratório do Pesquisador e as recompensas forem implementados.
+
+**Progresso de missões (implementado em 2026-07-28):** store `progressoMissoes` (`database/scripts/indexeddb.js`, banco `MissaoFaunaBrasil`), com um registro por missão concluída:
+
+| Campo | Tipo | Descrição |
+|---|---|---|
+| `missaoId` | string (FK → Missão) | Chave da store. |
+| `concluidaEm` | string (ISO datetime) | Quando a missão foi concluída (a gravação mais recente vence, se concluída de novo). |
+
+Gravada por `concluirMissao()` em `src/js/nucleo/missoes.js`, chamada pela tela de Encerramento — o único ponto da interface que sabe que o jogador terminou um caso. Lida por `listarMissoes()` do mesmo módulo, para calcular o `status` de cada missão (seção 6).
 
 ---
 

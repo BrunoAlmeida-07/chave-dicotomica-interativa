@@ -354,6 +354,16 @@ img {
   font-weight: 400;
 }
 
+.cartao-missao__revisar {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espaco-1);
+  margin-top: var(--espaco-1);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--cor-primaria);
+}
+
 .cartao-missao:disabled {
   background: #fafcfa;
 }
@@ -389,6 +399,12 @@ img {
   margin-bottom: var(--espaco-5);
 }
 
+.investigacao-cabecalho__navegacao {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espaco-2);
+}
+
 .investigacao-cabecalho__info {
   flex: 1;
   min-width: 200px;
@@ -420,6 +436,12 @@ img {
   display: flex;
   flex-direction: column;
   gap: var(--espaco-5);
+}
+
+.investigacao-rodape {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--espaco-3);
 }
 
 /*

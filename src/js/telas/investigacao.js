@@ -3,9 +3,17 @@
  *
  * Investigação: conduz o jogador pela chave dicotômica até chegar a uma
  * espécie. Esta tela só renderiza e responde a cliques — a navegação pela
- * árvore de perguntas fica inteiramente em nucleo/motorDeInvestigacao.js.
- * Nenhuma pergunta é fixa no código; tudo vem de perguntas.json via
- * database.js.
+ * árvore de perguntas e o histórico da sessão atual (para "Pergunta
+ * anterior") ficam inteiramente em nucleo/motorDeInvestigacao.js. Nenhuma
+ * pergunta é fixa no código; tudo vem de perguntas.json via database.js.
+ *
+ * Dois botões de retorno, com propósitos diferentes que coexistem:
+ *   - "Pergunta anterior": volta uma etapa dentro da árvore
+ *     (motor.voltarUmaEtapa), sem sair da tela e sem tocar no histórico do
+ *     navegador nem no de navegacao.js.
+ *   - "Voltar à introdução": sai da tela e volta para a Introdução da
+ *     Missão via navegacao.js (voltar()) — comportamento já existente,
+ *     inalterado.
  *
  * Recebe em `dados.perguntaInicialId` o ponto de partida na árvore,
  * resolvido pela tela anterior (introducaoMissao.js). `dados.missaoId`,
@@ -32,9 +40,11 @@ export async function renderInvestigacao(container, dados = {}) {
   container.innerHTML = `
     <section class="tela tela-investigacao">
       <header class="investigacao-cabecalho">
-        <button type="button" class="botao botao-fantasma" data-acao="voltar">
-          <span class="icone">${criarIcone("voltar")}</span> Voltar
-        </button>
+        <div class="investigacao-cabecalho__navegacao">
+          <button type="button" class="botao botao-fantasma" data-acao="voltar">
+            <span class="icone">${criarIcone("voltar")}</span> Voltar à introdução
+          </button>
+        </div>
         <div class="investigacao-cabecalho__info">
           <span class="etiqueta">Investigação</span>
           <h1>${missao ? missao.titulo : "Investigação"}</h1>
@@ -49,14 +59,26 @@ export async function renderInvestigacao(container, dados = {}) {
         <div class="investigacao-cabecalho__etapa" data-etapa hidden></div>
       </header>
       <div data-conteudo-pergunta class="investigacao-corpo"></div>
+      <div class="investigacao-rodape">
+        <button type="button" class="botao botao-fantasma" data-acao="pergunta-anterior" hidden>
+          <span class="icone">${criarIcone("retroceder")}</span> Pergunta anterior
+        </button>
+      </div>
     </section>
   `;
 
   container.querySelector('[data-acao="voltar"]').addEventListener("click", voltar);
 
+  const botaoAnterior = container.querySelector('[data-acao="pergunta-anterior"]');
+  botaoAnterior.addEventListener("click", () => {
+    const perguntaAnterior = motor.voltarUmaEtapa();
+    if (perguntaAnterior) {
+      desenharPergunta(perguntaAnterior);
+    }
+  });
+
   const areaPergunta = container.querySelector("[data-conteudo-pergunta]");
   const areaEtapa = container.querySelector("[data-etapa]");
-  let contadorPerguntas = 0;
 
   if (!perguntaInicialId) {
     areaPergunta.innerHTML = '<p class="mensagem-vazia">Nenhuma investigação disponível para este caso ainda.</p>';
@@ -75,22 +97,22 @@ export async function renderInvestigacao(container, dados = {}) {
       return;
     }
 
-    contadorPerguntas += 1;
     areaEtapa.hidden = false;
-    areaEtapa.textContent = `Pergunta ${contadorPerguntas}`;
+    areaEtapa.textContent = `Pergunta ${motor.profundidadeAtual()}`;
+    botaoAnterior.hidden = !motor.podeVoltar();
 
     const cartao = criarCartaoPergunta({
       texto: pergunta.texto,
       imagem: pergunta.imagem ? resolverCaminhoImagem(pergunta.imagem) : "",
-      aoResponderSim: () => responder(pergunta, "sim"),
-      aoResponderNao: () => responder(pergunta, "nao"),
+      aoResponderSim: () => responder("sim"),
+      aoResponderNao: () => responder("nao"),
     });
     areaPergunta.appendChild(cartao);
   }
 
-  async function responder(pergunta, resposta) {
+  async function responder(resposta) {
     areaPergunta.innerHTML = '<p class="mensagem-carregando">Carregando...</p>';
-    const resultado = await motor.responder(pergunta, resposta);
+    const resultado = await motor.responder(resposta);
 
     if (resultado.tipo === "especie") {
       irPara("resultado", { ...dados, especieId: resultado.especieId });

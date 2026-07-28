@@ -1,16 +1,19 @@
 /**
  * encerramento.js
  *
- * Encerramento: fecha formalmente o caso. Placeholder nesta etapa —
- * recompensas (XP, progressão de fase, conquistas) ficam para quando esses
- * sistemas existirem. As duas saídas são sempre para a frente (Mapa de
- * Missões ou Tela Inicial), nunca de volta para dentro da missão concluída.
+ * Encerramento: fecha formalmente o caso. Placeholder visualmente —
+ * recompensas (XP, conquistas) ficam para quando esses sistemas existirem —
+ * mas é o único ponto da interface que sabe "o jogador terminou este caso",
+ * então é aqui que a conclusão da missão é registrada na camada de missões.
+ * As duas saídas são sempre para a frente (Mapa de Missões ou Tela Inicial),
+ * nunca de volta para dentro da missão concluída.
  */
 
 import { irPara } from "../navegacao.js";
 import { criarIcone } from "../componentes/icone.js";
+import { concluirMissao } from "../nucleo/missoes.js";
 
-export function renderEncerramento(container) {
+export function renderEncerramento(container, dados = {}) {
   container.innerHTML = `
     <section class="tela tela-encerramento">
       <div class="encerramento-cartao">
@@ -31,4 +34,10 @@ export function renderEncerramento(container) {
   container.querySelector('[data-acao="tela-inicial"]').addEventListener("click", () => {
     irPara("telaInicial");
   });
+
+  if (dados.missaoId) {
+    concluirMissao(dados.missaoId).catch((erro) => {
+      console.warn("Não foi possível registrar a conclusão da missão:", erro);
+    });
+  }
 }

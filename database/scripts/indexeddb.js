@@ -4,26 +4,37 @@
  * Camada de persistência local da Base de Conhecimento Biológica.
  *
  * Responsável por abrir/versionar o banco IndexedDB e expor operações
- * básicas de leitura, escrita e limpeza das cinco coleções definidas em
- * `database/schema.md`: grupos, perguntas, espécies, missões e configurações.
+ * básicas de leitura, escrita e limpeza das cinco coleções de conteúdo
+ * definidas em `database/schema.md` (grupos, perguntas, espécies, missões e
+ * configurações) e da store de progresso do jogador (`progressoMissoes`).
  *
- * Este módulo não sabe de onde os dados vêm — não importa `importer.js` nem
- * `database.js`. A ligação entre eles é responsabilidade de uma etapa futura.
+ * `progressoMissoes` não é conteúdo — não vem de nenhum arquivo JSON, não é
+ * tocada por `importer.js`, e é gravada aos poucos (uma missão concluída de
+ * cada vez), diferente das stores de conteúdo, que são sempre substituídas
+ * por inteiro. Ver database/schema.md, seção 9.
+ *
+ * Este módulo não sabe de onde os dados de conteúdo vêm — não importa
+ * `importer.js` nem `database.js`. A ligação entre eles é responsabilidade
+ * de `database.js`. Quem grava/lê progresso (`src/js/nucleo/missoes.js`)
+ * também importa este módulo diretamente, sem passar por `database.js`,
+ * já que progresso não participa do fluxo de cache/import da Base de
+ * Conhecimento.
  */
 
 const DATABASE_NAME = "MissaoFaunaBrasil";
-// v2: adiciona a store "missoes" (missões passaram a ter conteúdo real).
-// Bump não destrutivo — quem já tinha as 4 stores da v1 ganha a 5ª no
-// próximo carregamento, sem perder nada.
-const DATABASE_VERSION = 2;
+// v3: adiciona a store "progressoMissoes" (registro de quais missões o
+// jogador já concluiu). Bump não destrutivo — quem já tinha as stores
+// anteriores ganha a nova no próximo carregamento, sem perder nada.
+const DATABASE_VERSION = 3;
 
-/** Nomes das object stores, um por coleção do schema. */
+/** Nomes das object stores: cinco de conteúdo + uma de progresso do jogador. */
 const STORES = {
   grupos: "grupos",
   perguntas: "perguntas",
   especies: "especies",
   missoes: "missoes",
   configuracoes: "configuracoes",
+  progressoMissoes: "progressoMissoes",
 };
 
 /** Chave fixa usada para gravar o objeto único de configurações. */
@@ -71,6 +82,9 @@ function abrirBanco() {
           // Configuração é um objeto único, não uma coleção — sem keyPath
           // próprio; a chave é fornecida por fora (ver CHAVE_CONFIGURACOES).
           db.createObjectStore(STORES.configuracoes);
+        }
+        if (!db.objectStoreNames.contains(STORES.progressoMissoes)) {
+          db.createObjectStore(STORES.progressoMissoes, { keyPath: "missaoId" });
         }
       };
 
@@ -201,8 +215,33 @@ export async function lerConfiguracoes() {
 }
 
 /**
- * Limpa as cinco stores (grupos, perguntas, espécies, missões e
- * configurações) em uma única transação.
+ * Salva (ou atualiza) um único registro de progresso de missão, sem apagar
+ * os demais já salvos — diferente de `salvarNaStore`, que substitui a store
+ * inteira. Progresso é gravado aos poucos, uma conclusão de cada vez.
+ *
+ * @param {{missaoId: string, concluidaEm: string}} registro
+ * @returns {Promise<void>}
+ */
+export async function salvarProgressoMissao(registro) {
+  const db = await abrirBanco();
+
+  return new Promise((resolve, reject) => {
+    const transacao = db.transaction(STORES.progressoMissoes, "readwrite");
+    transacao.objectStore(STORES.progressoMissoes).put(registro);
+
+    transacao.oncomplete = () => resolve();
+    transacao.onerror = () => reject(transacao.error);
+  });
+}
+
+/** Lê todos os registros de progresso de missões salvos no IndexedDB. */
+export function lerProgressoMissoes() {
+  return lerDaStore(STORES.progressoMissoes);
+}
+
+/**
+ * Limpa as seis stores (grupos, perguntas, espécies, missões, configurações
+ * e progresso de missões) em uma única transação.
  * @returns {Promise<void>}
  */
 export async function limparTudo() {

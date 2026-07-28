@@ -13,7 +13,9 @@
       "Bash(node --check database/scripts/importer.js)",
       "Bash(node --check database/scripts/database.js)",
       "Bash(node --check database/scripts/indexeddb.js)",
-      "Bash(cd \"c:/Users/Bruno/OneDrive/Área de Trabalho/chave-dicotomica-interativa\" && mkdir -p src/css src/js/telas src/js/componentes && echo ok)"
+      "Bash(cd \"c:/Users/Bruno/OneDrive/Área de Trabalho/chave-dicotomica-interativa\" && mkdir -p src/css src/js/telas src/js/componentes && echo ok)",
+      "Bash(node --check src/js/nucleo/motorDeInvestigacao.js)",
+      "Bash(node --check src/js/componentes/cartaoMissao.js)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Bruno\\OneDrive\\Área de Trabalho\\chave-dicotomica-interativa\\src"

@@ -2,18 +2,26 @@
  * missoes.js
  *
  * Camada de missões: ponto único que a interface usa para listar e obter
- * missões, já com o `status` de cada uma calculado (disponível / bloqueada /
- * concluída).
+ * missões (já com o `status` de cada uma calculado) e para registrar quando
+ * uma missão é concluída.
  *
- * `status` não é um campo de `missoes.json` (ver database/schema.md, seção
- * 6) — é calculado aqui a partir de `ordemProgressao`/`sempreDisponivel`
- * (conteúdo) cruzados com o progresso do jogador, que ainda não existe como
- * camada de dados (ver schema.md, seção 9). Enquanto isso, a regra é
- * temporária e fica isolada nesta função: nenhuma outra parte da interface
- * decide status de missão.
+ * Duas fontes de dados, com propósitos diferentes:
+ *   - `database.js` (Base de Conhecimento): definição das missões (id,
+ *     título, `preRequisito`, `perguntaInicialId`...), vinda de
+ *     missoes.json. Conteúdo — igual para qualquer jogador.
+ *   - `indexeddb.js`, importado diretamente (sem passar por `database.js`):
+ *     a store `progressoMissoes`, com quais missões este jogador já
+ *     concluiu. Progresso — não vem de JSON, não participa do fluxo de
+ *     cache/import da Base de Conhecimento (ver database/schema.md, seção 9).
+ *
+ * `status` continua não sendo um campo armazenado em lugar nenhum — é
+ * calculado aqui, cruzando as duas fontes acima com o campo `preRequisito`
+ * de cada missão. Nenhuma regra fixa sobre qual missão depende de qual:
+ * tudo vem do dado.
  */
 
 import { listarMissoes as listarMissoesDoBanco, obterMissaoPorId } from "../../../database/scripts/database.js";
+import { salvarProgressoMissao, lerProgressoMissoes } from "../../../database/scripts/indexeddb.js";
 
 export const STATUS_DISPONIVEL = "disponivel";
 export const STATUS_BLOQUEADA = "bloqueada";
@@ -24,10 +32,11 @@ export const STATUS_CONCLUIDA = "concluida";
  * @returns {Promise<object[]>}
  */
 export async function listarMissoes() {
-  const missoes = await listarMissoesDoBanco();
-  return missoes.map((missao, indice) => ({
+  const [missoes, idsConcluidas] = await Promise.all([listarMissoesDoBanco(), obterIdsConcluidas()]);
+
+  return missoes.map((missao) => ({
     ...missao,
-    status: calcularStatus(missao, indice),
+    status: calcularStatus(missao, idsConcluidas),
   }));
 }
 
@@ -45,15 +54,55 @@ export async function obterMissao({ missaoId } = {}) {
 }
 
 /**
- * Regra temporária de status, sem camada de progresso do jogador ainda:
- * a missão marcada como `sempreDisponivel` (ex.: Missão 0) ou a primeira da
- * trilha fica disponível; as demais ficam bloqueadas. "Concluída" nunca é
- * retornado nesta etapa. Quando o progresso do jogador existir, só esta
- * função muda — quem a chama continua recebendo `status` pronto.
+ * Registra que o jogador concluiu uma missão. Idempotente: concluir a mesma
+ * missão de novo só atualiza a data de conclusão, não duplica registro.
+ *
+ * @param {string} missaoId
+ * @returns {Promise<void>}
  */
-function calcularStatus(missao, indice) {
-  if (missao.sempreDisponivel || indice === 0) {
+export async function concluirMissao(missaoId) {
+  if (!missaoId) {
+    return;
+  }
+  await salvarProgressoMissao({ missaoId, concluidaEm: new Date().toISOString() });
+}
+
+/**
+ * @returns {Promise<Set<string>>} ids das missões já concluídas pelo jogador.
+ */
+async function obterIdsConcluidas() {
+  const registros = await lerProgressoMissoes();
+  return new Set(registros.map((registro) => registro.missaoId));
+}
+
+/**
+ * Calcula o status de uma missão a partir do progresso do jogador e do
+ * campo `preRequisito` da própria missão (dado, não regra fixa no código):
+ *
+ *   1. `sempreDisponivel: true` sempre vence — a missão nunca fica
+ *      bloqueada nem "some" atrás do rótulo concluída (ex.: Missão 0,
+ *      que deve continuar jogável mesmo depois de concluída).
+ *   2. Se já foi concluída, o status é "concluida".
+ *   3. Sem `preRequisito`, a missão começa disponível.
+ *   4. Com `preRequisito`, só fica disponível quando a missão referenciada
+ *      estiver entre as concluídas; senão, fica bloqueada.
+ *
+ * @param {object} missao
+ * @param {Set<string>} idsConcluidas
+ * @returns {"disponivel"|"bloqueada"|"concluida"}
+ */
+function calcularStatus(missao, idsConcluidas) {
+  if (missao.sempreDisponivel) {
     return STATUS_DISPONIVEL;
   }
-  return STATUS_BLOQUEADA;
+
+  if (idsConcluidas.has(missao.id)) {
+    return STATUS_CONCLUIDA;
+  }
+
+  if (!missao.preRequisito) {
+    return STATUS_DISPONIVEL;
+  }
+
+  return idsConcluidas.has(missao.preRequisito) ? STATUS_DISPONIVEL : STATUS_BLOQUEADA;
 }
