@@ -3,22 +3,26 @@
  *
  * Mapa de Missões: lista os casos disponíveis para o jogador escolher.
  *
- * `missoes.json` ainda não tem conteúdo real (é um scaffold vazio — ver
- * database/schema.md). Por isso, os "casos" mostrados aqui nesta etapa são:
- * a Missão 0 - Treinamento (fixa, sempre disponível) e um cartão por grupo
- * zoológico já existente na Base de Conhecimento (listarGrupos()), como
- * marcador de posição até existirem missões de verdade.
+ * Não conhece "grupo" nem `database.js` diretamente — pede a lista pronta
+ * (já com status calculado) para nucleo/missoes.js. Nenhuma missão fica
+ * fixa no código: a ordem, o título, a descrição e o status vêm todos da
+ * camada de missões.
  */
 
 import { irPara, voltar } from "../navegacao.js";
 import { criarCartaoMissao } from "../componentes/cartaoMissao.js";
-import { listarGrupos } from "../../../database/scripts/database.js";
+import { criarIcone } from "../componentes/icone.js";
+import { listarMissoes } from "../nucleo/missoes.js";
 
 export async function renderMapaMissoes(container) {
   container.innerHTML = `
     <section class="tela tela-mapa-missoes">
-      <h1>Mapa de Missões</h1>
-      <button type="button" data-acao="voltar">Voltar</button>
+      <header class="tela-cabecalho">
+        <button type="button" class="botao botao-fantasma" data-acao="voltar">
+          <span class="icone">${criarIcone("voltar")}</span> Voltar
+        </button>
+        <h1>Mapa de Missões</h1>
+      </header>
       <div class="lista-missoes" data-lista-missoes></div>
     </section>
   `;
@@ -26,20 +30,14 @@ export async function renderMapaMissoes(container) {
   container.querySelector('[data-acao="voltar"]').addEventListener("click", voltar);
 
   const listaMissoes = container.querySelector("[data-lista-missoes]");
+  const missoes = await listarMissoes();
 
-  const cartaoMissaoZero = criarCartaoMissao({
-    titulo: "Missão 0 - Treinamento",
-    descricao: "Aprenda a investigar respondendo ao seu primeiro caso.",
-    aoClicar: () => irPara("introducaoMissao", { missaoId: "missao-0" }),
-  });
-  listaMissoes.appendChild(cartaoMissaoZero);
-
-  const grupos = await listarGrupos();
-  for (const grupo of grupos) {
+  for (const missao of missoes) {
     const cartao = criarCartaoMissao({
-      titulo: grupo.nome,
-      descricao: grupo.descricao,
-      aoClicar: () => irPara("introducaoMissao", { grupoId: grupo.id }),
+      titulo: missao.titulo,
+      descricao: missao.descricaoCurta,
+      status: missao.status,
+      aoClicar: () => irPara("introducaoMissao", { missaoId: missao.id }),
     });
     listaMissoes.appendChild(cartao);
   }

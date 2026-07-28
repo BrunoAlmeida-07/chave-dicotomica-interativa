@@ -120,28 +120,35 @@ Onde `tipo` em `opcaoSim`/`opcaoNao` é `"pergunta"` (segue para outro nó da á
 
 ---
 
-## 6. Missão *(estrutura prevista para a v2.x — schema definido agora para permitir expansão futura, sem conteúdo populado nesta fase)*
+## 6. Missão
+
+*Estrutura definitiva (2026-07-28), com conteúdo real parcial em `missoes.json` — narrativa completa, resposta correta e recompensas ainda ficam para quando o Sistema de Missões (v2.x) existir de fato.*
 
 | Campo | Tipo | Obrigatório | Descrição |
 |---|---|---|---|
 | `id` | string (slug) | Sim | Identificador único. |
 | `titulo` | string | Sim | Título do caso investigativo. |
+| `descricaoCurta` | string | Sim | Texto curto usado no cartão da Tela/Mapa de Missões. |
 | `grupoId` | string (FK → Grupo) | Sim | Grupo zoológico envolvido no caso. |
-| `perguntaInicialId` | string (FK → Pergunta) | Não | Ponto de entrada na chave dicotômica para esta missão (se diferente da raiz padrão do grupo). |
+| `perguntaInicialId` | string (FK → Pergunta) | Sim | Ponto de entrada na chave dicotômica desta missão. |
+| `ordemProgressao` | number | Sim | Posição da missão na trilha (0, 1, 2...). |
+| `sempreDisponivel` | boolean | Não (padrão `false`) | Quando `true`, a missão nunca fica bloqueada, independente de progresso — usado pela Missão 0 (treinamento). |
 | `contextoNarrativo` | string | Sim | Texto de introdução/história do caso. |
 | `descricaoOcorrencia` | string | Sim | Descrição da ocorrência a ser investigada. |
 | `imagemCaso` | string (caminho) | Não | Imagem ilustrativa do caso. |
-| `especieRespostaCorreta` | string (FK → Espécie) | Sim | Espécie que representa a identificação correta do caso. |
-| `explicacaoCientificaFinal` | string | Sim | Texto exibido ao final, reforçando o conteúdo científico. |
-| `feedbackSucesso` | string | Sim | Mensagem exibida quando o estudante acerta. |
-| `feedbackErro` | string | Sim | Mensagem exibida quando o estudante erra. |
-| `faseProgressao` | enum (conforme v2.2 do ROADMAP: `"treinamento"`, `"casos_urbanos"`, `"casos_rurais"`, `"casos_mata"`, `"casos_complexos"`, `"especialista"`, `"mestre_taxonomista"`) | Sim | Fase da progressão à qual a missão pertence. |
-| `recompensaXp` | number | Sim | Experiência concedida ao concluir. |
+| `especieRespostaCorreta` | string (FK → Espécie) | Não | Espécie que representa a identificação correta do caso. `null` quando a missão ainda não tem um caso narrativo com resposta única definida (ex.: missões que só convidam a explorar a chave inteira de um grupo). |
+| `explicacaoCientificaFinal` | string | Não | Texto exibido ao final, reforçando o conteúdo científico. |
+| `feedbackSucesso` | string | Não | Mensagem exibida quando o estudante acerta. |
+| `feedbackErro` | string | Não | Mensagem exibida quando o estudante erra. |
+| `faseProgressao` | enum (conforme v2.2 do ROADMAP: `"treinamento"`, `"casos_urbanos"`, `"casos_rurais"`, `"casos_mata"`, `"casos_complexos"`, `"especialista"`, `"mestre_taxonomista"`) | Não | Fase da progressão à qual a missão pertence. |
+| `recompensaXp` | number | Não | Experiência concedida ao concluir. |
 | `conquistasAssociadas` | array de string (FK → Conquista) | Não | Conquistas que podem ser desbloqueadas por esta missão. |
 
-**Observação:** o *estado do jogador* (se a missão está bloqueada/concluída, pontuação obtida) **não faz parte deste schema de conteúdo**. Esse estado é dado de progressão, gerado durante o uso e armazenado apenas no IndexedDB local (ver seção 9).
+**`status` não é um campo desta entidade.** `disponível` / `bloqueada` / `concluída` é um valor **calculado**, não armazenado — depende de `ordemProgressao`/`sempreDisponivel` (conteúdo) cruzados com o progresso do jogador (que ainda não existe como camada de dados, ver seção 9). Essa lógica fica isolada em `src/js/nucleo/missoes.js`, não em `missoes.json` nem nas telas.
 
-**Relacionamentos:** uma Missão referencia um Grupo, uma Espécie (resposta correta), opcionalmente uma Pergunta (entrada customizada na árvore) e zero ou mais Conquistas.
+**Nota temporária:** a Missão 0 (`missao-0`) reaproveita a árvore de perguntas de Escorpiões (`grupoId: "escorpioes"`) só porque ainda não existe uma missão de treinamento própria, focada em ensinar a mecânica do jogo (observar, responder, interpretar) em vez de conteúdo zoológico específico. Isso é uma solução temporária, registrada para ser revisitada quando o conteúdo real de missões for escrito — nesse momento, `missao-escorpioes` continua existindo como a missão dedicada ao grupo, independente do que acontecer com a Missão 0.
+
+**Relacionamentos:** uma Missão referencia um Grupo, uma Pergunta (entrada na chave) e, opcionalmente, uma Espécie (resposta correta) e zero ou mais Conquistas.
 
 ---
 

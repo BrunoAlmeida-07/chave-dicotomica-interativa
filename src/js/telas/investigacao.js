@@ -8,66 +8,95 @@
  * database.js.
  *
  * Recebe em `dados.perguntaInicialId` o ponto de partida na árvore,
- * resolvido pela tela anterior (introducaoMissao.js).
+ * resolvido pela tela anterior (introducaoMissao.js). `dados.missaoId`,
+ * quando presente, é usado só para exibir o nome da missão e do grupo no
+ * cabeçalho — não afeta a navegação da árvore.
  */
 
 import { irPara, voltar } from "../navegacao.js";
-import { obterPerguntaPorId } from "../../../database/scripts/database.js";
+import { obterPerguntaPorId, obterGrupoPorId } from "../../../database/scripts/database.js";
+import { obterMissao } from "../nucleo/missoes.js";
 import { criarMotorDeInvestigacao } from "../nucleo/motorDeInvestigacao.js";
 import { criarCartaoPergunta } from "../componentes/cartaoPergunta.js";
+import { criarIcone } from "../componentes/icone.js";
 import { resolverCaminhoImagem } from "../utils/assets.js";
 
 const motor = criarMotorDeInvestigacao(obterPerguntaPorId);
 
 export async function renderInvestigacao(container, dados = {}) {
-  const { perguntaInicialId } = dados;
+  const { perguntaInicialId, missaoId } = dados;
+
+  const missao = missaoId ? await obterMissao({ missaoId }) : null;
+  const grupo = missao ? await obterGrupoPorId(missao.grupoId) : null;
 
   container.innerHTML = `
     <section class="tela tela-investigacao">
-      <h1>Investigação</h1>
-      <button type="button" data-acao="voltar">Voltar</button>
-      <div data-conteudo-pergunta></div>
+      <header class="investigacao-cabecalho">
+        <button type="button" class="botao botao-fantasma" data-acao="voltar">
+          <span class="icone">${criarIcone("voltar")}</span> Voltar
+        </button>
+        <div class="investigacao-cabecalho__info">
+          <span class="etiqueta">Investigação</span>
+          <h1>${missao ? missao.titulo : "Investigação"}</h1>
+          ${
+            grupo
+              ? `<p class="investigacao-cabecalho__grupo">
+                   <span class="icone">${criarIcone("lupa")}</span> Grupo investigado: ${grupo.nome}
+                 </p>`
+              : ""
+          }
+        </div>
+        <div class="investigacao-cabecalho__etapa" data-etapa hidden></div>
+      </header>
+      <div data-conteudo-pergunta class="investigacao-corpo"></div>
     </section>
   `;
+
   container.querySelector('[data-acao="voltar"]').addEventListener("click", voltar);
 
   const areaPergunta = container.querySelector("[data-conteudo-pergunta]");
+  const areaEtapa = container.querySelector("[data-etapa]");
+  let contadorPerguntas = 0;
 
   if (!perguntaInicialId) {
-    areaPergunta.innerHTML = "<p>Nenhuma investigação disponível para este caso ainda.</p>";
+    areaPergunta.innerHTML = '<p class="mensagem-vazia">Nenhuma investigação disponível para este caso ainda.</p>';
     return;
   }
 
-  areaPergunta.innerHTML = "<p>Carregando pergunta...</p>";
+  areaPergunta.innerHTML = '<p class="mensagem-carregando">Carregando pergunta...</p>';
   const primeiraPergunta = await motor.iniciar(perguntaInicialId);
-  desenharPergunta(areaPergunta, dados, primeiraPergunta);
-}
+  desenharPergunta(primeiraPergunta);
 
-function desenharPergunta(areaPergunta, dados, pergunta) {
-  areaPergunta.innerHTML = "";
+  function desenharPergunta(pergunta) {
+    areaPergunta.innerHTML = "";
 
-  if (!pergunta) {
-    areaPergunta.innerHTML = "<p>Não foi possível carregar esta pergunta.</p>";
-    return;
+    if (!pergunta) {
+      areaPergunta.innerHTML = '<p class="mensagem-vazia">Não foi possível carregar esta pergunta.</p>';
+      return;
+    }
+
+    contadorPerguntas += 1;
+    areaEtapa.hidden = false;
+    areaEtapa.textContent = `Pergunta ${contadorPerguntas}`;
+
+    const cartao = criarCartaoPergunta({
+      texto: pergunta.texto,
+      imagem: pergunta.imagem ? resolverCaminhoImagem(pergunta.imagem) : "",
+      aoResponderSim: () => responder(pergunta, "sim"),
+      aoResponderNao: () => responder(pergunta, "nao"),
+    });
+    areaPergunta.appendChild(cartao);
   }
 
-  const cartao = criarCartaoPergunta({
-    texto: pergunta.texto,
-    imagem: pergunta.imagem ? resolverCaminhoImagem(pergunta.imagem) : "",
-    aoResponderSim: () => responder(areaPergunta, dados, pergunta, "sim"),
-    aoResponderNao: () => responder(areaPergunta, dados, pergunta, "nao"),
-  });
-  areaPergunta.appendChild(cartao);
-}
+  async function responder(pergunta, resposta) {
+    areaPergunta.innerHTML = '<p class="mensagem-carregando">Carregando...</p>';
+    const resultado = await motor.responder(pergunta, resposta);
 
-async function responder(areaPergunta, dados, pergunta, resposta) {
-  areaPergunta.innerHTML = "<p>Carregando...</p>";
-  const resultado = await motor.responder(pergunta, resposta);
+    if (resultado.tipo === "especie") {
+      irPara("resultado", { ...dados, especieId: resultado.especieId });
+      return;
+    }
 
-  if (resultado.tipo === "especie") {
-    irPara("resultado", { ...dados, especieId: resultado.especieId });
-    return;
+    desenharPergunta(resultado.pergunta);
   }
-
-  desenharPergunta(areaPergunta, dados, resultado.pergunta);
 }

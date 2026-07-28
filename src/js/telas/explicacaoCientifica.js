@@ -6,14 +6,24 @@
  */
 
 import { irPara, voltar } from "../navegacao.js";
+import { criarIcone } from "../componentes/icone.js";
 
 export function renderExplicacaoCientifica(container, dados) {
   container.innerHTML = `
     <section class="tela tela-explicacao-cientifica">
-      <h1>Explicação Científica</h1>
-      <p>Conteúdo científico da espécie do caso (em construção).</p>
-      <button type="button" data-acao="voltar">Voltar</button>
-      <button type="button" data-acao="encerrar">Encerrar missão</button>
+      <header class="tela-cabecalho">
+        <button type="button" class="botao botao-fantasma" data-acao="voltar">
+          <span class="icone">${criarIcone("voltar")}</span> Voltar
+        </button>
+      </header>
+      <div class="cartao conteudo-cartao">
+        <span class="etiqueta">Explicação Científica</span>
+        <h1>Entenda mais sobre esta espécie</h1>
+        <p>Conteúdo científico do caso (em construção).</p>
+      </div>
+      <div class="resultado-acoes">
+        <button type="button" class="botao botao-primario" data-acao="encerrar">Encerrar missão</button>
+      </div>
     </section>
   `;
 

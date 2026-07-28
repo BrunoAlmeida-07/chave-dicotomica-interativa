@@ -7,15 +7,29 @@
  */
 
 import { irPara } from "../navegacao.js";
+import { criarIcone } from "../componentes/icone.js";
 
 export function renderTelaInicial(container) {
   container.innerHTML = `
     <section class="tela tela-inicial">
-      <h1>Missão Fauna Brasil</h1>
+      <div class="tela-inicial__topo">
+        <span class="etiqueta">Missão Fauna Brasil</span>
+        <h1>Olá, pesquisador(a)!</h1>
+        <p>Escolha um caminho para continuar sua investigação.</p>
+      </div>
       <nav class="menu-principal">
-        <button type="button" data-acao="mapa-missoes">Missões</button>
-        <button type="button" data-acao="laboratorio">Laboratório do Pesquisador</button>
-        <button type="button" data-acao="como-jogar">Como Jogar</button>
+        <button type="button" class="botao-menu" data-acao="mapa-missoes">
+          <span class="icone">${criarIcone("mapa")}</span>
+          <span>Missões</span>
+        </button>
+        <button type="button" class="botao-menu" data-acao="laboratorio">
+          <span class="icone">${criarIcone("frasco")}</span>
+          <span>Laboratório do Pesquisador</span>
+        </button>
+        <button type="button" class="botao-menu" data-acao="como-jogar">
+          <span class="icone">${criarIcone("livro")}</span>
+          <span>Como Jogar</span>
+        </button>
       </nav>
     </section>
   `;

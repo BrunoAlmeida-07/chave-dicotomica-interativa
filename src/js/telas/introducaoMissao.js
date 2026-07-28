@@ -11,14 +11,20 @@
 
 import { irPara, voltar } from "../navegacao.js";
 import { obterMissao } from "../nucleo/missoes.js";
+import { criarIcone } from "../componentes/icone.js";
 
 export async function renderIntroducaoMissao(container, dados = {}) {
   container.innerHTML = `
     <section class="tela tela-introducao-missao">
-      <h1>Introdução da Missão</h1>
-      <p>Conteúdo narrativo do caso (em construção).</p>
-      <button type="button" data-acao="voltar">Voltar</button>
-      <button type="button" data-acao="investigar">Investigar</button>
+      <header class="tela-cabecalho">
+        <button type="button" class="botao botao-fantasma" data-acao="voltar">
+          <span class="icone">${criarIcone("voltar")}</span> Voltar
+        </button>
+      </header>
+      <div class="introducao-cartao" data-conteudo>
+        <span class="etiqueta">Introdução da Missão</span>
+        <h1>Carregando...</h1>
+      </div>
     </section>
   `;
 
@@ -27,7 +33,15 @@ export async function renderIntroducaoMissao(container, dados = {}) {
   const missao = await obterMissao(dados);
   const perguntaInicialId = missao ? missao.perguntaInicialId : null;
 
-  container.querySelector('[data-acao="investigar"]').addEventListener("click", () => {
+  const conteudo = container.querySelector("[data-conteudo]");
+  conteudo.innerHTML = `
+    <span class="etiqueta">Introdução da Missão</span>
+    <h1>${missao ? missao.titulo : "Missão indisponível"}</h1>
+    <p>Conteúdo narrativo do caso (em construção).</p>
+    <button type="button" class="botao botao-primario" data-acao="investigar">Investigar</button>
+  `;
+
+  conteudo.querySelector('[data-acao="investigar"]').addEventListener("click", () => {
     irPara("investigacao", { ...dados, perguntaInicialId });
   });
 }

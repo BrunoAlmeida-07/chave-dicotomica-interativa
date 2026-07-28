@@ -22,6 +22,7 @@ const ARQUIVOS = {
   grupos: "grupos.json",
   perguntas: "perguntas.json",
   especies: "especies.json",
+  missoes: "missoes.json",
   configuracoes: "configuracoes.json",
 };
 
@@ -55,16 +56,16 @@ async function carregarArquivoJSON(nome, arquivo) {
 }
 
 /**
- * Valida que os quatro arquivos da Base de Conhecimento foram carregados
+ * Valida que os cinco arquivos da Base de Conhecimento foram carregados
  * corretamente, conforme os tipos definidos em `database/schema.md`:
- * grupos, perguntas e espécies devem ser listas não vazias; configurações
- * deve ser um único objeto.
+ * grupos, perguntas, espécies e missões devem ser listas não vazias;
+ * configurações deve ser um único objeto.
  *
- * @param {{grupos: unknown, perguntas: unknown, especies: unknown, configuracoes: unknown}} dados
+ * @param {{grupos: unknown, perguntas: unknown, especies: unknown, missoes: unknown, configuracoes: unknown}} dados
  * @throws {Error} Se algum dos arquivos não tiver o formato esperado.
  */
-function validarBaseDeConhecimento({ grupos, perguntas, especies, configuracoes }) {
-  const listas = { grupos, perguntas, especies };
+function validarBaseDeConhecimento({ grupos, perguntas, especies, missoes, configuracoes }) {
+  const listas = { grupos, perguntas, especies, missoes };
 
   for (const [nome, valor] of Object.entries(listas)) {
     if (!Array.isArray(valor)) {
@@ -82,26 +83,28 @@ function validarBaseDeConhecimento({ grupos, perguntas, especies, configuracoes 
 
 /**
  * Importa a Base de Conhecimento Biológica completa (grupos, perguntas,
- * espécies e configurações) a partir dos arquivos JSON oficiais, validando
- * que todos foram carregados corretamente.
+ * espécies, missões e configurações) a partir dos arquivos JSON oficiais,
+ * validando que todos foram carregados corretamente.
  *
  * @returns {Promise<{
  *   grupos: object[],
  *   perguntas: object[],
  *   especies: object[],
+ *   missoes: object[],
  *   configuracoes: object
  * }>} Um único objeto contendo toda a Base de Conhecimento.
  * @throws {Error} Se qualquer arquivo não puder ser carregado ou não passar na validação.
  */
 export async function importarBaseDeConhecimento() {
-  const [grupos, perguntas, especies, configuracoes] = await Promise.all([
+  const [grupos, perguntas, especies, missoes, configuracoes] = await Promise.all([
     carregarArquivoJSON("grupos", ARQUIVOS.grupos),
     carregarArquivoJSON("perguntas", ARQUIVOS.perguntas),
     carregarArquivoJSON("especies", ARQUIVOS.especies),
+    carregarArquivoJSON("missoes", ARQUIVOS.missoes),
     carregarArquivoJSON("configuracoes", ARQUIVOS.configuracoes),
   ]);
 
-  const baseDeConhecimento = { grupos, perguntas, especies, configuracoes };
+  const baseDeConhecimento = { grupos, perguntas, especies, missoes, configuracoes };
 
   validarBaseDeConhecimento(baseDeConhecimento);
 

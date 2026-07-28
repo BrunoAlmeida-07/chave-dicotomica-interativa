@@ -34,10 +34,12 @@ import {
   lerGrupos,
   lerPerguntas,
   lerEspecies,
+  lerMissoes,
   lerConfiguracoes,
   salvarGrupos,
   salvarPerguntas,
   salvarEspecies,
+  salvarMissoes,
   salvarConfiguracoes,
 } from "./indexeddb.js";
 
@@ -45,7 +47,7 @@ import {
  * Promise memoizada com a Base de Conhecimento já resolvida (do IndexedDB ou
  * recém-importada). Garante que o fluxo de inicialização completo rode uma
  * única vez, mesmo que várias funções de consulta sejam chamadas em paralelo.
- * @type {Promise<{grupos: object[], perguntas: object[], especies: object[], configuracoes: object}> | null}
+ * @type {Promise<{grupos: object[], perguntas: object[], especies: object[], missoes: object[], configuracoes: object}> | null}
  */
 let promessaBase = null;
 
@@ -54,7 +56,7 @@ let promessaBase = null;
  * Dispara o fluxo de inicialização na primeira chamada; reaproveita o
  * resultado nas seguintes (passo 6 do fluxo descrito no topo do arquivo).
  *
- * @returns {Promise<{grupos: object[], perguntas: object[], especies: object[], configuracoes: object}>}
+ * @returns {Promise<{grupos: object[], perguntas: object[], especies: object[], missoes: object[], configuracoes: object}>}
  */
 function obterBase() {
   if (!promessaBase) {
@@ -69,7 +71,7 @@ function obterBase() {
  * salvo, importa os JSON originais e persiste o resultado para a próxima
  * visita (passos 3-5).
  *
- * @returns {Promise<{grupos: object[], perguntas: object[], especies: object[], configuracoes: object}>}
+ * @returns {Promise<{grupos: object[], perguntas: object[], especies: object[], missoes: object[], configuracoes: object}>}
  * @throws {Error} Se não houver dados íntegros no IndexedDB e a importação dos JSON também falhar.
  */
 async function inicializarBase() {
@@ -88,20 +90,21 @@ async function inicializarBase() {
  * leitura (ex.: IndexedDB indisponível no navegador) é tratada da mesma forma
  * que "ainda não existe", para não impedir o funcionamento da aplicação.
  *
- * @returns {Promise<{grupos: object[], perguntas: object[], especies: object[], configuracoes: object} | null>}
+ * @returns {Promise<{grupos: object[], perguntas: object[], especies: object[], missoes: object[], configuracoes: object} | null>}
  *   Os dados salvos, se existirem e estiverem íntegros; `null` caso contrário.
  */
 async function tentarCarregarDoIndexedDB() {
   let dados;
 
   try {
-    const [grupos, perguntas, especies, configuracoes] = await Promise.all([
+    const [grupos, perguntas, especies, missoes, configuracoes] = await Promise.all([
       lerGrupos(),
       lerPerguntas(),
       lerEspecies(),
+      lerMissoes(),
       lerConfiguracoes(),
     ]);
-    dados = { grupos, perguntas, especies, configuracoes };
+    dados = { grupos, perguntas, especies, missoes, configuracoes };
   } catch (erro) {
     console.warn("Não foi possível ler a Base de Conhecimento do IndexedDB:", erro);
     return null;
@@ -112,17 +115,17 @@ async function tentarCarregarDoIndexedDB() {
 
 /**
  * Verifica se os dados lidos do IndexedDB formam uma Base de Conhecimento
- * íntegra: grupos, perguntas e espécies precisam ser listas não vazias, e
- * configurações precisa ser um único objeto. Critério equivalente ao que
- * `importer.js` já usa para validar o JSON recém-importado — mantido como
- * uma verificação privada e independente aqui, para não acoplar database.js
- * aos detalhes internos de importer.js.
+ * íntegra: grupos, perguntas, espécies e missões precisam ser listas não
+ * vazias, e configurações precisa ser um único objeto. Critério equivalente
+ * ao que `importer.js` já usa para validar o JSON recém-importado — mantido
+ * como uma verificação privada e independente aqui, para não acoplar
+ * database.js aos detalhes internos de importer.js.
  *
- * @param {{grupos: unknown, perguntas: unknown, especies: unknown, configuracoes: unknown}} dados
+ * @param {{grupos: unknown, perguntas: unknown, especies: unknown, missoes: unknown, configuracoes: unknown}} dados
  * @returns {boolean}
  */
-function baseEstaIntegra({ grupos, perguntas, especies, configuracoes }) {
-  const listasValidas = [grupos, perguntas, especies].every(
+function baseEstaIntegra({ grupos, perguntas, especies, missoes, configuracoes }) {
+  const listasValidas = [grupos, perguntas, especies, missoes].every(
     (lista) => Array.isArray(lista) && lista.length > 0
   );
   const configuracoesValidas =
@@ -136,15 +139,16 @@ function baseEstaIntegra({ grupos, perguntas, especies, configuracoes }) {
  * próxima visita já a encontre pronta (passo 4 do fluxo). Uma falha aqui não
  * impede a aplicação de continuar funcionando com os dados recém-importados.
  *
- * @param {{grupos: object[], perguntas: object[], especies: object[], configuracoes: object}} dados
+ * @param {{grupos: object[], perguntas: object[], especies: object[], missoes: object[], configuracoes: object}} dados
  * @returns {Promise<void>}
  */
-async function salvarNoIndexedDB({ grupos, perguntas, especies, configuracoes }) {
+async function salvarNoIndexedDB({ grupos, perguntas, especies, missoes, configuracoes }) {
   try {
     await Promise.all([
       salvarGrupos(grupos),
       salvarPerguntas(perguntas),
       salvarEspecies(especies),
+      salvarMissoes(missoes),
       salvarConfiguracoes(configuracoes),
     ]);
   } catch (erro) {
@@ -218,4 +222,23 @@ export async function obterPerguntaPorId(id) {
 export async function obterConfiguracoes() {
   const { configuracoes } = await obterBase();
   return configuracoes;
+}
+
+/**
+ * Lista todas as missões, ordenadas por `ordemProgressao`.
+ * @returns {Promise<object[]>}
+ */
+export async function listarMissoes() {
+  const { missoes } = await obterBase();
+  return [...missoes].sort((a, b) => a.ordemProgressao - b.ordemProgressao);
+}
+
+/**
+ * Obtém uma missão pelo seu id.
+ * @param {string} id
+ * @returns {Promise<object|null>} A missão encontrada, ou `null` se não existir.
+ */
+export async function obterMissaoPorId(id) {
+  const { missoes } = await obterBase();
+  return missoes.find((missao) => missao.id === id) ?? null;
 }

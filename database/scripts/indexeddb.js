@@ -4,21 +4,25 @@
  * Camada de persistência local da Base de Conhecimento Biológica.
  *
  * Responsável por abrir/versionar o banco IndexedDB e expor operações
- * básicas de leitura, escrita e limpeza das quatro coleções definidas em
- * `database/schema.md`: grupos, perguntas, espécies e configurações.
+ * básicas de leitura, escrita e limpeza das cinco coleções definidas em
+ * `database/schema.md`: grupos, perguntas, espécies, missões e configurações.
  *
  * Este módulo não sabe de onde os dados vêm — não importa `importer.js` nem
  * `database.js`. A ligação entre eles é responsabilidade de uma etapa futura.
  */
 
 const DATABASE_NAME = "MissaoFaunaBrasil";
-const DATABASE_VERSION = 1;
+// v2: adiciona a store "missoes" (missões passaram a ter conteúdo real).
+// Bump não destrutivo — quem já tinha as 4 stores da v1 ganha a 5ª no
+// próximo carregamento, sem perder nada.
+const DATABASE_VERSION = 2;
 
 /** Nomes das object stores, um por coleção do schema. */
 const STORES = {
   grupos: "grupos",
   perguntas: "perguntas",
   especies: "especies",
+  missoes: "missoes",
   configuracoes: "configuracoes",
 };
 
@@ -59,6 +63,9 @@ function abrirBanco() {
         }
         if (!db.objectStoreNames.contains(STORES.especies)) {
           db.createObjectStore(STORES.especies, { keyPath: "id" });
+        }
+        if (!db.objectStoreNames.contains(STORES.missoes)) {
+          db.createObjectStore(STORES.missoes, { keyPath: "id" });
         }
         if (!db.objectStoreNames.contains(STORES.configuracoes)) {
           // Configuração é um objeto único, não uma coleção — sem keyPath
@@ -150,6 +157,16 @@ export function lerEspecies() {
   return lerDaStore(STORES.especies);
 }
 
+/** Salva a lista de missões, substituindo o conteúdo atual da store. */
+export function salvarMissoes(missoes) {
+  return salvarNaStore(STORES.missoes, missoes);
+}
+
+/** Lê todas as missões salvas no IndexedDB. */
+export function lerMissoes() {
+  return lerDaStore(STORES.missoes);
+}
+
 /**
  * Salva o objeto único de configurações, substituindo o valor atual.
  * @param {object} configuracoes
@@ -184,8 +201,8 @@ export async function lerConfiguracoes() {
 }
 
 /**
- * Limpa as quatro stores (grupos, perguntas, espécies e configurações) em
- * uma única transação.
+ * Limpa as cinco stores (grupos, perguntas, espécies, missões e
+ * configurações) em uma única transação.
  * @returns {Promise<void>}
  */
 export async function limparTudo() {

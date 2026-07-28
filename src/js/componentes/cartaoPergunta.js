@@ -13,20 +13,36 @@
  * @param {{
  *   texto: string,
  *   imagem?: string,
+ *   dica?: string,
  *   aoResponderSim: () => void,
  *   aoResponderNao: () => void,
  * }} opcoes
  * @returns {HTMLElement}
  */
-export function criarCartaoPergunta({ texto, imagem = "", aoResponderSim, aoResponderNao }) {
+export function criarCartaoPergunta({
+  texto,
+  imagem = "",
+  dica = "Observe atentamente a imagem antes de responder.",
+  aoResponderSim,
+  aoResponderNao,
+}) {
   const cartao = document.createElement("div");
   cartao.className = "cartao-pergunta";
   cartao.innerHTML = `
-    ${imagem ? `<img class="cartao-pergunta__imagem" src="${imagem}" alt="">` : ""}
-    <p class="cartao-pergunta__texto">${texto}</p>
-    <div class="cartao-pergunta__botoes">
-      <button type="button" data-resposta="sim">Sim</button>
-      <button type="button" data-resposta="nao">Não</button>
+    ${
+      imagem
+        ? `<div class="cartao-pergunta__imagem-wrapper">
+             <img class="cartao-pergunta__imagem" src="${imagem}" alt="">
+           </div>`
+        : ""
+    }
+    <div class="cartao-pergunta__conteudo">
+      ${dica ? `<p class="cartao-pergunta__dica">${dica}</p>` : ""}
+      <p class="cartao-pergunta__texto">${texto}</p>
+      <div class="cartao-pergunta__botoes">
+        <button type="button" class="botao botao-resposta" data-resposta="sim">Sim</button>
+        <button type="button" class="botao botao-resposta" data-resposta="nao">Não</button>
+      </div>
     </div>
   `;
 

@@ -1,43 +1,59 @@
 /**
  * missoes.js
  *
- * Camada intermediária entre as telas e a origem real do conteúdo de uma
- * missão. `missoes.json` ainda não tem conteúdo (é um scaffold vazio — ver
- * database/schema.md), então, por enquanto, cada "missão" é sintetizada a
- * partir de um grupo zoológico já existente na Base de Conhecimento.
+ * Camada de missões: ponto único que a interface usa para listar e obter
+ * missões, já com o `status` de cada uma calculado (disponível / bloqueada /
+ * concluída).
  *
- * Quando missoes.json for populado e database.js ganhar uma função de
- * consulta própria (ex.: obterMissaoPorId), só a implementação de
- * `obterMissao` muda aqui dentro — quem a chama (introducaoMissao.js)
- * continua igual, sem precisar conhecer "grupo" nem "missão real".
+ * `status` não é um campo de `missoes.json` (ver database/schema.md, seção
+ * 6) — é calculado aqui a partir de `ordemProgressao`/`sempreDisponivel`
+ * (conteúdo) cruzados com o progresso do jogador, que ainda não existe como
+ * camada de dados (ver schema.md, seção 9). Enquanto isso, a regra é
+ * temporária e fica isolada nesta função: nenhuma outra parte da interface
+ * decide status de missão.
  */
 
-import { obterGrupoPorId } from "../../../database/scripts/database.js";
+import { listarMissoes as listarMissoesDoBanco, obterMissaoPorId } from "../../../database/scripts/database.js";
+
+export const STATUS_DISPONIVEL = "disponivel";
+export const STATUS_BLOQUEADA = "bloqueada";
+export const STATUS_CONCLUIDA = "concluida";
 
 /**
- * Resolve os dados mínimos de uma missão a partir do que foi passado pela
- * navegação.
- *
- * @param {{ grupoId?: string, missaoId?: string }} referencia
- * @returns {Promise<{ titulo: string, perguntaInicialId: string|null } | null>}
+ * Lista todas as missões, na ordem de progressão, cada uma com seu `status` calculado.
+ * @returns {Promise<object[]>}
  */
-export async function obterMissao({ grupoId, missaoId } = {}) {
-  if (grupoId) {
-    return obterMissaoAPartirDeGrupo(grupoId);
-  }
-
-  // missaoId ainda não tem fonte de dados real: missoes.json está vazio.
-  return null;
+export async function listarMissoes() {
+  const missoes = await listarMissoesDoBanco();
+  return missoes.map((missao, indice) => ({
+    ...missao,
+    status: calcularStatus(missao, indice),
+  }));
 }
 
-async function obterMissaoAPartirDeGrupo(grupoId) {
-  const grupo = await obterGrupoPorId(grupoId);
-  if (!grupo) {
+/**
+ * Obtém uma missão pelo id informado em `dados.missaoId`.
+ *
+ * @param {{ missaoId?: string }} referencia
+ * @returns {Promise<object|null>}
+ */
+export async function obterMissao({ missaoId } = {}) {
+  if (!missaoId) {
     return null;
   }
+  return obterMissaoPorId(missaoId);
+}
 
-  return {
-    titulo: grupo.nome,
-    perguntaInicialId: grupo.perguntaInicialId,
-  };
+/**
+ * Regra temporária de status, sem camada de progresso do jogador ainda:
+ * a missão marcada como `sempreDisponivel` (ex.: Missão 0) ou a primeira da
+ * trilha fica disponível; as demais ficam bloqueadas. "Concluída" nunca é
+ * retornado nesta etapa. Quando o progresso do jogador existir, só esta
+ * função muda — quem a chama continua recebendo `status` pronto.
+ */
+function calcularStatus(missao, indice) {
+  if (missao.sempreDisponivel || indice === 0) {
+    return STATUS_DISPONIVEL;
+  }
+  return STATUS_BLOQUEADA;
 }

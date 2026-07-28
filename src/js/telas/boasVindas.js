@@ -27,12 +27,15 @@ export function jaViuBoasVindas() {
 export function renderBoasVindas(container) {
   container.innerHTML = `
     <section class="tela tela-boas-vindas">
-      <h1>Missão Fauna Brasil</h1>
-      <p>
-        Você foi convidado a integrar uma equipe de pesquisa responsável por
-        investigar ocorrências envolvendo animais peçonhentos.
-      </p>
-      <button type="button" data-acao="continuar">Começar</button>
+      <div class="boas-vindas-cartao">
+        <span class="etiqueta">Bem-vindo(a)</span>
+        <h1>Missão Fauna Brasil</h1>
+        <p>
+          Você foi convidado a integrar uma equipe de pesquisa responsável por
+          investigar ocorrências envolvendo animais peçonhentos.
+        </p>
+        <button type="button" class="botao botao-primario" data-acao="continuar">Começar</button>
+      </div>
     </section>
   `;
 
