@@ -134,6 +134,7 @@ Onde `tipo` em `opcaoSim`/`opcaoNao` é `"pergunta"` (segue para outro nó da á
 | `ordemProgressao` | number | Sim | Posição de exibição da missão na trilha (0, 1, 2...). Não é o que desbloqueia a próxima — ver `preRequisito`. |
 | `sempreDisponivel` | boolean | Não (padrão `false`) | Quando `true`, a missão nunca fica bloqueada nem mostra "concluída" (o que a tornaria não clicável), independente de progresso ou de `preRequisito` — usado pela Missão 0 (treinamento), que deve continuar jogável mesmo depois de concluída. |
 | `preRequisito` | string ou null (FK → Missão) | Não | Id da missão que precisa estar concluída para esta ficar disponível. `null` = sem pré-requisito (disponível desde o início, sujeito a `sempreDisponivel`). É o campo que define o desbloqueio — não há nenhuma cadeia fixa no código. |
+| `visivelNoMapaDeMissoes` | boolean | Não (padrão `true`) | Quando `false`, a missão não aparece na listagem do Mapa de Missões (`listarMissoes()`), mas continua acessível por id via `obterMissao` — usado pela Missão de Treinamento, alcançável só pelo botão "Como Jogar" da Tela Inicial. |
 | `contextoNarrativo` | string | Sim | Texto de introdução/história do caso. |
 | `descricaoOcorrencia` | string | Sim | Descrição da ocorrência a ser investigada. |
 | `imagemCaso` | string (caminho) | Não | Imagem ilustrativa do caso. |
@@ -147,7 +148,9 @@ Onde `tipo` em `opcaoSim`/`opcaoNao` é `"pergunta"` (segue para outro nó da á
 
 **`status` não é um campo desta entidade.** `disponível` / `bloqueada` / `concluída` é um valor **calculado** em `src/js/nucleo/missoes.js`, não armazenado em `missoes.json` nem nas telas — cruza `sempreDisponivel`/`preRequisito` (conteúdo, acima) com a store de progresso do jogador `progressoMissoes` (ver seção 9): `sempreDisponivel` sempre vence; senão, concluída se há registro de progresso; senão, disponível se não há `preRequisito` ou se o `preRequisito` já foi concluído; bloqueada nos demais casos.
 
-**Nota temporária:** a Missão 0 (`missao-0`) reaproveita a árvore de perguntas de Escorpiões (`grupoId: "escorpioes"`) só porque ainda não existe uma missão de treinamento própria, focada em ensinar a mecânica do jogo (observar, responder, interpretar) em vez de conteúdo zoológico específico. Isso é uma solução temporária, registrada para ser revisitada quando o conteúdo real de missões for escrito — nesse momento, `missao-escorpioes` continua existindo como a missão dedicada ao grupo, independente do que acontecer com a Missão 0.
+**Nota temporária:** a Missão de Treinamento (`missao-0`) reaproveita a árvore de perguntas de Escorpiões (`grupoId: "escorpioes"`) só porque ainda não existe uma missão de treinamento própria, focada em ensinar a mecânica do jogo (observar, responder, interpretar) em vez de conteúdo zoológico específico. Isso é uma solução temporária, registrada para ser revisitada quando o conteúdo real de missões for escrito — nesse momento, `missao-escorpioes` continua existindo como a missão dedicada ao grupo, independente do que acontecer com a Missão de Treinamento.
+
+**Nota (2026-07-28):** desde que `visivelNoMapaDeMissoes` foi introduzido, `missao-0` saiu da campanha principal do Mapa de Missões — a campanha agora começa em `missao-aranhas` (sem `preRequisito`), seguida de `missao-escorpioes` (exige `missao-aranhas`) e `missao-serpentes` (exige `missao-escorpioes`). `missao-0` continua existindo só como o destino do botão "Como Jogar".
 
 **Relacionamentos:** uma Missão referencia um Grupo, uma Pergunta (entrada na chave) e, opcionalmente, uma Espécie (resposta correta) e zero ou mais Conquistas.
 

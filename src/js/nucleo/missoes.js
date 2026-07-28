@@ -18,6 +18,13 @@
  * calculado aqui, cruzando as duas fontes acima com o campo `preRequisito`
  * de cada missão. Nenhuma regra fixa sobre qual missão depende de qual:
  * tudo vem do dado.
+ *
+ * `listarMissoes()` só devolve missões com `visivelNoMapaDeMissoes !== false`
+ * — é assim que a Missão de Treinamento (`missao-0`) fica de fora do Mapa de
+ * Missões sem precisar de nenhuma regra específica sobre "missao-0" no
+ * código. Ela continua existindo normalmente em missoes.json e continua
+ * acessível por id via `obterMissao`, que não filtra nada — é assim que o
+ * botão "Como Jogar" da Tela Inicial continua funcionando.
  */
 
 import { listarMissoes as listarMissoesDoBanco, obterMissaoPorId } from "../../../database/scripts/database.js";
@@ -28,16 +35,22 @@ export const STATUS_BLOQUEADA = "bloqueada";
 export const STATUS_CONCLUIDA = "concluida";
 
 /**
- * Lista todas as missões, na ordem de progressão, cada uma com seu `status` calculado.
+ * Lista as missões visíveis no Mapa de Missões (`visivelNoMapaDeMissoes !==
+ * false`), na ordem de progressão, cada uma com seu `status` calculado.
+ * Missões marcadas como não visíveis (ex.: a de Treinamento) continuam
+ * acessíveis por id via `obterMissao`, só não entram nesta listagem.
+ *
  * @returns {Promise<object[]>}
  */
 export async function listarMissoes() {
   const [missoes, idsConcluidas] = await Promise.all([listarMissoesDoBanco(), obterIdsConcluidas()]);
 
-  return missoes.map((missao) => ({
-    ...missao,
-    status: calcularStatus(missao, idsConcluidas),
-  }));
+  return missoes
+    .filter((missao) => missao.visivelNoMapaDeMissoes !== false)
+    .map((missao) => ({
+      ...missao,
+      status: calcularStatus(missao, idsConcluidas),
+    }));
 }
 
 /**
