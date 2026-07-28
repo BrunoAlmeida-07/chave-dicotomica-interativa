@@ -61,3 +61,26 @@ button:hover {
   gap: 4px;
   text-align: left;
 }
+
+.cartao-pergunta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.cartao-pergunta__imagem {
+  max-width: 100%;
+  border-radius: 8px;
+}
+
+.cartao-pergunta__botoes {
+  display: flex;
+  gap: 8px;
+}
+
+.tela-resultado img {
+  max-width: 100%;
+  border-radius: 8px;
+  margin-top: 8px;
+}
