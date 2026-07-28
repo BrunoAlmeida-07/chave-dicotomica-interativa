@@ -12,7 +12,11 @@
       "Bash(mkdir database/scripts)",
       "Bash(node --check database/scripts/importer.js)",
       "Bash(node --check database/scripts/database.js)",
-      "Bash(node --check database/scripts/indexeddb.js)"
+      "Bash(node --check database/scripts/indexeddb.js)",
+      "Bash(cd \"c:/Users/Bruno/OneDrive/Área de Trabalho/chave-dicotomica-interativa\" && mkdir -p src/css src/js/telas src/js/componentes && echo ok)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\Bruno\\OneDrive\\Área de Trabalho\\chave-dicotomica-interativa\\src"
     ]
   }
 }
