@@ -3,37 +3,153 @@
  *
  * Fachada de acesso à Base de Conhecimento Biológica.
  *
- * Nesta etapa, os dados vêm apenas de `importer.js` e ficam em cache em
- * memória (válido enquanto a página estiver aberta). Quando `indexeddb.js`
- * existir, a expectativa é que apenas a implementação interna deste módulo
- * mude (passando a ler do IndexedDB); as funções exportadas aqui devem
- * continuar com a mesma assinatura para quem já as consome.
+ * Decide automaticamente de onde carregar os dados (IndexedDB ou os JSON
+ * originais, via importer.js) e expõe funções de consulta somente leitura
+ * sobre o resultado. Quem consome as funções exportadas por este módulo não
+ * precisa saber se os dados vieram do IndexedDB ou de um fetch recém-feito.
  *
- * Não implementa persistência nem lógica de navegação da chave dicotômica
- * (isso pertence ao módulo Chave Dicotômica).
+ * Fluxo de inicialização (ver `inicializarBase`), executado uma única vez:
+ *   1. Na primeira chamada a qualquer função de consulta, tenta ler a Base
+ *      de Conhecimento já salva no IndexedDB (indexeddb.js).
+ *   2. Se as quatro coleções existirem e estiverem íntegras, usa esses dados.
+ *   3. Caso contrário, importa os JSON originais (importer.js).
+ *   4. Salva o resultado importado no IndexedDB, para a próxima visita.
+ *   5. Retorna a Base de Conhecimento (do IndexedDB ou recém-importada).
+ *   6. Chamadas seguintes reaproveitam o mesmo resultado em memória
+ *      (`promessaBase`), sem repetir os passos 1-5.
+ *
+ * Fora do escopo atual: comparar `configuracoes.versaoBaseDados` para decidir
+ * se os dados salvos no IndexedDB estão desatualizados frente a uma nova
+ * versão do JSON. O fluxo acima já está estruturado para receber essa
+ * checagem futuramente dentro de `tentarCarregarDoIndexedDB`, sem exigir
+ * mudança na API pública deste módulo.
+ *
+ * Não implementa lógica de navegação da chave dicotômica (isso pertence ao
+ * módulo Chave Dicotômica). importer.js e indexeddb.js permanecem
+ * independentes entre si — só database.js conhece os dois.
  */
 
 import { importarBaseDeConhecimento } from "./importer.js";
+import {
+  lerGrupos,
+  lerPerguntas,
+  lerEspecies,
+  lerConfiguracoes,
+  salvarGrupos,
+  salvarPerguntas,
+  salvarEspecies,
+  salvarConfiguracoes,
+} from "./indexeddb.js";
 
 /**
- * Promise memoizada com o resultado de `importarBaseDeConhecimento()`.
- * Garante que os arquivos JSON só sejam buscados uma única vez, mesmo que
- * várias funções de consulta sejam chamadas em paralelo.
+ * Promise memoizada com a Base de Conhecimento já resolvida (do IndexedDB ou
+ * recém-importada). Garante que o fluxo de inicialização completo rode uma
+ * única vez, mesmo que várias funções de consulta sejam chamadas em paralelo.
  * @type {Promise<{grupos: object[], perguntas: object[], especies: object[], configuracoes: object}> | null}
  */
 let promessaBase = null;
 
 /**
  * Garante que a Base de Conhecimento foi carregada e devolve seus dados.
- * Dispara o carregamento na primeira chamada; reaproveita o resultado nas seguintes.
+ * Dispara o fluxo de inicialização na primeira chamada; reaproveita o
+ * resultado nas seguintes (passo 6 do fluxo descrito no topo do arquivo).
  *
  * @returns {Promise<{grupos: object[], perguntas: object[], especies: object[], configuracoes: object}>}
  */
 function obterBase() {
   if (!promessaBase) {
-    promessaBase = importarBaseDeConhecimento();
+    promessaBase = inicializarBase();
   }
   return promessaBase;
+}
+
+/**
+ * Executa o fluxo de inicialização da Base de Conhecimento: tenta reaproveitar
+ * o que já está salvo no IndexedDB (passos 1-2) e, se não houver nada íntegro
+ * salvo, importa os JSON originais e persiste o resultado para a próxima
+ * visita (passos 3-5).
+ *
+ * @returns {Promise<{grupos: object[], perguntas: object[], especies: object[], configuracoes: object}>}
+ * @throws {Error} Se não houver dados íntegros no IndexedDB e a importação dos JSON também falhar.
+ */
+async function inicializarBase() {
+  const dadosSalvos = await tentarCarregarDoIndexedDB();
+  if (dadosSalvos) {
+    return dadosSalvos;
+  }
+
+  const dadosImportados = await importarBaseDeConhecimento();
+  await salvarNoIndexedDB(dadosImportados);
+  return dadosImportados;
+}
+
+/**
+ * Tenta ler a Base de Conhecimento já salva no IndexedDB. Qualquer falha de
+ * leitura (ex.: IndexedDB indisponível no navegador) é tratada da mesma forma
+ * que "ainda não existe", para não impedir o funcionamento da aplicação.
+ *
+ * @returns {Promise<{grupos: object[], perguntas: object[], especies: object[], configuracoes: object} | null>}
+ *   Os dados salvos, se existirem e estiverem íntegros; `null` caso contrário.
+ */
+async function tentarCarregarDoIndexedDB() {
+  let dados;
+
+  try {
+    const [grupos, perguntas, especies, configuracoes] = await Promise.all([
+      lerGrupos(),
+      lerPerguntas(),
+      lerEspecies(),
+      lerConfiguracoes(),
+    ]);
+    dados = { grupos, perguntas, especies, configuracoes };
+  } catch (erro) {
+    console.warn("Não foi possível ler a Base de Conhecimento do IndexedDB:", erro);
+    return null;
+  }
+
+  return baseEstaIntegra(dados) ? dados : null;
+}
+
+/**
+ * Verifica se os dados lidos do IndexedDB formam uma Base de Conhecimento
+ * íntegra: grupos, perguntas e espécies precisam ser listas não vazias, e
+ * configurações precisa ser um único objeto. Critério equivalente ao que
+ * `importer.js` já usa para validar o JSON recém-importado — mantido como
+ * uma verificação privada e independente aqui, para não acoplar database.js
+ * aos detalhes internos de importer.js.
+ *
+ * @param {{grupos: unknown, perguntas: unknown, especies: unknown, configuracoes: unknown}} dados
+ * @returns {boolean}
+ */
+function baseEstaIntegra({ grupos, perguntas, especies, configuracoes }) {
+  const listasValidas = [grupos, perguntas, especies].every(
+    (lista) => Array.isArray(lista) && lista.length > 0
+  );
+  const configuracoesValidas =
+    typeof configuracoes === "object" && configuracoes !== null && !Array.isArray(configuracoes);
+
+  return listasValidas && configuracoesValidas;
+}
+
+/**
+ * Salva a Base de Conhecimento recém-importada no IndexedDB, para que a
+ * próxima visita já a encontre pronta (passo 4 do fluxo). Uma falha aqui não
+ * impede a aplicação de continuar funcionando com os dados recém-importados.
+ *
+ * @param {{grupos: object[], perguntas: object[], especies: object[], configuracoes: object}} dados
+ * @returns {Promise<void>}
+ */
+async function salvarNoIndexedDB({ grupos, perguntas, especies, configuracoes }) {
+  try {
+    await Promise.all([
+      salvarGrupos(grupos),
+      salvarPerguntas(perguntas),
+      salvarEspecies(especies),
+      salvarConfiguracoes(configuracoes),
+    ]);
+  } catch (erro) {
+    console.warn("Não foi possível salvar a Base de Conhecimento no IndexedDB:", erro);
+  }
 }
 
 /**
