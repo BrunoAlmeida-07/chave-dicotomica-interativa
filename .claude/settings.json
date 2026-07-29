@@ -16,7 +16,20 @@
       "Bash(cd \"c:/Users/Bruno/OneDrive/Área de Trabalho/chave-dicotomica-interativa\" && mkdir -p src/css src/js/telas src/js/componentes && echo ok)",
       "Bash(node --check src/js/nucleo/motorDeInvestigacao.js)",
       "Bash(node --check src/js/componentes/cartaoMissao.js)",
-      "Bash(node --check src/js/nucleo/missoes.js)"
+      "Bash(node --check src/js/nucleo/missoes.js)",
+      "Bash(npx --version)",
+      "Bash(chromium-cli --help)",
+      "Bash(npm ls *)",
+      "Bash(npx --yes playwright --version)",
+      "Bash(npx --yes playwright install chromium --with-deps)",
+      "Bash(npm init *)",
+      "Bash(npm install *)",
+      "Bash(node drive.js)",
+      "Bash(node diag.js)",
+      "Bash(node visual_test.js)",
+      "Bash(node mobile_test.js)",
+      "Bash(netstat -ano)",
+      "Bash(taskkill //PID 15096 //F)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Bruno\\OneDrive\\Área de Trabalho\\chave-dicotomica-interativa\\src"

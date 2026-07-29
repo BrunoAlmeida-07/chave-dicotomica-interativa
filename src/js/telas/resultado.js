@@ -1,9 +1,14 @@
 /**
  * resultado.js
  *
- * Resultado: mostra a espécie a que a investigação levou. Ainda não compara
- * com uma resposta "correta" de missão (depende de missoes.json ter conteúdo
- * narrativo real) — só confirma qual foi a identificação.
+ * Resultado: mostra a espécie a que a investigação levou, usando a Ficha
+ * Científica reutilizável (componentes/fichaCientifica.js). Esta tela só
+ * cuida do que é específico dela: a mensagem de identificação concluída e
+ * os botões de ação — toda a exibição da espécie fica a cargo do componente.
+ *
+ * Ainda não compara com uma resposta "correta" de missão (depende de
+ * missoes.json ter conteúdo narrativo real) — só confirma qual foi a
+ * identificação.
  *
  * "Voltar às missões" leva direto ao Mapa de Missões (não ao histórico de
  * navegação): depois de concluída, voltar para dentro da investigação não
@@ -12,15 +17,8 @@
 
 import { irPara } from "../navegacao.js";
 import { obterEspeciePorId } from "../../../database/scripts/database.js";
-import { resolverCaminhoImagem } from "../utils/assets.js";
 import { criarIcone } from "../componentes/icone.js";
-
-const ROTULOS_RISCO = {
-  nenhuma: "Sem risco relevante",
-  baixa: "Risco baixo",
-  moderada: "Risco moderado",
-  alta: "Risco alto",
-};
+import { criarFichaCientifica } from "../componentes/fichaCientifica.js";
 
 export async function renderResultado(container, dados = {}) {
   container.innerHTML = `
@@ -59,22 +57,6 @@ export async function renderResultado(container, dados = {}) {
     return;
   }
 
-  const imagemPrincipal = especie.imagens.find((img) => img.principal) ?? especie.imagens[0];
-  const rotuloRisco = ROTULOS_RISCO[especie.grauImportanciaMedica] ?? especie.grauImportanciaMedica;
-
-  areaResultado.innerHTML = `
-    <p class="resultado-rotulo">Você identificou:</p>
-    <h2 class="resultado-nome">${especie.nomePopular}</h2>
-    ${especie.nomeCientifico ? `<p class="resultado-nome-cientifico"><em>${especie.nomeCientifico}</em></p>` : ""}
-    ${
-      imagemPrincipal
-        ? `<img class="resultado-imagem" src="${resolverCaminhoImagem(imagemPrincipal.src)}" alt="${imagemPrincipal.alt}">`
-        : ""
-    }
-    <p class="resultado-resumo">${especie.caracteristicasMorfologicas}</p>
-    <div class="risco-caixa risco-caixa--${especie.grauImportanciaMedica}">
-      <span class="icone">${criarIcone("alerta")}</span>
-      <span>Nível de risco: <strong>${rotuloRisco}</strong></span>
-    </div>
-  `;
+  areaResultado.innerHTML = "";
+  areaResultado.appendChild(criarFichaCientifica(especie));
 }

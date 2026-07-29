@@ -19,12 +19,31 @@
 
   --cor-risco-nenhuma-bg: #eaf6ec;
   --cor-risco-nenhuma-fg: #1f6b3a;
-  --cor-risco-baixa-bg: #f1f6e6;
-  --cor-risco-baixa-fg: #5a6f2a;
-  --cor-risco-moderada-bg: #fbf1e1;
-  --cor-risco-moderada-fg: #8a5a15;
-  --cor-risco-alta-bg: #fbe9e5;
-  --cor-risco-alta-fg: #7a2a1c;
+  --cor-risco-baixa-bg: #fdf6df;
+  --cor-risco-baixa-fg: #8a6d12;
+  --cor-risco-moderada-bg: #fff0dc;
+  --cor-risco-moderada-fg: #c0570b;
+  --cor-risco-alta-bg: #fbe4e0;
+  --cor-risco-alta-fg: #b3271a;
+
+  /* Cores de apoio da Ficha Científica: cada categoria de card ganha
+     identidade própria, recuperando o laranja usado na chave dicotômica
+     original. Mantidas discretas (sem alta saturação). */
+  --cor-acento-laranja: #ff6f00;
+  --cor-acento-laranja-escura: #e65100;
+  --cor-acento-laranja-clara: #fff3e0;
+
+  --cor-acento-azul: #1565c0;
+  --cor-acento-azul-escura: #0d47a1;
+  --cor-acento-azul-clara: #e8f1fb;
+
+  --cor-acento-marinho: #2c3e6b;
+  --cor-acento-marinho-escura: #1c2a4d;
+  --cor-acento-marinho-clara: #eaedf5;
+
+  --cor-acento-oliva: #6b7a2a;
+  --cor-acento-oliva-escura: #4f5c1c;
+  --cor-acento-oliva-clara: #f1f3e2;
 
   --raio-sm: 10px;
   --raio-md: 16px;
@@ -119,6 +138,7 @@ img {
 .mensagem-carregando,
 .mensagem-vazia {
   color: var(--cor-texto-secundario);
+  text-align: center;
   padding: var(--espaco-5) 0;
 }
 
@@ -576,7 +596,337 @@ img {
   }
 }
 
+/* ===== FICHA CIENTÍFICA (componente reutilizável) =====
+   Visual inspirado em guia de campo de pesquisador: selo de catalogação,
+   moldura de espécime na foto e cards com identidade própria por
+   categoria (cor de apoio definida por --cor-cartao-acento). */
+.ficha-cientifica {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-5);
+  text-align: left;
+}
+
+.ficha-cientifica__cabecalho {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--espaco-4);
+  background: linear-gradient(135deg, var(--cor-acento), var(--cor-superficie) 70%);
+  border-radius: var(--raio-lg);
+  box-shadow: var(--sombra-md);
+  padding: var(--espaco-5);
+  text-align: center;
+  animation: entrada-tela 380ms ease both;
+}
+
+.ficha-cientifica__cabecalho::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.06;
+  background-image:
+    repeating-radial-gradient(circle at 15% 20%, var(--cor-primaria) 0 1px, transparent 1px 42px),
+    repeating-radial-gradient(circle at 85% 75%, var(--cor-primaria) 0 1px, transparent 1px 56px);
+}
+
+@media (min-width: 520px) {
+  .ficha-cientifica__cabecalho {
+    flex-direction: row;
+    text-align: left;
+  }
+}
+
+.ficha-cientifica__identificacao {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+@media (min-width: 520px) {
+  .ficha-cientifica__identificacao {
+    padding-left: var(--espaco-5);
+    border-left: 1.5px dashed var(--cor-borda);
+  }
+}
+
+.ficha-cientifica__selo {
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border: 1.5px dashed var(--cor-acento-laranja);
+  border-radius: 999px;
+  background: var(--cor-acento-laranja-clara);
+  color: var(--cor-acento-laranja-escura);
+  transform: rotate(-2deg);
+  animation: selo-entrada 420ms ease both;
+}
+
+@media (min-width: 520px) {
+  .ficha-cientifica__selo {
+    align-self: flex-start;
+  }
+}
+
+@keyframes selo-entrada {
+  from { opacity: 0; transform: rotate(-2deg) scale(0.85); }
+  to { opacity: 1; transform: rotate(-2deg) scale(1); }
+}
+
+.ficha-cientifica__imagem-wrapper {
+  position: relative;
+  flex: 0 0 auto;
+  width: 100%;
+  max-width: 200px;
+  border-radius: var(--raio-md);
+  overflow: hidden;
+  box-shadow: var(--sombra-sm);
+  border: 3px solid var(--cor-superficie);
+  outline: 2px solid var(--cor-borda);
+}
+
+.ficha-cientifica__imagem-wrapper::after {
+  content: "Catalogado";
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #fff;
+  background: rgba(27, 107, 60, 0.85);
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+.ficha-cientifica__imagem {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+.ficha-cientifica__nome {
+  font-size: 1.6rem;
+  margin-top: var(--espaco-2);
+  letter-spacing: -0.01em;
+}
+
+.ficha-cientifica__nome-cientifico {
+  color: var(--cor-texto-secundario);
+  font-size: 1rem;
+  margin-top: var(--espaco-1);
+}
+
+.ficha-cientifica__cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--espaco-4);
+  counter-reset: ficha-card;
+}
+
+/* Cor de apoio por categoria (item 3): barra superior, ícone e fundo leve
+   herdam de --cor-cartao-acento / --cor-cartao-acento-fundo. */
+.ficha-cientifica__card--caracteristicas {
+  --cor-cartao-acento: var(--cor-primaria);
+  --cor-cartao-acento-fundo: var(--cor-acento);
+}
+
+.ficha-cientifica__card--prevencao {
+  --cor-cartao-acento: var(--cor-acento-azul);
+  --cor-cartao-acento-fundo: var(--cor-acento-azul-clara);
+}
+
+.ficha-cientifica__card--curiosidades {
+  --cor-cartao-acento: var(--cor-acento-laranja);
+  --cor-cartao-acento-fundo: var(--cor-acento-laranja-clara);
+}
+
+.ficha-cientifica__card--importancia-ecologica {
+  --cor-cartao-acento: var(--cor-acento-oliva);
+  --cor-cartao-acento-fundo: var(--cor-acento-oliva-clara);
+}
+
+.ficha-cientifica__card--distribuicao {
+  --cor-cartao-acento: var(--cor-acento-marinho);
+  --cor-cartao-acento-fundo: var(--cor-acento-marinho-clara);
+}
+
+/* Importância médica: cor acompanha o nível de risco já calculado
+   (verde/amarelo/laranja/vermelho), sem depender de novos dados. */
+.ficha-cientifica__card--importancia-medica {
+  --cor-cartao-acento: var(--cor-primaria-clara);
+  --cor-cartao-acento-fundo: var(--cor-acento);
+}
+
+.ficha-cientifica__card--importancia-medica:has(.risco-caixa--nenhuma) {
+  --cor-cartao-acento: var(--cor-risco-nenhuma-fg);
+  --cor-cartao-acento-fundo: var(--cor-risco-nenhuma-bg);
+}
+
+.ficha-cientifica__card--importancia-medica:has(.risco-caixa--baixa) {
+  --cor-cartao-acento: var(--cor-risco-baixa-fg);
+  --cor-cartao-acento-fundo: var(--cor-risco-baixa-bg);
+}
+
+.ficha-cientifica__card--importancia-medica:has(.risco-caixa--moderada) {
+  --cor-cartao-acento: var(--cor-risco-moderada-fg);
+  --cor-cartao-acento-fundo: var(--cor-risco-moderada-bg);
+}
+
+.ficha-cientifica__card--importancia-medica:has(.risco-caixa--alta) {
+  --cor-cartao-acento: var(--cor-risco-alta-fg);
+  --cor-cartao-acento-fundo: var(--cor-risco-alta-bg);
+}
+
+.ficha-cientifica__card {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, var(--cor-cartao-acento-fundo) 0%, var(--cor-superficie) 130px);
+  border-radius: var(--raio-md);
+  box-shadow: var(--sombra-sm);
+  padding: var(--espaco-4);
+  transition: transform var(--transicao), box-shadow var(--transicao);
+  animation: entrada-card 320ms ease both;
+}
+
+.ficha-cientifica__card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--cor-cartao-acento);
+}
+
+.ficha-cientifica__card::after {
+  counter-increment: ficha-card;
+  content: "0" counter(ficha-card);
+  position: absolute;
+  top: var(--espaco-3);
+  right: var(--espaco-4);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--cor-cartao-acento);
+  opacity: 0.4;
+}
+
+.ficha-cientifica__card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--sombra-md);
+}
+
+.ficha-cientifica__card:nth-child(1) { animation-delay: 0ms; }
+.ficha-cientifica__card:nth-child(2) { animation-delay: 60ms; }
+.ficha-cientifica__card:nth-child(3) { animation-delay: 120ms; }
+.ficha-cientifica__card:nth-child(4) { animation-delay: 180ms; }
+.ficha-cientifica__card:nth-child(5) { animation-delay: 240ms; }
+.ficha-cientifica__card:nth-child(6) { animation-delay: 300ms; }
+
+@keyframes entrada-card {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.ficha-cientifica__card-titulo {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-3);
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: var(--cor-texto);
+  margin-bottom: var(--espaco-3);
+}
+
+.ficha-cientifica__card-titulo .icone {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--cor-cartao-acento-fundo);
+  color: var(--cor-cartao-acento);
+}
+
+.ficha-cientifica__card-conteudo {
+  color: var(--cor-texto-secundario);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.ficha-cientifica__subitem:not(:last-child) {
+  margin-bottom: var(--espaco-2);
+}
+
+.ficha-cientifica__subitem strong {
+  color: var(--cor-texto);
+}
+
+.ficha-cientifica__texto {
+  margin-top: var(--espaco-3);
+}
+
+.ficha-cientifica__card-conteudo .ficha-cientifica__texto:first-child {
+  margin-top: 0;
+}
+
+.ficha-cientifica__lista {
+  padding-left: 1.2em;
+}
+
+.ficha-cientifica__lista li:not(:last-child) {
+  margin-bottom: var(--espaco-1);
+}
+
+/* Medidor de risco (item 4): reforça visualmente o nível já calculado,
+   ocupando melhor o espaço do card mesmo quando o texto é curto. */
+.ficha-cientifica__medidor {
+  display: flex;
+  gap: 4px;
+  margin: var(--espaco-3) 0;
+}
+
+.ficha-cientifica__medidor-segmento {
+  flex: 1;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--cor-borda);
+}
+
+.ficha-cientifica__medidor-segmento--ativo.ficha-cientifica__medidor-segmento--nenhuma { background: var(--cor-risco-nenhuma-fg); }
+.ficha-cientifica__medidor-segmento--ativo.ficha-cientifica__medidor-segmento--baixa { background: var(--cor-risco-baixa-fg); }
+.ficha-cientifica__medidor-segmento--ativo.ficha-cientifica__medidor-segmento--moderada { background: var(--cor-risco-moderada-fg); }
+.ficha-cientifica__medidor-segmento--ativo.ficha-cientifica__medidor-segmento--alta { background: var(--cor-risco-alta-fg); }
+
 /* ===== RESULTADO ===== */
+.tela-resultado {
+  position: relative;
+  isolation: isolate;
+  max-width: 900px;
+}
+
+.tela-resultado::before {
+  content: "";
+  position: absolute;
+  inset: -24px 0 0 0;
+  z-index: -1;
+  opacity: 0.05;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(115deg, var(--cor-primaria) 0 1px, transparent 1px 64px),
+    repeating-linear-gradient(25deg, var(--cor-primaria) 0 1px, transparent 1px 80px);
+}
+
 .resultado-cabecalho {
   display: flex;
   align-items: center;
@@ -588,57 +938,28 @@ img {
   font-size: 1.5rem;
 }
 
-.resultado-corpo {
-  background: var(--cor-superficie);
-  border-radius: var(--raio-lg);
-  box-shadow: var(--sombra-md);
-  padding: var(--espaco-6) var(--espaco-5);
-  text-align: center;
-}
-
-.resultado-rotulo {
-  color: var(--cor-texto-secundario);
-  margin-bottom: var(--espaco-1);
-}
-
-.resultado-nome {
-  font-size: 1.7rem;
-  margin-bottom: var(--espaco-1);
-}
-
-.resultado-nome-cientifico {
-  color: var(--cor-texto-secundario);
-  margin-bottom: var(--espaco-4);
-}
-
-.resultado-imagem {
-  width: 100%;
-  max-width: 360px;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-  border-radius: var(--raio-md);
-  box-shadow: var(--sombra-sm);
-  margin: 0 auto var(--espaco-5);
-}
-
-.resultado-resumo {
-  color: var(--cor-texto-secundario);
-  text-align: left;
-  max-width: 480px;
-  margin: 0 auto var(--espaco-5);
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
 .risco-caixa {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: var(--espaco-2);
+  gap: var(--espaco-3);
   padding: var(--espaco-3) var(--espaco-4);
   border-radius: var(--raio-sm);
   font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.risco-caixa .icone {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.risco-caixa__rotulo {
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  font-size: 0.9rem;
 }
 
 .risco-caixa--nenhuma { background: var(--cor-risco-nenhuma-bg); color: var(--cor-risco-nenhuma-fg); }
