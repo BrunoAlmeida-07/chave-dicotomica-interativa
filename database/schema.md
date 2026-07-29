@@ -79,13 +79,27 @@ Representa cada nó terminal (resultado) da chave dicotômica. Nem todo resultad
 | `caracteristicasChave` | array de objetos `{ caracteristica, valor }` | Não | Traços estruturados usados pela chave dicotômica (ex.: `{ "corpo": "grande" }`). Permite, no futuro, montar ou validar a árvore de perguntas automaticamente. |
 | `peconhenta` | boolean | Sim | Indica se o animal possui peçonha. |
 | `grauImportanciaMedica` | enum: `"nenhuma"` \| `"baixa"` \| `"moderada"` \| `"alta"` | Sim | Relevância clínica em caso de acidente. |
+| `explicacaoImportanciaMedica` | string ou null | Não | O "porquê" por trás de `grauImportanciaMedica`: sintomas, mecanismo de ação, texto original da seção "Peçonhento(a)?" das páginas de origem. |
 | `primeirosSocorros` | string | Não | Orientações em caso de acidente. Presente sobretudo quando `grauImportanciaMedica` é `"moderada"` ou `"alta"`. |
 | `importanciaEcologica` | string | Sim | Papel ecológico da espécie. |
 | `comportamento` | string | Sim | Texto descritivo (seção "Comportamento" já usada em todas as páginas atuais). |
+| `prevencao` | array de string | Não | Recomendações práticas para evitar acidentes (ex.: "Sacudir roupas antes de vestir."). Cada item é uma recomendação distinta — nunca um texto corrido. |
 | `curiosidades` | array de string | Não | Fatos adicionais, usados futuramente no Laboratório do Pesquisador. |
 | `referenciasCientificas` | array de string | Não | Fontes (Ministério da Saúde, Instituto Butantan, ICMBio, etc.). |
 | `imagens` | array de objetos `{ src, alt, principal }` | Sim | Uma ou mais imagens. `principal: true` marca a imagem de destaque. |
 | `textoConservacao` | string | Sim | Texto de fechamento (seção destacada ao final da página, já existente em todo o conteúdo atual). |
+
+### Status de preenchimento (2026-07-29)
+
+Nem todo campo "Não obrigatório" está no mesmo estágio — a tabela acima define o *tipo*, esta lista define o *estado atual* das 16 espécies migradas:
+
+- **Obrigatórios, sempre preenchidos:** `id`, `grupoId`, `tipoRegistro`, `nomePopular`, `habitat`, `caracteristicasMorfologicas`, `peconhenta`, `grauImportanciaMedica`, `importanciaEcologica`, `comportamento`, `imagens`, `textoConservacao`.
+- **Opcionais, já preenchidos quando a fonte original tinha o dado:** `nomeCientifico` (null só nos registros `grupo_generico` sem nome taxonômico próprio), `caracteristicasChave` (parcial — só quando havia um traço distintivo claro na pergunta que levou à espécie), `explicacaoImportanciaMedica` (recuperado da seção "Peçonhento(a)?" original — **16/16 espécies**).
+- **Opcionais, aguardando curadoria científica futura (hoje `null`/`[]` em todas as 16 espécies):** `familia`, `distribuicaoGeografica`, `primeirosSocorros`, `prevencao`, `curiosidades`, `referenciasCientificas`.
+
+Sobre `distribuicaoGeografica`: duas espécies (`escorpiao_nordeste`, `escorpiao_preto`) têm menção de região ("Nordeste do Brasil", "região Amazônica") embutida no texto de `habitat`, mas não como frase isolável sem reescrita — decisão de extrair ou não fica para a curadoria, não foi feita automaticamente.
+
+Sobre `prevencao`: parte do texto de `textoConservacao` de espécies com importância médica já contém recomendações de prevenção em prosa (ex.: escorpião-amarelo), mas não foi convertido em lista automaticamente — isso exigiria decidir onde cada recomendação começa/termina, o que é curadoria, não migração.
 
 ### Valores de `tipoRegistro`
 
