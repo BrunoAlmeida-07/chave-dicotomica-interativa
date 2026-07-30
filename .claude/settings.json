@@ -29,7 +29,17 @@
       "Bash(node visual_test.js)",
       "Bash(node mobile_test.js)",
       "Bash(netstat -ano)",
-      "Bash(taskkill //PID 15096 //F)"
+      "Bash(taskkill //PID 15096 //F)",
+      "WebSearch",
+      "Bash(node -e ' *)",
+      "Bash(node drive2.js)",
+      "Bash(awk '{print $5}')",
+      "Bash(xargs -r -I{} taskkill //PID {} //F)",
+      "Bash(node visual_test2.js)",
+      "Bash(node drive3.js)",
+      "Bash(node drive4.js)",
+      "Bash(node drive5.js)",
+      "Bash(node visual_test3.js)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Bruno\\OneDrive\\Área de Trabalho\\chave-dicotomica-interativa\\src"

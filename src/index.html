@@ -17,6 +17,26 @@
 
   <main id="tela-atual"></main>
 
+  <!--
+    Aviso de orientação: puramente CSS (ver estilo.css), para funcionar mesmo
+    que o JavaScript falhe ao carregar. Não é uma "tela" do navegacao.js —
+    é chrome do app-shell, sempre presente, mostrado/escondido só por media
+    query. Girar o aparelho some com o aviso instantaneamente, sem recarregar
+    a página nem perder o progresso da investigação em andamento.
+  -->
+  <div class="tela-rotacao" id="tela-rotacao">
+    <div class="tela-rotacao__cartao">
+      <span class="tela-rotacao__icone">
+        <svg viewBox="0 0 24 24" width="56" height="56" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="7" y="2" width="10" height="20" rx="2"></rect>
+          <line x1="12" y1="18" x2="12" y2="18"></line>
+        </svg>
+      </span>
+      <p class="tela-rotacao__titulo">Gire seu dispositivo</p>
+      <p class="tela-rotacao__texto">O Missão Fauna Brasil foi desenvolvido para ser utilizado na horizontal.</p>
+    </div>
+  </div>
+
   <script type="module" src="js/app.js"></script>
 
 </body>

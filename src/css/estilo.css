@@ -45,6 +45,17 @@
   --cor-acento-oliva-escura: #4f5c1c;
   --cor-acento-oliva-clara: #f1f3e2;
 
+  --cor-acento-vermelho: #b23a5e;
+  --cor-acento-vermelho-escura: #7d2843;
+  --cor-acento-vermelho-clara: #fce8f1;
+
+  /* Azul sóbrio, ligado à área da saúde — usado só no card de Importância
+     médica (fundo/borda/ícone), distinto do azul de Prevenção. O selo de
+     risco e o medidor continuam com as cores de risco de sempre. */
+  --cor-acento-medico: #4a7a94;
+  --cor-acento-medico-escura: #345567;
+  --cor-acento-medico-clara: #eaf3f6;
+
   --raio-sm: 10px;
   --raio-md: 16px;
   --raio-lg: 24px;
@@ -100,6 +111,71 @@ img {
     animation-duration: 0.001ms !important;
     transition-duration: 0.001ms !important;
   }
+}
+
+/* ===== AVISO DE ORIENTAÇÃO (app-shell, não é uma "tela") =====
+   Landscape-first: o jogo não é exibido em retrato. A troca é só CSS (ver
+   comentário no index.html) — instantânea ao girar o aparelho, sem perder
+   o estado da investigação em andamento.
+
+   Condição: sempre que a orientação for retrato (independente da largura —
+   um tablet grande "em pé" continua com a proporção errada para este
+   layout), OU quando não houver largura suficiente mesmo em paisagem. Esse
+   segundo número não é arbitrário: é a soma do mínimo do painel da Ficha
+   Científica (220px) com um mínimo razoável para a coluna de cards ao lado
+   dele (~320px) mais espaçamentos — abaixo disso o layout de duas colunas
+   não cabe de jeito nenhum, mesmo paisagem. */
+.tela-rotacao {
+  display: none;
+}
+
+@media (orientation: portrait), (max-width: 600px) {
+  .tela-rotacao {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--espaco-5);
+    background: linear-gradient(160deg, var(--cor-primaria-escura), var(--cor-primaria));
+  }
+
+  #tela-atual {
+    display: none;
+  }
+}
+
+.tela-rotacao__cartao {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--espaco-3);
+  max-width: 320px;
+  color: #fff;
+  text-align: center;
+}
+
+.tela-rotacao__icone {
+  display: inline-flex;
+  animation: girar-dispositivo 2.4s ease-in-out infinite;
+}
+
+@keyframes girar-dispositivo {
+  0%, 15% { transform: rotate(0deg); }
+  50%, 65% { transform: rotate(-90deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.tela-rotacao__titulo {
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.tela-rotacao__texto {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.95rem;
+  line-height: 1.5;
 }
 
 /* ===== TELA (container padrão de cada tela) ===== */
@@ -597,33 +673,37 @@ img {
 }
 
 /* ===== FICHA CIENTÍFICA (componente reutilizável) =====
-   Visual inspirado em guia de campo de pesquisador: selo de catalogação,
-   moldura de espécime na foto e cards com identidade própria por
-   categoria (cor de apoio definida por --cor-cartao-acento). */
+   Guia de campo em duas colunas: painel da espécie (fixo, via position:
+   sticky) e conteúdo científico (cards, rolável). Como a tela de rotação
+   (ver seção RESULTADO / abaixo) já impede o uso em retrato, este é o único
+   layout da ficha — não existe variante empilhada. */
 .ficha-cientifica {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: flex-start;
   gap: var(--espaco-5);
   text-align: left;
 }
 
-.ficha-cientifica__cabecalho {
-  position: relative;
+.ficha-cientifica__painel {
+  position: sticky;
+  top: var(--espaco-4);
   isolation: isolate;
   overflow: hidden;
+  flex: 0 0 clamp(220px, 28vw, 300px);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--espaco-4);
-  background: linear-gradient(135deg, var(--cor-acento), var(--cor-superficie) 70%);
+  gap: var(--espaco-3);
+  background: linear-gradient(160deg, var(--cor-acento), var(--cor-superficie) 70%);
   border-radius: var(--raio-lg);
   box-shadow: var(--sombra-md);
-  padding: var(--espaco-5);
+  padding: var(--espaco-5) var(--espaco-4);
   text-align: center;
   animation: entrada-tela 380ms ease both;
 }
 
-.ficha-cientifica__cabecalho::before {
+.ficha-cientifica__painel::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -634,30 +714,7 @@ img {
     repeating-radial-gradient(circle at 85% 75%, var(--cor-primaria) 0 1px, transparent 1px 56px);
 }
 
-@media (min-width: 520px) {
-  .ficha-cientifica__cabecalho {
-    flex-direction: row;
-    text-align: left;
-  }
-}
-
-.ficha-cientifica__identificacao {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  flex: 1 1 auto;
-  min-width: 0;
-}
-
-@media (min-width: 520px) {
-  .ficha-cientifica__identificacao {
-    padding-left: var(--espaco-5);
-    border-left: 1.5px dashed var(--cor-borda);
-  }
-}
-
 .ficha-cientifica__selo {
-  align-self: center;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -670,10 +727,39 @@ img {
   animation: selo-entrada 420ms ease both;
 }
 
-@media (min-width: 520px) {
-  .ficha-cientifica__selo {
-    align-self: flex-start;
-  }
+/* Metadado (família) e selo de risco: reaproveitam campos já existentes,
+   sem introduzir tabela — só texto simples e um selo, no rodapé do painel. */
+.ficha-cientifica__metadado {
+  font-size: 0.85rem;
+  color: var(--cor-texto-secundario);
+}
+
+.ficha-cientifica__metadado strong {
+  color: var(--cor-texto);
+}
+
+.ficha-cientifica__selo-risco {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #fff;
+}
+
+.ficha-cientifica__selo-risco--nenhuma { background: var(--cor-risco-nenhuma-fg); }
+.ficha-cientifica__selo-risco--baixa { background: var(--cor-risco-baixa-fg); }
+.ficha-cientifica__selo-risco--moderada { background: var(--cor-risco-moderada-fg); }
+.ficha-cientifica__selo-risco--alta { background: var(--cor-risco-alta-fg); }
+
+/* Registro de catálogo: prepara a integração futura com o Laboratório do
+   Pesquisador (coleção de espécies catalogadas). */
+.ficha-cientifica__registro {
+  font-size: 0.75rem;
+  color: var(--cor-texto-secundario);
+  opacity: 0.8;
 }
 
 @keyframes selo-entrada {
@@ -683,29 +769,13 @@ img {
 
 .ficha-cientifica__imagem-wrapper {
   position: relative;
-  flex: 0 0 auto;
   width: 100%;
-  max-width: 200px;
+  max-width: 180px;
   border-radius: var(--raio-md);
   overflow: hidden;
   box-shadow: var(--sombra-sm);
   border: 3px solid var(--cor-superficie);
   outline: 2px solid var(--cor-borda);
-}
-
-.ficha-cientifica__imagem-wrapper::after {
-  content: "Catalogado";
-  position: absolute;
-  bottom: 6px;
-  right: 6px;
-  font-size: 0.62rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: #fff;
-  background: rgba(27, 107, 60, 0.85);
-  padding: 3px 8px;
-  border-radius: 999px;
 }
 
 .ficha-cientifica__imagem {
@@ -716,29 +786,42 @@ img {
 }
 
 .ficha-cientifica__nome {
-  font-size: 1.6rem;
-  margin-top: var(--espaco-2);
+  font-size: 1.35rem;
   letter-spacing: -0.01em;
 }
 
 .ficha-cientifica__nome-cientifico {
   color: var(--cor-texto-secundario);
-  font-size: 1rem;
-  margin-top: var(--espaco-1);
+  font-size: 0.95rem;
+  margin-top: calc(-1 * var(--espaco-2));
 }
 
+.ficha-cientifica__conteudo {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* Cards empilhados verticalmente — leitura contínua, sem pares lado a lado. */
 .ficha-cientifica__cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: var(--espaco-4);
   counter-reset: ficha-card;
 }
 
-/* Cor de apoio por categoria (item 3): barra superior, ícone e fundo leve
-   herdam de --cor-cartao-acento / --cor-cartao-acento-fundo. */
-.ficha-cientifica__card--caracteristicas {
+/* Cor de apoio por categoria: fundo inteiro do card (não só a borda) herda
+   de --cor-cartao-acento / --cor-cartao-acento-fundo, para que a categoria
+   seja reconhecível só pela cor, à distância. */
+.ficha-cientifica__card--aparencia,
+.ficha-cientifica__card--habitat,
+.ficha-cientifica__card--comportamento {
   --cor-cartao-acento: var(--cor-primaria);
   --cor-cartao-acento-fundo: var(--cor-acento);
+}
+
+.ficha-cientifica__card--primeiros-socorros {
+  --cor-cartao-acento: var(--cor-acento-vermelho);
+  --cor-cartao-acento-fundo: var(--cor-acento-vermelho-clara);
 }
 
 .ficha-cientifica__card--prevencao {
@@ -761,37 +844,18 @@ img {
   --cor-cartao-acento-fundo: var(--cor-acento-marinho-clara);
 }
 
-/* Importância médica: cor acompanha o nível de risco já calculado
-   (verde/amarelo/laranja/vermelho), sem depender de novos dados. */
+/* Importância médica: identidade fixa e sóbria (azul, área da saúde) —
+   não muda mais com o nível de risco. O nível continua sinalizado só pelo
+   selo (.risco-caixa) e pelo medidor, que mantêm as cores de risco. */
 .ficha-cientifica__card--importancia-medica {
-  --cor-cartao-acento: var(--cor-primaria-clara);
-  --cor-cartao-acento-fundo: var(--cor-acento);
-}
-
-.ficha-cientifica__card--importancia-medica:has(.risco-caixa--nenhuma) {
-  --cor-cartao-acento: var(--cor-risco-nenhuma-fg);
-  --cor-cartao-acento-fundo: var(--cor-risco-nenhuma-bg);
-}
-
-.ficha-cientifica__card--importancia-medica:has(.risco-caixa--baixa) {
-  --cor-cartao-acento: var(--cor-risco-baixa-fg);
-  --cor-cartao-acento-fundo: var(--cor-risco-baixa-bg);
-}
-
-.ficha-cientifica__card--importancia-medica:has(.risco-caixa--moderada) {
-  --cor-cartao-acento: var(--cor-risco-moderada-fg);
-  --cor-cartao-acento-fundo: var(--cor-risco-moderada-bg);
-}
-
-.ficha-cientifica__card--importancia-medica:has(.risco-caixa--alta) {
-  --cor-cartao-acento: var(--cor-risco-alta-fg);
-  --cor-cartao-acento-fundo: var(--cor-risco-alta-bg);
+  --cor-cartao-acento: var(--cor-acento-medico);
+  --cor-cartao-acento-fundo: var(--cor-acento-medico-clara);
 }
 
 .ficha-cientifica__card {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(180deg, var(--cor-cartao-acento-fundo) 0%, var(--cor-superficie) 130px);
+  background: var(--cor-cartao-acento-fundo);
   border-radius: var(--raio-md);
   box-shadow: var(--sombra-sm);
   padding: var(--espaco-4);
@@ -828,11 +892,14 @@ img {
 }
 
 .ficha-cientifica__card:nth-child(1) { animation-delay: 0ms; }
-.ficha-cientifica__card:nth-child(2) { animation-delay: 60ms; }
-.ficha-cientifica__card:nth-child(3) { animation-delay: 120ms; }
-.ficha-cientifica__card:nth-child(4) { animation-delay: 180ms; }
-.ficha-cientifica__card:nth-child(5) { animation-delay: 240ms; }
-.ficha-cientifica__card:nth-child(6) { animation-delay: 300ms; }
+.ficha-cientifica__card:nth-child(2) { animation-delay: 50ms; }
+.ficha-cientifica__card:nth-child(3) { animation-delay: 100ms; }
+.ficha-cientifica__card:nth-child(4) { animation-delay: 150ms; }
+.ficha-cientifica__card:nth-child(5) { animation-delay: 200ms; }
+.ficha-cientifica__card:nth-child(6) { animation-delay: 250ms; }
+.ficha-cientifica__card:nth-child(7) { animation-delay: 300ms; }
+.ficha-cientifica__card:nth-child(8) { animation-delay: 350ms; }
+.ficha-cientifica__card:nth-child(9) { animation-delay: 400ms; }
 
 @keyframes entrada-card {
   from { opacity: 0; transform: translateY(12px); }
@@ -854,7 +921,7 @@ img {
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: var(--cor-cartao-acento-fundo);
+  background: var(--cor-superficie);
   color: var(--cor-cartao-acento);
 }
 
@@ -888,19 +955,89 @@ img {
   margin-bottom: var(--espaco-1);
 }
 
-/* Medidor de risco (item 4): reforça visualmente o nível já calculado,
-   ocupando melhor o espaço do card mesmo quando o texto é curto. */
+/* Prevenção: cada recomendação ganha um marcador redondo em vez do bullet
+   padrão, reforçando a leitura como lista de ações. */
+.ficha-cientifica__lista--marcador {
+  list-style: none;
+}
+
+.ficha-cientifica__lista--marcador li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--espaco-2);
+}
+
+.ficha-cientifica__marcador {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  border-radius: 50%;
+  background: var(--cor-cartao-acento);
+  color: #fff;
+}
+
+.ficha-cientifica__marcador svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* Curiosidades: cada item vira uma pequena nota, não um bloco de texto. */
+.ficha-cientifica__notas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--espaco-3);
+}
+
+.ficha-cientifica__nota {
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px dashed rgba(0, 0, 0, 0.15);
+  border-radius: var(--raio-sm);
+  padding: var(--espaco-3);
+  font-size: 0.9rem;
+  color: var(--cor-texto);
+  line-height: 1.5;
+}
+
+/* Distribuição geográfica: etiqueta de localização em vez de parágrafo solto. */
+.ficha-cientifica__selo-local {
+  display: inline-block;
+  padding: var(--espaco-2) var(--espaco-3);
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px dashed var(--cor-cartao-acento);
+  border-radius: var(--raio-sm);
+  color: var(--cor-texto);
+  font-size: 0.9rem;
+}
+
+/* Importância médica: selo de risco + medidor primeiro, depois o texto
+   explicando o que a classificação significa — sempre empilhado, como os
+   demais cards. */
+.ficha-cientifica__medica {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-2);
+}
+
+.ficha-cientifica__medica-selo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-2);
+}
+
+/* Medidor de risco: reforça visualmente o nível já calculado, ocupando
+   melhor o espaço do card mesmo quando o texto é curto. */
 .ficha-cientifica__medidor {
   display: flex;
   gap: 4px;
-  margin: var(--espaco-3) 0;
+  margin: 0;
 }
 
 .ficha-cientifica__medidor-segmento {
   flex: 1;
   height: 6px;
   border-radius: 999px;
-  background: var(--cor-borda);
+  background: rgba(0, 0, 0, 0.12);
 }
 
 .ficha-cientifica__medidor-segmento--ativo.ficha-cientifica__medidor-segmento--nenhuma { background: var(--cor-risco-nenhuma-fg); }
@@ -946,6 +1083,7 @@ img {
   border-radius: var(--raio-sm);
   font-size: 0.95rem;
   font-weight: 700;
+  color: #fff;
 }
 
 .risco-caixa .icone {
@@ -953,7 +1091,7 @@ img {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .risco-caixa__rotulo {
@@ -962,10 +1100,10 @@ img {
   font-size: 0.9rem;
 }
 
-.risco-caixa--nenhuma { background: var(--cor-risco-nenhuma-bg); color: var(--cor-risco-nenhuma-fg); }
-.risco-caixa--baixa { background: var(--cor-risco-baixa-bg); color: var(--cor-risco-baixa-fg); }
-.risco-caixa--moderada { background: var(--cor-risco-moderada-bg); color: var(--cor-risco-moderada-fg); }
-.risco-caixa--alta { background: var(--cor-risco-alta-bg); color: var(--cor-risco-alta-fg); }
+.risco-caixa--nenhuma { background: var(--cor-risco-nenhuma-fg); }
+.risco-caixa--baixa { background: var(--cor-risco-baixa-fg); }
+.risco-caixa--moderada { background: var(--cor-risco-moderada-fg); }
+.risco-caixa--alta { background: var(--cor-risco-alta-fg); }
 
 .resultado-acoes {
   display: flex;

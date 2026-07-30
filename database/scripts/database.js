@@ -176,6 +176,17 @@ export async function obterGrupoPorId(id) {
 }
 
 /**
+ * Lista todas as espécies (ou resultados), na ordem em que aparecem na
+ * Base de Conhecimento. Usada por telas que precisam da coleção completa
+ * (ex.: posição de uma espécie no catálogo), não só de um grupo.
+ * @returns {Promise<object[]>}
+ */
+export async function listarEspecies() {
+  const { especies } = await obterBase();
+  return especies;
+}
+
+/**
  * Lista as espécies (ou resultados) que pertencem a um grupo.
  * @param {string} grupoId
  * @returns {Promise<object[]>}

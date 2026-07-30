@@ -58,5 +58,5 @@ export async function renderResultado(container, dados = {}) {
   }
 
   areaResultado.innerHTML = "";
-  areaResultado.appendChild(criarFichaCientifica(especie));
+  areaResultado.appendChild(await criarFichaCientifica(especie));
 }

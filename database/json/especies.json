@@ -5,8 +5,8 @@
     "tipoRegistro": "especie",
     "nomePopular": "Aranha-armadeira",
     "nomeCientifico": "Phoneutria sp.",
-    "familia": null,
-    "distribuicaoGeografica": null,
+    "familia": "Ctenidae",
+    "distribuicaoGeografica": "Ocorre em grande parte do Brasil, sendo mais associada a acidentes nas regiões Sul e Sudeste.",
     "habitat": "Pode ser encontrada em ambientes naturais e também em áreas urbanas. Costuma se abrigar em locais escuros e protegidos, como entulhos, madeira empilhada, sob pedras, entre folhagens e até em cachos de banana.",
     "caracteristicasMorfologicas": "Aranha de porte médio a grande, podendo atingir cerca de 15 a 17 cm com as pernas estendidas. Apresenta corpo robusto e pernas longas. Uma característica marcante é o comportamento defensivo, no qual ergue as patas dianteiras quando se sente ameaçada. Nessa posição, podem ser observadas faixas claras e escuras na parte inferior das pernas.",
     "caracteristicasChave": [
@@ -15,12 +15,21 @@
     "peconhenta": true,
     "grauImportanciaMedica": "moderada",
     "explicacaoImportanciaMedica": "Sim. Possui peçonha de importância médica, podendo causar dor intensa e outros sintomas. Em caso de acidente, é fundamental procurar atendimento médico.",
-    "prevencao": [],
-    "primeirosSocorros": null,
+    "prevencao": [
+      "Inspecionar calçados, roupas e toalhas antes de usá-los, sacudindo-os primeiro.",
+      "Evitar colocar as mãos em pilhas de entulho, madeira ou material de construção sem antes observar o local.",
+      "Manter quintais e áreas próximas de casa livres de acúmulo de lixo e material empilhado.",
+      "Usar luvas ao manusear cachos de banana ou vegetação densa."
+    ],
+    "primeirosSocorros": "Lave o local com água e sabão e procure atendimento médico o quanto antes. Uma compressa de água morna pode ajudar a aliviar a dor até a chegada ao atendimento. Não faça torniquete, corte, sucção ou aplique substâncias caseiras (pó de café, folhas, querosene) no local — essas práticas não neutralizam o veneno e podem causar infecção. O uso de soro antiaracnídico, quando necessário, é decidido pela equipe médica.",
     "importanciaEcologica": "Atua como predadora, alimentando-se de insetos e outros pequenos animais, contribuindo para o controle populacional e o equilíbrio dos ecossistemas.",
     "comportamento": "Não apresenta comportamento agressivo espontâneo, mas pode reagir quando se sente ameaçada ou pressionada. Frequentemente busca fugir, porém pode adotar postura de defesa ao perceber perigo. O cuidado ao manusear objetos e a verificação de locais escuros ajudam a prevenir acidentes.",
-    "curiosidades": [],
-    "referenciasCientificas": [],
+    "curiosidades": [
+      "Quando se sente ameaçada, ergue as patas dianteiras em postura de defesa antes de atacar — um aviso que pode ser observado à distância.",
+      "É uma caçadora ativa: ao contrário de aranhas que tecem teias para capturar presas, sai à procura de insetos e outros pequenos animais durante a noite.",
+      "Seu veneno já foi estudado para fins medicinais, servindo de base para pesquisas sobre analgésicos e disfunção erétil."
+    ],
+    "referenciasCientificas": ["Instituto Butantan", "Ministério da Saúde"],
     "imagens": [
       { "src": "aranhas/imagens/aranha armadeira.jpg", "alt": "Aranha-armadeira", "principal": true }
     ],
@@ -32,8 +41,8 @@
     "tipoRegistro": "especie",
     "nomePopular": "Aranha-marrom",
     "nomeCientifico": "Loxosceles sp.",
-    "familia": null,
-    "distribuicaoGeografica": null,
+    "familia": "Sicariidae",
+    "distribuicaoGeografica": "Distribuída por diversas regiões do Brasil, com maior número de casos registrados na região Sul.",
     "habitat": "Vive em locais escuros, secos e pouco movimentados, como frestas, atrás de móveis, armários, caixas, roupas e calçados. É comum em ambientes urbanos, especialmente no interior de residências.",
     "caracteristicasMorfologicas": "Aranha de pequeno porte, geralmente com até cerca de 3 cm de envergadura. Apresenta coloração marrom uniforme e pernas longas e finas. Pode possuir um desenho semelhante a um violino na região do cefalotórax. Diferentemente de muitas aranhas, apresenta poucos pelos visíveis.",
     "caracteristicasChave": [
@@ -42,12 +51,21 @@
     "peconhenta": true,
     "grauImportanciaMedica": "moderada",
     "explicacaoImportanciaMedica": "Sim. Possui peçonha de importância médica, podendo causar lesões na pele e outros sintomas. Em caso de acidente, é fundamental procurar atendimento médico.",
-    "prevencao": [],
-    "primeirosSocorros": null,
+    "prevencao": [
+      "Sacudir roupas, toalhas e calçados antes de usá-los, especialmente os guardados por muito tempo.",
+      "Evitar encostar sem olhar em frestas, atrás de móveis, quadros e caixas de armazenamento.",
+      "Vedar frestas e rodapés e afastar móveis da parede para reduzir esconderijos.",
+      "Usar luvas ao mexer em caixas antigas, entulho ou material de limpeza guardado."
+    ],
+    "primeirosSocorros": "Lave o local com água e sabão e procure atendimento médico o quanto antes, mesmo que os sintomas iniciais pareçam leves — as lesões de pele causadas por essa espécie evoluem de forma lenta. Uma compressa de água morna pode ajudar a aliviar o desconforto. Não faça torniquete, corte, sucção ou aplique substâncias caseiras no local. O soro antiaracnídico, quando indicado, é aplicado apenas pela equipe médica.",
     "importanciaEcologica": "Atua como predadora de insetos e outros pequenos animais, contribuindo para o controle populacional e o equilíbrio dos ecossistemas.",
     "comportamento": "Possui hábitos noturnos e comportamento pouco agressivo. Geralmente permanece escondida durante o dia. A maioria dos acidentes ocorre quando o animal é pressionado contra o corpo, ao vestir roupas ou calçar sapatos sem inspeção prévia.",
-    "curiosidades": [],
-    "referenciasCientificas": [],
+    "curiosidades": [
+      "Tem hábitos noturnos e discretos, evitando ativamente o contato com pessoas — a maioria dos acidentes acontece quando o animal é comprimido contra o corpo.",
+      "Ao contrário de muitas aranhas, não usa teia para caçar; sai à noite para procurar pequenos insetos, usando fios apenas como abrigo.",
+      "O veneno provoca uma reação lenta e progressiva na pele, que pode levar dias para mostrar todos os sinais — por isso o acidente costuma ser identificado só depois que os sintomas aparecem."
+    ],
+    "referenciasCientificas": ["Instituto Butantan", "Ministério da Saúde"],
     "imagens": [
       { "src": "aranhas/imagens/aranha marom.jpg", "alt": "Aranha-marrom", "principal": true }
     ],
@@ -60,19 +78,27 @@
     "nomePopular": "Aranhas sem importância médica",
     "nomeCientifico": "Araneae",
     "familia": null,
-    "distribuicaoGeografica": null,
+    "distribuicaoGeografica": "Espécies desse grupo ocorrem em todo o território brasileiro, adaptando-se a ambientes urbanos e naturais.",
     "habitat": "Podem ser encontradas em diversos ambientes, como jardins, paredes, telhados, vegetação e áreas próximas a residências, onde há disponibilidade de alimento e abrigo.",
     "caracteristicasMorfologicas": "Grupo formado por diversas espécies de aranhas com características variadas, geralmente de pequeno a médio porte. Em geral, não apresentam sinais típicos das espécies de importância médica, como corpo muito robusto, abdômen globoso escuro com marcações evidentes ou comportamento defensivo característico.\n\nAs imagens apresentadas (como aranha-saltadora, aranha-de-porão e aranha-lobo) são apenas exemplos desse grupo e não representam toda a diversidade de aranhas sem importância médica.",
     "caracteristicasChave": [],
     "peconhenta": true,
     "grauImportanciaMedica": "baixa",
     "explicacaoImportanciaMedica": "Sim. Todas as aranhas possuem peçonha, utilizada principalmente para capturar presas. No entanto, essas espécies apresentam baixa importância médica, não causando efeitos significativos em seres humanos.",
-    "prevencao": [],
-    "primeirosSocorros": null,
+    "prevencao": [
+      "Manter jardins e paredes externas livres de acúmulo de folhas e teias antigas.",
+      "Evitar eliminar aranhas encontradas em casa: a maioria é inofensiva e ajuda a controlar insetos.",
+      "Observar a aranha à distância antes de decidir removê-la, evitando o contato direto com as mãos."
+    ],
+    "primeirosSocorros": "Não há registro de risco significativo à saúde humana associado a esse grupo. Como boa prática geral, lave o local do contato com água e sabão e observe se surgem sinais incomuns, como vermelhidão que piora ou dor intensa — nesse caso, procure atendimento médico para avaliação.",
     "importanciaEcologica": "Desempenham papel fundamental no controle de insetos e outros pequenos artrópodes, contribuindo para o equilíbrio dos ecossistemas naturais e urbanos.",
     "comportamento": "Possuem comportamento não agressivo e evitam o contato com seres humanos. A maioria das espécies permanece em suas teias ou em abrigos e só reage quando se sente ameaçada.",
-    "curiosidades": [],
-    "referenciasCientificas": [],
+    "curiosidades": [
+      "A grande maioria das aranhas encontradas em residências pertence a este grupo e não representa risco à saúde humana.",
+      "Muitas espécies constroem teias geométricas usadas tanto para capturar presas quanto para perceber vibrações de possíveis ameaças.",
+      "Atuam como controladoras naturais de pragas, predando mosquitos, baratas jovens e outros insetos domésticos."
+    ],
+    "referenciasCientificas": ["Instituto Butantan", "Sociedade Brasileira de Zoologia"],
     "imagens": [
       { "src": "aranhas/imagens/aranha comum.png", "alt": "Exemplos de aranhas sem importância médica", "principal": true }
     ],
@@ -84,8 +110,8 @@
     "tipoRegistro": "especie",
     "nomePopular": "Caranguejeira",
     "nomeCientifico": "Dolichothele exilis",
-    "familia": null,
-    "distribuicaoGeografica": null,
+    "familia": "Theraphosidae",
+    "distribuicaoGeografica": "Ocorre em áreas naturais de diversas regiões do Brasil, sendo mais associada a ambientes de solo e vegetação nativa.",
     "habitat": "É encontrada principalmente em ambientes naturais, como florestas, onde vive em tocas no solo, sob troncos ou pedras. Pode eventualmente aparecer em áreas próximas a residências em busca de abrigo.",
     "caracteristicasMorfologicas": "Aranha de grande porte, podendo atingir mais de 10 cm de envergadura com as pernas estendidas. Possui corpo robusto, pernas grossas e é coberta por muitos pelos visíveis, o que facilita sua identificação.",
     "caracteristicasChave": [
@@ -94,12 +120,20 @@
     "peconhenta": true,
     "grauImportanciaMedica": "baixa",
     "explicacaoImportanciaMedica": "Sim, possui peçonha. No entanto, apresenta baixa importância médica, causando geralmente apenas efeitos leves em seres humanos.",
-    "prevencao": [],
-    "primeirosSocorros": null,
+    "prevencao": [
+      "Evitar manusear a aranha, mesmo sabendo que sua picada tem baixa gravidade, pois os pelos urticantes podem irritar a pele e os olhos.",
+      "Observar o animal à distância caso seja encontrado perto de casa, deixando-o seguir seu caminho.",
+      "Usar luvas ao mexer em tocas no solo ou embaixo de troncos e pedras em áreas naturais."
+    ],
+    "primeirosSocorros": "A picada dessa espécie costuma causar apenas dor local leve. Lave o local com água e sabão; se houve contato dos pelos urticantes com a pele ou os olhos, lave a região com bastante água. Procure atendimento médico caso a dor persista, a região inche muito ou apareçam outros sintomas incomuns.",
     "importanciaEcologica": "Atua como predadora, alimentando-se principalmente de insetos e outros pequenos animais, contribuindo para o controle populacional e o equilíbrio dos ecossistemas.",
     "comportamento": "Possui comportamento defensivo e não agressivo. Quando ameaçada, pode levantar as patas ou liberar pelos urticantes como forma de defesa. Em geral, evita o contato com seres humanos.",
-    "curiosidades": [],
-    "referenciasCientificas": [],
+    "curiosidades": [
+      "Sua principal defesa não é a picada: quando ameaçada, libera pelos urticantes do abdômen com as patas traseiras, capazes de causar forte irritação na pele e nas mucosas.",
+      "Pode viver muitos anos — fêmeas de caranguejeiras estão entre as aranhas mais longevas, chegando a décadas de vida em condições naturais.",
+      "Cava e habita tocas no solo, que usa como abrigo fixo, diferente de aranhas que se deslocam constantemente em busca de presas."
+    ],
+    "referenciasCientificas": ["Instituto Butantan"],
     "imagens": [
       { "src": "aranhas/imagens/caranguejeira.jpg", "alt": "Caranguejeira", "principal": true }
     ],
@@ -111,8 +145,8 @@
     "tipoRegistro": "especie",
     "nomePopular": "Aranha viúva-negra",
     "nomeCientifico": "Latrodectus sp.",
-    "familia": null,
-    "distribuicaoGeografica": null,
+    "familia": "Theridiidae",
+    "distribuicaoGeografica": "Ocorre de forma pontual em diferentes regiões do Brasil, geralmente associada a ambientes abrigados e pouco perturbados.",
     "habitat": "Pode ser encontrada em ambientes naturais e urbanos, principalmente em locais abrigados e pouco perturbados, como frestas, entulhos, pilhas de madeira, cercas e vegetação baixa.",
     "caracteristicasMorfologicas": "Aranha de pequeno porte, com coloração escura e abdômen arredondado e volumoso. Apresenta uma mancha avermelhada característica, geralmente na região inferior do abdômen. Possui pernas finas e relativamente longas, com pouco destaque de pelos.",
     "caracteristicasChave": [
@@ -121,12 +155,20 @@
     "peconhenta": true,
     "grauImportanciaMedica": "moderada",
     "explicacaoImportanciaMedica": "Sim. Possui peçonha de importância médica, podendo causar dor intensa, contrações musculares e outros sintomas. Em caso de acidente, é fundamental procurar atendimento médico.",
-    "prevencao": [],
-    "primeirosSocorros": null,
+    "prevencao": [
+      "Inspecionar cercas, pilhas de madeira, entulho e vegetação baixa antes de manusear esses locais.",
+      "Usar luvas ao mexer em áreas de armazenamento pouco utilizadas, como galpões e depósitos.",
+      "Evitar encostar diretamente em teias irregulares encontradas em cantos abrigados, cercas ou muros."
+    ],
+    "primeirosSocorros": "Lave o local com água e sabão e procure atendimento médico o quanto antes — os sintomas, como dor intensa e contrações musculares, podem se espalhar além do local da picada. Uma compressa de água morna pode ajudar a aliviar o desconforto. Não faça torniquete, corte, sucção ou aplique substâncias caseiras no local. O soro específico, quando necessário, é aplicado apenas pela equipe médica.",
     "importanciaEcologica": "Atua como predadora de insetos e outros pequenos artrópodes, contribuindo para o controle populacional e o equilíbrio dos ecossistemas.",
     "comportamento": "Possui comportamento pouco agressivo e tende a permanecer em sua teia, evitando o contato com seres humanos. A maioria dos acidentes ocorre quando o animal é comprimido ou perturbado inadvertidamente.",
-    "curiosidades": [],
-    "referenciasCientificas": [],
+    "curiosidades": [
+      "O nome do gênero remete ao comportamento de algumas fêmeas de, ocasionalmente, comerem o macho após o acasalamento — algo observado em poucas espécies e que não é a regra.",
+      "Constrói teias irregulares, em formato de fios cruzados, bem diferentes das teias circulares de outras aranhas.",
+      "Prefere permanecer parada em sua teia e só pica quando comprimida ou fortemente perturbada, evitando o confronto direto."
+    ],
+    "referenciasCientificas": ["Instituto Butantan", "Ministério da Saúde"],
     "imagens": [
       { "src": "aranhas/imagens/viuva negra.jpg", "alt": "Aranha viúva-negra", "principal": true }
     ],
@@ -138,20 +180,29 @@
     "tipoRegistro": "especie",
     "nomePopular": "Escorpião-amarelo",
     "nomeCientifico": "Tityus serrulatus",
-    "familia": null,
-    "distribuicaoGeografica": null,
+    "familia": "Buthidae",
+    "distribuicaoGeografica": "Amplamente distribuído nas regiões Sudeste, Centro-Oeste e Sul do Brasil, com registros também no Nordeste.",
     "habitat": "Adapta-se facilmente a ambientes urbanos, sendo frequentemente encontrado em locais com acúmulo de entulho, lixo, galerias de esgoto, caixas e frestas. A presença de baratas favorece sua ocorrência, pois constitui uma importante fonte de alimento.",
     "caracteristicasMorfologicas": "Escorpião de pequeno a médio porte, podendo atingir cerca de 7 cm de comprimento. Apresenta coloração predominantemente amarelo-clara, geralmente sem padrões escuros marcantes no dorso, podendo apresentar leve variação de tonalidade. Possui pequenas serrilhas nos segmentos da cauda, característica do gênero.",
     "caracteristicasChave": [],
     "peconhenta": true,
     "grauImportanciaMedica": "alta",
     "explicacaoImportanciaMedica": "Sim. Possui peçonha de alta importância médica, podendo causar dor intensa, sudorese, vômitos e outros sintomas, sendo mais grave em crianças e idosos. Em caso de acidente, é fundamental procurar atendimento médico imediatamente.",
-    "prevencao": [],
-    "primeirosSocorros": null,
+    "prevencao": [
+      "Manter ambientes limpos e livres de acúmulo de entulho, lixo e material de construção.",
+      "Vedar frestas, ralos e buracos em paredes e pisos, que servem de esconderijo.",
+      "Combater a presença de baratas em casa, já que são uma das principais presas dessa espécie.",
+      "Sacudir roupas, toalhas e calçados antes de usá-los e evitar andar descalço à noite em áreas de risco."
+    ],
+    "primeirosSocorros": "Lave o local com água e sabão e leve a pessoa imediatamente a um serviço de saúde — os sintomas podem evoluir rápido, principalmente em crianças e idosos. Uma compressa de água morna pode ajudar a aliviar a dor até a chegada ao atendimento. Não faça torniquete, corte, sucção ou aplique substâncias caseiras no local. É importante observar a pessoa por várias horas após o acidente, mesmo que os primeiros sintomas pareçam leves, pois sinais mais graves podem surgir depois. O soro antiescorpiônico, quando indicado, é aplicado apenas pela equipe médica.",
     "importanciaEcologica": "Atua como predador de insetos e outros pequenos invertebrados, contribuindo para o controle populacional dessas espécies.",
     "comportamento": "Possui hábitos noturnos e tende a se esconder durante o dia. Pode se reproduzir sem a necessidade de acasalamento (partenogênese), o que favorece o aumento rápido de sua população em ambientes urbanos.",
-    "curiosidades": [],
-    "referenciasCientificas": [],
+    "curiosidades": [
+      "É capaz de se reproduzir sem acasalamento (partenogênese), o que faz sua população crescer rapidamente em ambientes urbanos.",
+      "Caça à noite, imobilizando pequenos insetos com o ferrão antes de se alimentar.",
+      "É considerado o escorpião de maior importância médica do Brasil, respondendo pela maior parte dos casos graves de escorpionismo no país."
+    ],
+    "referenciasCientificas": ["Ministério da Saúde", "Instituto Butantan"],
     "imagens": [
       { "src": "escorpioes/imagens/escorpiao_amarelo.jpg", "alt": "Escorpião-amarelo", "principal": true }
     ],
@@ -163,20 +214,29 @@
     "tipoRegistro": "especie",
     "nomePopular": "Escorpião-marrom",
     "nomeCientifico": "Tityus bahiensis",
-    "familia": null,
-    "distribuicaoGeografica": null,
+    "familia": "Buthidae",
+    "distribuicaoGeografica": "Ocorre principalmente nas regiões Sudeste, Sul e Centro-Oeste do Brasil.",
     "habitat": "Pode ser encontrado em ambientes naturais e urbanos, abrigando-se em locais escuros e protegidos, como sob pedras, troncos, entulhos e em frestas de construções. A presença de insetos favorece sua ocorrência.",
     "caracteristicasMorfologicas": "Escorpião de pequeno a médio porte, podendo atingir cerca de 6 a 7 cm de comprimento. Apresenta coloração predominantemente marrom, variando entre tons claros e escuros, sem o padrão amarelado típico de outras espécies do gênero. O corpo e a cauda possuem coloração mais uniforme.",
     "caracteristicasChave": [],
     "peconhenta": true,
     "grauImportanciaMedica": "moderada",
     "explicacaoImportanciaMedica": "Sim. Possui peçonha de importância médica, podendo causar dor intensa, sudorese e outros sintomas. Em caso de acidente, é fundamental procurar atendimento médico.",
-    "prevencao": [],
-    "primeirosSocorros": null,
+    "prevencao": [
+      "Manter o ambiente limpo, evitando acúmulo de entulho, lixo e materiais empilhados.",
+      "Vedar frestas em paredes, pisos e ralos que possam servir de abrigo.",
+      "Sacudir roupas e calçados antes de usá-los, especialmente os deixados no chão ou em áreas externas.",
+      "Evitar remexer diretamente sob pedras, troncos e pilhas de folhas com as mãos desprotegidas."
+    ],
+    "primeirosSocorros": "Lave o local com água e sabão e procure atendimento médico o quanto antes. Uma compressa de água morna pode ajudar a aliviar a dor até a chegada ao atendimento. Não faça torniquete, corte, sucção ou aplique substâncias caseiras no local. Fique atento ao surgimento de outros sintomas nas horas seguintes, especialmente em crianças e idosos. O soro antiescorpiônico, quando necessário, é aplicado apenas pela equipe médica.",
     "importanciaEcologica": "Atua como predador de insetos e outros pequenos invertebrados, contribuindo para o controle populacional dessas espécies e para o equilíbrio dos ecossistemas.",
     "comportamento": "Possui hábitos noturnos e tende a permanecer escondido durante o dia. Pode reagir quando se sente ameaçado, sendo a maioria dos acidentes resultado de contato acidental.",
-    "curiosidades": [],
-    "referenciasCientificas": [],
+    "curiosidades": [
+      "Diferente do escorpião-amarelo, depende de reprodução sexuada entre macho e fêmea, o que contribui para um crescimento populacional mais lento.",
+      "Tem hábitos noturnos e passa boa parte do dia escondido, tornando-se mais ativo à noite em busca de insetos.",
+      "Ajuda a controlar naturalmente populações de insetos e outros pequenos invertebrados nos ambientes onde vive."
+    ],
+    "referenciasCientificas": ["Ministério da Saúde", "Instituto Butantan"],
     "imagens": [
       { "src": "escorpioes/imagens/escorpiao_marrom.jpg", "alt": "Escorpião-marrom", "principal": true }
     ],
@@ -188,9 +248,9 @@
     "tipoRegistro": "especie",
     "nomePopular": "Escorpião-amarelo-do-nordeste",
     "nomeCientifico": "Tityus stigmurus",
-    "familia": null,
-    "distribuicaoGeografica": null,
-    "habitat": "Muito comum na região Nordeste do Brasil, adapta-se bem a ambientes urbanos, sendo encontrado em entulhos, lixo, caixas, frestas e locais com presença de baratas, que servem de alimento.",
+    "familia": "Buthidae",
+    "distribuicaoGeografica": "Ocorre principalmente na região Nordeste do Brasil.",
+    "habitat": "Adapta-se bem a ambientes urbanos, sendo encontrado em entulhos, lixo, caixas, frestas e locais com presença de baratas, que servem de alimento.",
     "caracteristicasMorfologicas": "Escorpião de pequeno a médio porte, podendo atingir cerca de 6 a 7 cm de comprimento. Apresenta coloração amarelada, com presença de faixa escura ou manchas bem definidas no dorso, característica importante para sua diferenciação em relação a outras espécies.",
     "caracteristicasChave": [
       { "caracteristica": "padrao_dorsal", "valor": "listra_central_e_triangulo_na_cabeca" }
@@ -198,12 +258,21 @@
     "peconhenta": true,
     "grauImportanciaMedica": "moderada",
     "explicacaoImportanciaMedica": "Sim. Possui peçonha de importância médica, podendo causar dor intensa, sudorese, vômitos e outros sintomas, sendo mais grave em crianças e idosos. Em caso de acidente, é fundamental procurar atendimento médico imediatamente.",
-    "prevencao": [],
-    "primeirosSocorros": null,
+    "prevencao": [
+      "Manter ambientes limpos, evitando acúmulo de entulho e lixo próximo de casa.",
+      "Vedar frestas, ralos e buracos em paredes que sirvam de abrigo.",
+      "Combater a presença de baratas, uma das principais presas dessa espécie.",
+      "Sacudir roupas e calçados antes de usá-los."
+    ],
+    "primeirosSocorros": "Lave o local com água e sabão e procure atendimento médico rapidamente — os sintomas podem ser mais graves em crianças e idosos. Uma compressa de água morna pode ajudar a aliviar a dor até a chegada ao atendimento. Não faça torniquete, corte, sucção ou aplique substâncias caseiras no local. Observe a pessoa por algumas horas após o acidente, mesmo que os sintomas iniciais pareçam leves. O soro antiescorpiônico, quando indicado, é aplicado apenas pela equipe médica.",
     "importanciaEcologica": "Atua como predador de insetos e outros pequenos invertebrados, contribuindo para o controle populacional dessas espécies e o equilíbrio dos ecossistemas.",
     "comportamento": "Possui hábitos noturnos e permanece escondido durante o dia. Assim como outras espécies do gênero, pode se reproduzir sem acasalamento (partenogênese), favorecendo o aumento populacional em áreas urbanas.",
-    "curiosidades": [],
-    "referenciasCientificas": [],
+    "curiosidades": [
+      "Assim como o escorpião-amarelo, pode se reproduzir por partenogênese, o que favorece o crescimento populacional em áreas urbanas.",
+      "Tem hábitos noturnos e se esconde durante o dia em frestas e locais escuros.",
+      "É a espécie de escorpião de maior importância médica na região Nordeste, concentrando boa parte dos casos de escorpionismo registrados ali."
+    ],
+    "referenciasCientificas": ["Ministério da Saúde", "Instituto Butantan"],
     "imagens": [
       { "src": "escorpioes/imagens/escorpiao_amarelo_do_nordeste.webp", "alt": "Escorpião-amarelo-do-nordeste", "principal": true }
     ],
@@ -215,9 +284,9 @@
     "tipoRegistro": "especie",
     "nomePopular": "Escorpião-preto-da-amazônia",
     "nomeCientifico": "Tityus obscurus",
-    "familia": null,
-    "distribuicaoGeografica": null,
-    "habitat": "É encontrado principalmente na região Amazônica, em ambientes naturais como florestas e áreas com grande umidade. Pode também ocorrer em áreas próximas a residências, abrigando-se em locais escuros, úmidos e com disponibilidade de alimento.",
+    "familia": "Buthidae",
+    "distribuicaoGeografica": "Ocorre principalmente na região Amazônica.",
+    "habitat": "Vive em ambientes naturais, como florestas e áreas com grande umidade. Pode também ocorrer em áreas próximas a residências, abrigando-se em locais escuros, úmidos e com disponibilidade de alimento.",
     "caracteristicasMorfologicas": "Escorpião de pequeno a médio porte, podendo atingir cerca de 6 a 8 cm de comprimento. Apresenta coloração escura, geralmente preta ou preto-acinzentada, com corpo e cauda de tonalidade uniforme. Essa coloração o diferencia facilmente das espécies amareladas e marrons.",
     "caracteristicasChave": [
       { "caracteristica": "coloracao", "valor": "preta_ou_preto_acinzentada" }
@@ -225,12 +294,21 @@
     "peconhenta": true,
     "grauImportanciaMedica": "moderada",
     "explicacaoImportanciaMedica": "Sim. Possui peçonha de importância médica, podendo causar dor intensa, sudorese e outros sintomas sistêmicos. Em alguns casos, os acidentes podem apresentar manifestações neurológicas. Em caso de acidente, é fundamental procurar atendimento médico imediatamente.",
-    "prevencao": [],
-    "primeirosSocorros": null,
+    "prevencao": [
+      "Evitar remexer em folhagem, troncos caídos e áreas de mata densa sem calçado fechado.",
+      "Inspecionar roupas, calçados e redes antes de usá-los em áreas próximas à floresta.",
+      "Manter residências e acampamentos livres de acúmulo de lixo e material orgânico.",
+      "Usar lanterna ao caminhar por áreas naturais durante a noite."
+    ],
+    "primeirosSocorros": "Lave o local com água e sabão e procure atendimento médico o quanto antes. Uma compressa de água morna pode ajudar a aliviar a dor até a chegada ao atendimento. Não faça torniquete, corte, sucção ou aplique substâncias caseiras no local. Fique atento a sintomas que apareçam nas horas seguintes, especialmente em crianças e idosos. O soro antiescorpiônico, quando necessário, é aplicado apenas pela equipe médica.",
     "importanciaEcologica": "Atua como predador de insetos e outros pequenos invertebrados, contribuindo para o controle populacional dessas espécies e para o equilíbrio dos ecossistemas.",
     "comportamento": "Possui hábitos noturnos e permanece escondido durante o dia. Geralmente evita o contato com seres humanos, mas pode reagir quando se sente ameaçado. A maioria dos acidentes ocorre por contato acidental.",
-    "curiosidades": [],
-    "referenciasCientificas": [],
+    "curiosidades": [
+      "É considerado o escorpião de maior importância médica da região Amazônica, concentrando os casos mais graves de escorpionismo na área.",
+      "Tem hábitos noturnos, permanecendo escondido durante o dia em locais úmidos e escuros.",
+      "Alguns acidentes registrados por essa espécie envolvem manifestações neurológicas, o que reforça a importância de atendimento médico rápido."
+    ],
+    "referenciasCientificas": ["Ministério da Saúde", "Instituto Butantan"],
     "imagens": [
       { "src": "escorpioes/imagens/escorpiao_preto.jpeg", "alt": "Escorpião-preto-da-amazônia", "principal": true }
     ],
@@ -243,19 +321,27 @@
     "nomePopular": "Falso escorpião (pseudoescorpião)",
     "nomeCientifico": "Pseudoscorpiones",
     "familia": null,
-    "distribuicaoGeografica": null,
+    "distribuicaoGeografica": "Ocorre em todo o território brasileiro, em ambientes naturais e também dentro de residências.",
     "habitat": "Pode ser encontrado em ambientes naturais e também em residências, vivendo em locais como sob cascas de árvores, folhas, livros, frestas e áreas com poeira, onde encontra alimento e abrigo.",
     "caracteristicasMorfologicas": "Pequeno aracnídeo, geralmente com poucos milímetros de comprimento, que apresenta pinças semelhantes às dos escorpiões. No entanto, não possui cauda alongada nem ferrão, características típicas dos escorpiões verdadeiros, o que permite sua fácil diferenciação.",
     "caracteristicasChave": [],
     "peconhenta": false,
     "grauImportanciaMedica": "nenhuma",
     "explicacaoImportanciaMedica": "Não possui importância médica para os seres humanos, sendo considerado inofensivo.",
-    "prevencao": [],
-    "primeirosSocorros": null,
+    "prevencao": [
+      "Não é necessário nenhum cuidado especial: o animal não representa risco à saúde humana.",
+      "Evitar esmagar o animal sem necessidade, já que ele ajuda a controlar ácaros e outros pequenos insetos em casa.",
+      "Observar o animal à distância caso tenha curiosidade — é inofensivo, mas de tamanho muito reduzido."
+    ],
+    "primeirosSocorros": "Não há risco à saúde humana associado a esse organismo. Como boa prática geral, lave as mãos com água e sabão após o contato, especialmente antes de comer ou tocar o rosto.",
     "importanciaEcologica": "Atua como predador de pequenos invertebrados, como ácaros e insetos, contribuindo para o controle dessas populações e para o equilíbrio do ambiente.",
     "comportamento": "Possui hábitos discretos e não representa risco. Geralmente passa despercebido devido ao seu pequeno tamanho e evita o contato com seres humanos.",
-    "curiosidades": [],
-    "referenciasCientificas": [],
+    "curiosidades": [
+      "Apesar do nome e da semelhança com escorpiões verdadeiros, não possui cauda nem ferrão — as pinças são a única estrutura em comum.",
+      "Alguns pseudoescorpiões conseguem se prender às patas de insetos maiores, como moscas e besouros, para se deslocar até novos ambientes — comportamento chamado de foresia.",
+      "Alimenta-se de ácaros, larvas e pequenos insetos, ajudando a controlar essas populações em livros, móveis e cascas de árvore."
+    ],
+    "referenciasCientificas": ["Instituto Butantan", "Sociedade Brasileira de Zoologia"],
     "imagens": [
       { "src": "escorpioes/imagens/pseudo.png", "alt": "Pseudoescorpião", "principal": true }
     ],
@@ -268,19 +354,27 @@
     "nomePopular": "Outros escorpiões",
     "nomeCientifico": null,
     "familia": null,
-    "distribuicaoGeografica": null,
+    "distribuicaoGeografica": "Espécies desse grupo podem ocorrer em diferentes regiões do Brasil, dependendo da espécie específica envolvida.",
     "habitat": "Podem ser encontrados em ambientes naturais, sob pedras, troncos, folhas secas e outros locais escuros e úmidos, onde encontram abrigo e alimento.",
     "caracteristicasMorfologicas": "Os animais apresentam características típicas de escorpiões, como corpo segmentado, pinças e cauda com ferrão. Entretanto, não correspondem aos principais padrões utilizados nesta chave dicotômica, podendo pertencer a outras espécies não contempladas neste recurso didático.",
     "caracteristicasChave": [],
     "peconhenta": true,
     "grauImportanciaMedica": "baixa",
     "explicacaoImportanciaMedica": "Nem todos os escorpiões apresentam importância médica significativa. Ainda assim, recomenda-se evitar o contato direto com qualquer espécie, pois a identificação incorreta pode representar risco.",
-    "prevencao": [],
-    "primeirosSocorros": null,
+    "prevencao": [
+      "Evitar manusear qualquer escorpião sem identificação segura, mesmo que pareça de baixo risco.",
+      "Usar luvas e calçados fechados ao mexer em pedras, troncos e folhas secas em áreas naturais.",
+      "Manter o ambiente ao redor de casa limpo, reduzindo esconderijos para qualquer espécie de escorpião."
+    ],
+    "primeirosSocorros": "Lave o local com água e sabão e procure atendimento médico para avaliação, já que a identificação exata da espécie nem sempre é possível no momento do acidente. Uma compressa de água morna pode ajudar a aliviar a dor. Não faça torniquete, corte, sucção ou aplique substâncias caseiras no local.",
     "importanciaEcologica": "Os escorpiões atuam como importantes predadores de insetos e outros pequenos invertebrados, contribuindo para o equilíbrio ecológico dos ambientes naturais.",
     "comportamento": "De modo geral, os escorpiões utilizam o ferrão principalmente como mecanismo de defesa e captura de presas, evitando o contato direto com seres humanos.",
-    "curiosidades": [],
-    "referenciasCientificas": [],
+    "curiosidades": [
+      "Nem todas as espécies de escorpiões do Brasil têm importância médica relevante — a gravidade do acidente depende da espécie envolvida.",
+      "Os escorpiões existem há centenas de milhões de anos e estão entre os grupos de artrópodes mais antigos ainda vivos.",
+      "Usam o ferrão principalmente para capturar presas e se defender, evitando o confronto direto com animais maiores."
+    ],
+    "referenciasCientificas": ["Ministério da Saúde", "Instituto Butantan"],
     "imagens": [
       { "src": "escorpioes/imagens/vermelho.jpg", "alt": "Exemplos de outros escorpiões", "principal": true }
     ],
@@ -292,8 +386,8 @@
     "tipoRegistro": "especie",
     "nomePopular": "Cascavel",
     "nomeCientifico": "Crotalus durissus",
-    "familia": null,
-    "distribuicaoGeografica": null,
+    "familia": "Viperidae",
+    "distribuicaoGeografica": "Ocorre em áreas abertas de grande parte do Brasil, sendo mais comum no Cerrado, em regiões semiáridas do Nordeste e em campos do Sul e Sudeste.",
     "habitat": "Ocorre principalmente em ambientes abertos, como campos e áreas de cerrado, sendo favorecida por regiões com menor cobertura florestal. Também pode ser encontrada em áreas alteradas pela ação humana.",
     "caracteristicasMorfologicas": "A cascavel é uma serpente peçonhenta reconhecida pela presença de chocalho (guizo) na extremidade da cauda, estrutura que produz som característico quando vibrada. Apresenta padrão dorsal com manchas em formato de losangos ao longo do corpo, podendo também exibir faixas paravertebrais na região anterior.",
     "caracteristicasChave": [
@@ -303,12 +397,21 @@
     "peconhenta": true,
     "grauImportanciaMedica": "alta",
     "explicacaoImportanciaMedica": "Sim. Possui peçonha de elevada importância médica, com ação predominantemente neurotóxica e miotóxica, podendo causar alterações neuromusculares e comprometimento sistêmico, exigindo atendimento médico imediato.",
-    "prevencao": [],
-    "primeirosSocorros": null,
+    "prevencao": [
+      "Usar botas de cano alto e calças compridas ao caminhar em áreas de campo ou cerrado.",
+      "Observar por onde pisa e evitar andar descalço em trilhas ou vegetação rasteira.",
+      "Não colocar as mãos em buracos, tocas ou vegetação densa sem antes observar o local.",
+      "Ao ouvir o som do chocalho, parar, localizar o animal com cuidado e se afastar devagar, sem tentar capturá-lo."
+    ],
+    "primeirosSocorros": "Leve a pessoa imediatamente a um serviço de saúde — esse é o passo mais importante. Lave o local com água e sabão. Mantenha o membro afetado elevado e remova anéis, pulseiras ou calçados antes que o local comece a inchar. Não faça torniquete, não corte, não fure e não faça sucção no local da picada, e não aplique folhas, pó de café ou qualquer substância caseira. O soro antiofídico específico é aplicado apenas em ambiente hospitalar, conforme avaliação médica.",
     "importanciaEcologica": "Desempenha papel fundamental no controle populacional de pequenos vertebrados, especialmente roedores, contribuindo para o equilíbrio das cadeias alimentares.",
     "comportamento": "Possui hábito predominantemente terrestre e comportamento geralmente defensivo. Quando se sente ameaçada, pode vibrar o chocalho como forma de advertência, sinalizando sua presença antes de um possível ataque. Assim como outras serpentes, não costuma atacar sem motivo, sendo a maioria dos acidentes resultado de contato acidental ou tentativa de manipulação. Em condições normais, tende a evitar o contato com seres humanos.",
-    "curiosidades": [],
-    "referenciasCientificas": [],
+    "curiosidades": [
+      "O chocalho na ponta da cauda é formado por anéis de queratina que se acumulam a cada muda de pele, e seu som funciona como aviso antes de um possível ataque.",
+      "Seu veneno tem ação neurotóxica e miotóxica, afetando a musculatura e o sistema nervoso — um mecanismo pouco comum entre as serpentes brasileiras.",
+      "Caça principalmente à espreita, ficando imóvel e camuflada até que um roedor se aproxime o suficiente para o ataque."
+    ],
+    "referenciasCientificas": ["Instituto Butantan", "Ministério da Saúde"],
     "imagens": [
       { "src": "serpentes/imagens/Cascavel.jpg", "alt": "Cascavel", "principal": true }
     ],
@@ -321,19 +424,27 @@
     "nomePopular": "Coral falsa",
     "nomeCientifico": "Erythrolamprus sp.",
     "familia": null,
-    "distribuicaoGeografica": null,
+    "distribuicaoGeografica": "Espécies de coral falsa ocorrem em praticamente todo o Brasil, cada uma com uma distribuição própria dentro do país.",
     "habitat": "Pode ser encontrada em diferentes ambientes, como florestas, áreas abertas e regiões próximas a ambientes urbanos, geralmente em locais com abrigo, como sob folhas, troncos e pedras.",
     "caracteristicasMorfologicas": "A coral falsa é uma serpente que apresenta padrão de anéis coloridos semelhante ao da coral verdadeira, geralmente com combinações de cores como vermelho, preto e branco ou amarelo. Pode apresentar cabeça mais destacada do pescoço e olhos relativamente maiores. No entanto, a diferenciação entre coral falsa e coral verdadeira pode ser difícil, sendo necessária cautela na identificação.",
     "caracteristicasChave": [],
     "peconhenta": false,
     "grauImportanciaMedica": "nenhuma",
     "explicacaoImportanciaMedica": "Em geral, não apresenta importância médica significativa para os seres humanos. No entanto, devido à semelhança com espécies peçonhentas, recomenda-se evitar o contato direto com qualquer serpente com esse padrão de coloração.",
-    "prevencao": [],
-    "primeirosSocorros": null,
+    "prevencao": [
+      "Nunca manusear uma serpente com padrão de anéis coloridos, mesmo com aparência de coral falsa — a diferenciação segura exige treinamento específico.",
+      "Observar a serpente à distância e afastar-se devagar, sem tentar capturá-la ou matá-la.",
+      "Usar botas e calçados fechados em áreas de vegetação onde serpentes possam estar escondidas."
+    ],
+    "primeirosSocorros": "Essa espécie não representa risco médico relevante. Ainda assim, como a diferenciação entre coral falsa e coral verdadeira é difícil mesmo para especialistas, qualquer picada de serpente com esse padrão de cores deve ser tratada como emergência: lave o local com água e sabão e procure atendimento médico imediatamente para avaliação segura.",
     "importanciaEcologica": "Atua no controle de pequenos vertebrados e invertebrados, contribuindo para o equilíbrio dos ecossistemas.",
     "comportamento": "Possui comportamento geralmente não agressivo, tendendo a evitar o contato com seres humanos. A coloração semelhante à coral verdadeira funciona como estratégia de defesa, afastando possíveis predadores. A maioria dos encontros ocorre de forma acidental.",
-    "curiosidades": [],
-    "referenciasCientificas": [],
+    "curiosidades": [
+      "\"Coral falsa\" é um nome popular que reúne dezenas de espécies não peçonhentas de gêneros diferentes, todas com padrão de cores semelhante ao da coral verdadeira por mimetismo.",
+      "Ao se sentir ameaçada, pode enrolar a cauda para cima, imitando a cabeça e reforçando a semelhança com a serpente peçonhenta que copia.",
+      "Alimenta-se principalmente de outras serpentes e pequenos répteis, atuando como predadora dentro do próprio grupo dos répteis."
+    ],
+    "referenciasCientificas": ["Instituto Butantan"],
     "imagens": [
       { "src": "serpentes/imagens/coral_falsa.jpeg", "alt": "Coral falsa", "principal": true }
     ],
@@ -345,8 +456,8 @@
     "tipoRegistro": "especie",
     "nomePopular": "Coral verdadeira",
     "nomeCientifico": "Micrurus sp.",
-    "familia": null,
-    "distribuicaoGeografica": null,
+    "familia": "Elapidae",
+    "distribuicaoGeografica": "Ocorre em praticamente todo o território brasileiro, havendo diferentes espécies de coral-verdadeira conforme a região.",
     "habitat": "Pode ser encontrada em diversos ambientes, como florestas, áreas abertas e regiões com cobertura vegetal. Geralmente vive em locais abrigados, como sob folhas, troncos e no solo.",
     "caracteristicasMorfologicas": "A coral verdadeira é uma serpente peçonhenta que apresenta padrão de anéis coloridos ao longo do corpo, geralmente com combinações de vermelho, preto e branco ou amarelo. Possui cabeça pequena, pouco destacada do pescoço, e olhos relativamente pequenos. A diferenciação entre coral verdadeira e coral falsa pode ser difícil, sendo necessária cautela na identificação.",
     "caracteristicasChave": [
@@ -355,12 +466,21 @@
     "peconhenta": true,
     "grauImportanciaMedica": "alta",
     "explicacaoImportanciaMedica": "Sim. Possui peçonha de elevada importância médica, com ação neurotóxica, podendo causar paralisia muscular e comprometimento respiratório. Em caso de acidente, é fundamental procurar atendimento médico imediato.",
-    "prevencao": [],
-    "primeirosSocorros": null,
+    "prevencao": [
+      "Nunca manusear serpentes de anéis coloridos, mesmo que pareçam pequenas ou pouco agressivas.",
+      "Usar calçados fechados e observar o solo ao caminhar em áreas de vegetação ou solo com folhas.",
+      "Evitar remover pedras, troncos ou entulho com as mãos desprotegidas em áreas onde a espécie possa ocorrer.",
+      "Em caso de avistamento, afastar-se devagar sem tentar capturar ou matar o animal."
+    ],
+    "primeirosSocorros": "Leve a pessoa imediatamente a um serviço de saúde, mesmo que os sintomas iniciais pareçam leves — o veneno dessa serpente pode levar à paralisia muscular horas depois da picada. Lave o local com água e sabão. Não faça torniquete, corte, sucção ou aplique substâncias caseiras no local. O soro antielapídico específico é aplicado apenas em ambiente hospitalar.",
     "importanciaEcologica": "Atua no controle de pequenos vertebrados e outros organismos, contribuindo para o equilíbrio dos ecossistemas.",
     "comportamento": "Possui comportamento geralmente não agressivo e tende a evitar o contato com seres humanos. Apresenta hábito mais discreto e muitas vezes passa despercebida. A maioria dos acidentes ocorre por manipulação ou contato acidental.",
-    "curiosidades": [],
-    "referenciasCientificas": [],
+    "curiosidades": [
+      "Diferente da maioria das serpentes peçonhentas brasileiras, tem cabeça pequena e pouco destacada do corpo, o que dificulta sua identificação rápida.",
+      "Seu veneno tem ação neurotóxica e pode levar à paralisia muscular, por isso os acidentes exigem atenção médica imediata mesmo quando a dor inicial é discreta.",
+      "Tem hábitos discretos e fossoriais, passando boa parte do tempo enterrada ou sob a serapilheira, o que torna os encontros com humanos raros."
+    ],
+    "referenciasCientificas": ["Instituto Butantan", "Ministério da Saúde"],
     "imagens": [
       { "src": "serpentes/imagens/coral_verdadeira.jpg", "alt": "Coral verdadeira", "principal": true }
     ],
@@ -372,8 +492,8 @@
     "tipoRegistro": "especie",
     "nomePopular": "Jararaca",
     "nomeCientifico": "Bothrops jararaca",
-    "familia": null,
-    "distribuicaoGeografica": null,
+    "familia": "Viperidae",
+    "distribuicaoGeografica": "Ocorre principalmente nas regiões Sul e Sudeste do Brasil.",
     "habitat": "Pode ser encontrada em diversos ambientes, como florestas, áreas rurais e regiões próximas a ambientes urbanos. Geralmente vive em locais com vegetação e abrigo, como folhas, troncos e margens de cursos d’água.",
     "caracteristicasMorfologicas": "A jararaca é uma serpente peçonhenta que apresenta coloração variada, geralmente em tons de marrom, com manchas escuras ao longo do corpo. Possui cabeça mais larga em relação ao corpo e apresenta a fosseta loreal, estrutura localizada entre o olho e a narina, característica importante para identificação de serpentes desse grupo.",
     "caracteristicasChave": [
@@ -382,12 +502,21 @@
     "peconhenta": true,
     "grauImportanciaMedica": "alta",
     "explicacaoImportanciaMedica": "Sim. Possui peçonha de elevada importância médica, com ação principalmente proteolítica e hemorrágica, podendo causar dor intensa, inchaço e alterações no local da picada. É responsável por grande parte dos acidentes ofídicos no Brasil, sendo necessário atendimento médico imediato.",
-    "prevencao": [],
-    "primeirosSocorros": null,
+    "prevencao": [
+      "Usar botas de cano alto e calças compridas em trilhas, matas e áreas rurais.",
+      "Evitar caminhar à noite em vegetação densa sem lanterna.",
+      "Não colocar as mãos ou os pés em buracos, folhagem ou troncos sem antes observar o local.",
+      "Manter o terreno ao redor de casas rurais limpo, sem acúmulo de entulho ou vegetação alta."
+    ],
+    "primeirosSocorros": "Leve a pessoa imediatamente a um serviço de saúde. Lave o local com água e sabão e mantenha o membro afetado elevado, removendo anéis, pulseiras ou calçados antes que o local inche. Não faça torniquete, não corte, não fure e não faça sucção no local da picada, e não aplique substâncias caseiras. O soro antibotrópico é aplicado apenas em ambiente hospitalar, conforme avaliação médica.",
     "importanciaEcologica": "Atua no controle populacional de roedores e outros pequenos animais, contribuindo para o equilíbrio dos ecossistemas.",
     "comportamento": "Possui comportamento geralmente defensivo e tende a permanecer imóvel quando não perturbada, utilizando sua coloração como camuflagem. A maioria dos acidentes ocorre por contato acidental, especialmente quando a serpente é pisada ou manipulada. Em geral, evita o contato com seres humanos.",
-    "curiosidades": [],
-    "referenciasCientificas": [],
+    "curiosidades": [
+      "Possui a fosseta loreal, um órgão sensível ao calor entre o olho e a narina, que ajuda a detectar presas de sangue quente mesmo no escuro.",
+      "É responsável por grande parte dos acidentes com serpentes peçonhentas no Brasil, principalmente por seu hábito de ficar imóvel e camuflada.",
+      "Ao contrário da maioria das serpentes brasileiras, gera filhotes já formados dentro do corpo da mãe (viviparidade), em vez de pôr ovos."
+    ],
+    "referenciasCientificas": ["Instituto Butantan", "Ministério da Saúde"],
     "imagens": [
       { "src": "serpentes/imagens/jararaca.jpg", "alt": "Jararaca", "principal": true }
     ],
@@ -400,19 +529,27 @@
     "nomePopular": "Serpente sem importância médica",
     "nomeCientifico": null,
     "familia": null,
-    "distribuicaoGeografica": null,
+    "distribuicaoGeografica": "Espécies desse grupo ocorrem em todo o território brasileiro, cada uma com distribuição própria conforme o ambiente.",
     "habitat": "Podem ser encontradas em diversos ambientes, como florestas, áreas abertas, regiões rurais e até próximas a ambientes urbanos, geralmente em locais com abrigo e disponibilidade de alimento.",
     "caracteristicasMorfologicas": "Grupo composto por diversas espécies de serpentes que não apresentam características associadas às principais espécies peçonhentas de importância médica, como chocalho na cauda, fosseta loreal ou padrão anelado típico das corais verdadeiras. Podem apresentar grande variedade de cores, tamanhos e formatos corporais.",
     "caracteristicasChave": [],
     "peconhenta": false,
     "grauImportanciaMedica": "nenhuma",
     "explicacaoImportanciaMedica": "Não apresentam importância médica significativa para os seres humanos. No entanto, toda serpente deve ser observada com cautela, evitando contato direto, pois a identificação incorreta pode representar risco.",
-    "prevencao": [],
-    "primeirosSocorros": null,
+    "prevencao": [
+      "Nunca manusear uma serpente desconhecida, mesmo que pareça inofensiva.",
+      "Observar o animal à distância e afastar-se devagar, permitindo que ele siga seu caminho.",
+      "Manter o quintal livre de entulho e vegetação alta, reduzindo encontros acidentais."
+    ],
+    "primeirosSocorros": "Essa espécie não representa risco médico relevante. Ainda assim, se a identificação não for segura, trate o caso como picada de serpente peçonhenta: lave o local com água e sabão e procure atendimento médico para avaliação.",
     "importanciaEcologica": "Desempenham papel fundamental no controle populacional de roedores, anfíbios e outros pequenos animais, contribuindo para o equilíbrio dos ecossistemas.",
     "comportamento": "Possuem comportamento geralmente não agressivo e tendem a evitar o contato com seres humanos. Muitas utilizam estratégias como camuflagem ou fuga para se proteger. A maioria dos encontros ocorre de forma acidental.",
-    "curiosidades": [],
-    "referenciasCientificas": [],
+    "curiosidades": [
+      "A maioria das serpentes encontradas no Brasil não tem importância médica e prefere fugir a atacar quando avistada.",
+      "Muitas espécies usam camuflagem ou fuga como principal estratégia de defesa, reservando a mordida para situações extremas.",
+      "Atuam como importantes controladoras de roedores e outros pequenos animais, ajudando a manter o equilíbrio dos ecossistemas onde vivem."
+    ],
+    "referenciasCientificas": ["Instituto Butantan"],
     "imagens": [
       { "src": "serpentes/imagens/jiboia.jpeg", "alt": "Serpente sem importância médica", "principal": true }
     ],

@@ -1,21 +1,31 @@
 /**
  * fichaCientifica.js
  *
- * Componente reutilizável: exibe a ficha completa de uma espécie (cabeçalho
- * + cards de conteúdo). Recebe um objeto `especie` já resolvido (vindo de
- * `obterEspeciePorId`) e devolve um elemento DOM pronto para ser inserido em
- * qualquer tela — não conhece Resultado, Laboratório, Missões, navegação ou
- * o Motor de Investigação. Usado hoje pela tela de Resultado; pensado para
- * ser reaproveitado sem alterações pelo futuro Laboratório do Pesquisador.
+ * Componente reutilizável: exibe a ficha completa de uma espécie em duas
+ * colunas — painel da espécie (foto + identificação, fixo/sticky via CSS) e
+ * conteúdo científico (cards empilhados, rolável). Recebe um objeto
+ * `especie` já resolvido (vindo de `obterEspeciePorId`) e devolve uma
+ * Promise de elemento DOM pronto para ser inserido em qualquer tela — não
+ * conhece Resultado, Laboratório, Missões, navegação ou o Motor de
+ * Investigação. Usado hoje pela tela de Resultado; pensado para ser
+ * reaproveitado sem alterações pelo futuro Laboratório do Pesquisador.
+ *
+ * É assíncrono só por causa do "Registro nº X de Y" do painel: para isso
+ * consulta `listarEspecies()` (database.js) e calcula a posição da espécie
+ * na coleção. Todo o resto do conteúdo vem inteiramente do objeto `especie`
+ * recebido, sem nenhuma outra consulta à Base de Conhecimento.
  *
  * Os cards são orientados a dados: cada entrada de CONFIGURACAO_CARDS define
- * título, ícone, condição de exibição e forma de renderização. Adicionar um
- * card novo (ex.: "Primeiros socorros") significa acrescentar uma entrada
- * nessa lista — não alterar a lógica principal do componente.
+ * título, ícone, condição de exibição e forma de renderização, e são
+ * exibidos empilhados verticalmente, na ordem da lista — uma leitura
+ * contínua, como um guia de campo. Adicionar um card novo significa
+ * acrescentar uma entrada nessa lista — não alterar a lógica principal do
+ * componente.
  */
 
 import { criarIcone } from "./icone.js";
 import { resolverCaminhoImagem } from "../utils/assets.js";
+import { listarEspecies } from "../../../database/scripts/database.js";
 
 const ROTULOS_RISCO = {
   nenhuma: "Sem risco relevante",
@@ -28,21 +38,25 @@ const NIVEIS_RISCO = ["nenhuma", "baixa", "moderada", "alta"];
 
 const CONFIGURACAO_CARDS = [
   {
-    id: "caracteristicas",
-    titulo: "Características",
+    id: "aparencia",
+    titulo: "Aparência",
     icone: "lupa",
-    condicao: (especie) => especie.caracteristicasMorfologicas || especie.habitat || especie.comportamento,
-    renderizar: (especie) => {
-      const subitens = [
-        { rotulo: "Aparência", texto: especie.caracteristicasMorfologicas },
-        { rotulo: "Habitat", texto: especie.habitat },
-        { rotulo: "Comportamento", texto: especie.comportamento },
-      ].filter((item) => item.texto);
-
-      return subitens
-        .map((item) => `<p class="ficha-cientifica__subitem"><strong>${item.rotulo}:</strong> ${item.texto}</p>`)
-        .join("");
-    },
+    condicao: (especie) => Boolean(especie.caracteristicasMorfologicas),
+    renderizar: (especie) => `<p class="ficha-cientifica__texto">${especie.caracteristicasMorfologicas}</p>`,
+  },
+  {
+    id: "habitat",
+    titulo: "Habitat",
+    icone: "arvore",
+    condicao: (especie) => Boolean(especie.habitat),
+    renderizar: (especie) => `<p class="ficha-cientifica__texto">${especie.habitat}</p>`,
+  },
+  {
+    id: "comportamento",
+    titulo: "Comportamento",
+    icone: "pata",
+    condicao: (especie) => Boolean(especie.comportamento),
+    renderizar: (especie) => `<p class="ficha-cientifica__texto">${especie.comportamento}</p>`,
   },
   {
     id: "importancia-medica",
@@ -60,34 +74,20 @@ const CONFIGURACAO_CARDS = [
       }).join("");
 
       return `
-        <div class="risco-caixa risco-caixa--${nivel}">
-          <span class="icone">${criarIcone("alerta")}</span>
-          <span class="risco-caixa__rotulo">${rotulo}</span>
+        <div class="ficha-cientifica__medica">
+          <div class="ficha-cientifica__medica-selo">
+            <div class="risco-caixa risco-caixa--${nivel}">
+              <span class="icone">${criarIcone("alerta")}</span>
+              <span class="risco-caixa__rotulo">${rotulo}</span>
+            </div>
+            ${indiceAtual >= 0 ? `<div class="ficha-cientifica__medidor" role="presentation">${medidor}</div>` : ""}
+          </div>
+          <p class="ficha-cientifica__texto ficha-cientifica__medica-texto">${
+            especie.explicacaoImportanciaMedica || "Informação científica indisponível."
+          }</p>
         </div>
-        ${indiceAtual >= 0 ? `<div class="ficha-cientifica__medidor" role="presentation">${medidor}</div>` : ""}
-        ${
-          especie.explicacaoImportanciaMedica
-            ? `<p class="ficha-cientifica__texto">${especie.explicacaoImportanciaMedica}</p>`
-            : ""
-        }
       `;
     },
-  },
-  {
-    id: "prevencao",
-    titulo: "Prevenção",
-    icone: "escudo",
-    condicao: (especie) => (especie.prevencao ?? []).length > 0,
-    renderizar: (especie) =>
-      `<ul class="ficha-cientifica__lista">${especie.prevencao.map((item) => `<li>${item}</li>`).join("")}</ul>`,
-  },
-  {
-    id: "curiosidades",
-    titulo: "Curiosidades",
-    icone: "lampada",
-    condicao: (especie) => (especie.curiosidades ?? []).length > 0,
-    renderizar: (especie) =>
-      `<ul class="ficha-cientifica__lista">${especie.curiosidades.map((item) => `<li>${item}</li>`).join("")}</ul>`,
   },
   {
     id: "importancia-ecologica",
@@ -97,11 +97,38 @@ const CONFIGURACAO_CARDS = [
     renderizar: (especie) => `<p class="ficha-cientifica__texto">${especie.importanciaEcologica}</p>`,
   },
   {
+    id: "primeiros-socorros",
+    titulo: "Primeiros socorros",
+    icone: "frasco",
+    condicao: (especie) => Boolean(especie.primeirosSocorros),
+    renderizar: (especie) => `<p class="ficha-cientifica__texto">${especie.primeirosSocorros}</p>`,
+  },
+  {
+    id: "prevencao",
+    titulo: "Prevenção",
+    icone: "escudo",
+    condicao: (especie) => (especie.prevencao ?? []).length > 0,
+    renderizar: (especie) =>
+      `<ul class="ficha-cientifica__lista ficha-cientifica__lista--marcador">${especie.prevencao
+        .map((item) => `<li><span class="ficha-cientifica__marcador icone">${criarIcone("check")}</span>${item}</li>`)
+        .join("")}</ul>`,
+  },
+  {
     id: "distribuicao",
     titulo: "Distribuição geográfica",
     icone: "mapa",
     condicao: (especie) => Boolean(especie.distribuicaoGeografica),
-    renderizar: (especie) => `<p class="ficha-cientifica__texto">${especie.distribuicaoGeografica}</p>`,
+    renderizar: (especie) => `<p class="ficha-cientifica__selo-local">${especie.distribuicaoGeografica}</p>`,
+  },
+  {
+    id: "curiosidades",
+    titulo: "Curiosidades",
+    icone: "lampada",
+    condicao: (especie) => (especie.curiosidades ?? []).length > 0,
+    renderizar: (especie) =>
+      `<div class="ficha-cientifica__notas">${especie.curiosidades
+        .map((item) => `<p class="ficha-cientifica__nota">${item}</p>`)
+        .join("")}</div>`,
   },
 ];
 
@@ -109,16 +136,25 @@ const CONFIGURACAO_CARDS = [
  * Cria a ficha científica completa de uma espécie.
  *
  * @param {object} especie - Registro de espécie já resolvido (ver database/schema.md).
- * @returns {HTMLElement}
+ * @returns {Promise<HTMLElement>}
  */
-export function criarFichaCientifica(especie) {
+export async function criarFichaCientifica(especie) {
   const ficha = document.createElement("article");
   ficha.className = "ficha-cientifica";
 
   const imagemPrincipal = (especie.imagens ?? []).find((imagem) => imagem.principal) ?? especie.imagens?.[0];
+  const rotuloRisco = ROTULOS_RISCO[especie.grauImportanciaMedica] ?? especie.grauImportanciaMedica;
+
+  const todasEspecies = await listarEspecies();
+  const posicaoCatalogo = todasEspecies.findIndex((item) => item.id === especie.id);
+  const registro =
+    posicaoCatalogo >= 0
+      ? `Registro nº ${String(posicaoCatalogo + 1).padStart(2, "0")} de ${todasEspecies.length}`
+      : null;
 
   ficha.innerHTML = `
-    <div class="ficha-cientifica__cabecalho">
+    <aside class="ficha-cientifica__painel">
+      <span class="etiqueta ficha-cientifica__selo">Nova espécie catalogada</span>
       ${
         imagemPrincipal
           ? `<div class="ficha-cientifica__imagem-wrapper">
@@ -126,17 +162,23 @@ export function criarFichaCientifica(especie) {
              </div>`
           : ""
       }
-      <div class="ficha-cientifica__identificacao">
-        <span class="etiqueta ficha-cientifica__selo">Nova espécie catalogada</span>
-        <h2 class="ficha-cientifica__nome">${especie.nomePopular}</h2>
-        ${
-          especie.nomeCientifico
-            ? `<p class="ficha-cientifica__nome-cientifico"><em>${especie.nomeCientifico}</em></p>`
-            : ""
-        }
-      </div>
+      <h2 class="ficha-cientifica__nome">${especie.nomePopular}</h2>
+      ${
+        especie.nomeCientifico
+          ? `<p class="ficha-cientifica__nome-cientifico"><em>${especie.nomeCientifico}</em></p>`
+          : ""
+      }
+      <span class="ficha-cientifica__selo-risco ficha-cientifica__selo-risco--${especie.grauImportanciaMedica}">${rotuloRisco}</span>
+      ${
+        especie.familia
+          ? `<p class="ficha-cientifica__metadado">Família <strong>${especie.familia}</strong></p>`
+          : ""
+      }
+      ${registro ? `<p class="ficha-cientifica__registro">${registro}</p>` : ""}
+    </aside>
+    <div class="ficha-cientifica__conteudo">
+      <div class="ficha-cientifica__cards" data-cards></div>
     </div>
-    <div class="ficha-cientifica__cards" data-cards></div>
   `;
 
   const areaCards = ficha.querySelector("[data-cards]");
