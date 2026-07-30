@@ -15,7 +15,7 @@
  *
  * Este módulo não sabe de onde os dados de conteúdo vêm — não importa
  * `importer.js` nem `database.js`. A ligação entre eles é responsabilidade
- * de `database.js`. Quem grava/lê progresso (`src/js/nucleo/missoes.js`)
+ * de `database.js`. Quem grava/lê progresso (`js/nucleo/missoes.js`)
  * também importa este módulo diretamente, sem passar por `database.js`,
  * já que progresso não participa do fluxo de cache/import da Base de
  * Conhecimento.

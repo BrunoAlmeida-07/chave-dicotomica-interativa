@@ -3,174 +3,78 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chave Dicotômica Interativa</title>
-
-  <link rel="stylesheet" href="css/estilo.css?v=2026">
+  <meta name="theme-color" content="#1b6b3c">
+  <title>Missão Fauna Brasil</title>
+  <link rel="stylesheet" href="css/estilo.css">
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#2e7d32">
 </head>
-
 <body>
 
-<header>
-  <h1>Chave Dicotômica</h1>
-  <p>
-    Recurso didático digital para identificação de animais peçonhentos.
-  </p>
-</header>
+  <main id="tela-atual"></main>
 
-<main>
-
-  <!-- BOTÕES DE NAVEGAÇÃO -->
-  <div class="navegacao">
-    <button onclick="scrollPara(0)">Aranhas</button>
-    <button onclick="scrollPara(1)">Escorpiões</button>
-    <button onclick="scrollPara(2)">Serpentes</button>
+  <!--
+    Aviso de orientação: puramente CSS (ver estilo.css), para funcionar mesmo
+    que o JavaScript falhe ao carregar. Não é uma "tela" do navegacao.js —
+    é chrome do app-shell, sempre presente, mostrado/escondido só por media
+    query. Girar o aparelho some com o aviso instantaneamente, sem recarregar
+    a página nem perder o progresso da investigação em andamento.
+  -->
+  <div class="tela-rotacao" id="tela-rotacao">
+    <div class="tela-rotacao__cartao">
+      <span class="tela-rotacao__icone">
+        <svg viewBox="0 0 24 24" width="56" height="56" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="7" y="2" width="10" height="20" rx="2"></rect>
+          <line x1="12" y1="18" x2="12" y2="18"></line>
+        </svg>
+      </span>
+      <p class="tela-rotacao__titulo">Gire seu dispositivo</p>
+      <p class="tela-rotacao__texto">O Missão Fauna Brasil foi desenvolvido para ser utilizado na horizontal.</p>
+    </div>
   </div>
 
-  <!-- INDICADORES -->
-  <div class="indicadores">
-    <span class="dot ativo" onclick="scrollPara(0)"></span>
-    <span class="dot" onclick="scrollPara(1)"></span>
-    <span class="dot" onclick="scrollPara(2)"></span>
-  </div>
+  <script type="module" src="js/app.js"></script>
 
-  <!-- CONTAINER DESLIZANTE -->
-  <div class="container-scroll">
+  <!--
+    Registro do Service Worker: mesma lógica de antes (instalação offline +
+    aviso de atualização disponível), só que agora a partir da raiz.
+  -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      let novoWorker;
 
-    <!-- ARANHAS -->
-    <section class="pagina">
-      <div class="card-animal">
-        <img src="aranhas/imagens/imagem1.jpg" class="imagem-card">
-        <h2>Aranhas</h2>
-        <p>
-          Utilize a chave dicotômica para identificar diferentes tipos de aranhas e compreender se são peçonhentas ou não.
-        </p>
-        <a href="aranhas/pergunta1.html">Iniciar identificação</a>
-      </div>
-    </section>
+      navigator.serviceWorker.register("service-worker.js").then((registro) => {
+        registro.onupdatefound = () => {
+          novoWorker = registro.installing;
+          novoWorker.onstatechange = () => {
+            if (novoWorker.state === "installed" && navigator.serviceWorker.controller) {
+              mostrarBotaoAtualizar(novoWorker);
+            }
+          };
+        };
+      });
 
-    <!-- ESCORPIÕES -->
-    <section class="pagina">
-      <div class="card-animal">
-        <img src="escorpioes/imagens/escorpiao_amarelo.jpg" class="imagem-card">
-        <h2>Escorpiões</h2>
-        <p>
-          Explore as características dos escorpiões e identifique espécies de importância médica.
-        </p>
-        <a href="escorpioes/pergunta1.html">Iniciar identificação</a>
-      </div>
-    </section>
+      navigator.serviceWorker.addEventListener("controllerchange", () => {
+        window.location.reload();
+      });
+    }
 
-    <!-- SERPENTES -->
-    <section class="pagina">
-      <div class="card-animal">
-        <img src="serpentes/imagens/coral_verdadeira.jpg" class="imagem-card">
-        <h2>Serpentes</h2>
-        <p>
-          Observe padrões corporais e identifique se a serpente é peçonhenta.
-        </p>
-        <a href="serpentes/pergunta1.html">Iniciar identificação</a>
-      </div>
-    </section>
-
-  </div>
-
-  <!-- TEXTO FINAL -->
-  <section class="conservacao">
-    <p>
-      Este recurso didático tem finalidade educativa e contribui para a identificação correta de animais, evitando acidentes e promovendo a preservação da biodiversidade.
-    </p>
-  </section>
-
-</main>
-
-<footer>
-  <p>
-    Projeto educacional – Ensino de Ciências
-  </p>
-</footer>
-
-<!-- SCRIPT DO CARROSSEL -->
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-
-  const container = document.querySelector('.container-scroll');
-  const dots = document.querySelectorAll('.dot');
-
-  function scrollPara(index) {
-    container.scrollTo({
-      left: window.innerWidth * index,
-      behavior: 'smooth'
-    });
-    atualizarDots(index);
-  }
-
-  function atualizarDots(index) {
-    dots.forEach(dot => dot.classList.remove('ativo'));
-    dots[index].classList.add('ativo');
-  }
-
-  container.addEventListener('scroll', () => {
-    const index = Math.round(container.scrollLeft / window.innerWidth);
-    atualizarDots(index);
-  });
-
-  window.scrollPara = scrollPara;
-});
-</script>
-
-<!-- SERVICE WORKER -->
-<script>
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("service-worker.js");
-}
-</script>
-
-<script>
-let newWorker;
-
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("./service-worker.js").then(reg => {
-
-    reg.onupdatefound = () => {
-      newWorker = reg.installing;
-
-      newWorker.onstatechange = () => {
-        if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
-          showUpdateButton();
-        }
-      };
-    };
-  });
-}
-
-function showUpdateButton() {
-  const btn = document.createElement("button");
-  btn.innerText = "Atualizar app";
-
-  btn.style.position = "fixed";
-  btn.style.bottom = "20px";
-  btn.style.left = "50%";
-  btn.style.transform = "translateX(-50%)";
-  btn.style.padding = "10px 20px";
-  btn.style.background = "#28a745";
-  btn.style.color = "#fff";
-  btn.style.border = "none";
-  btn.style.borderRadius = "8px";
-  btn.style.zIndex = "9999";
-
-  btn.onclick = () => {
-    newWorker.postMessage("SKIP_WAITING");
-  };
-
-  document.body.appendChild(btn);
-}
-
-navigator.serviceWorker.addEventListener("controllerchange", () => {
-  window.location.reload();
-});
-</script>
+    function mostrarBotaoAtualizar(novoWorker) {
+      const botao = document.createElement("button");
+      botao.innerText = "Atualizar app";
+      botao.style.position = "fixed";
+      botao.style.bottom = "20px";
+      botao.style.left = "50%";
+      botao.style.transform = "translateX(-50%)";
+      botao.style.padding = "10px 20px";
+      botao.style.background = "#1b6b3c";
+      botao.style.color = "#fff";
+      botao.style.border = "none";
+      botao.style.borderRadius = "8px";
+      botao.style.zIndex = "9999";
+      botao.onclick = () => novoWorker.postMessage("SKIP_WAITING");
+      document.body.appendChild(botao);
+    }
+  </script>
 
 </body>
 </html>

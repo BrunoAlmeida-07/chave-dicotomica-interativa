@@ -39,7 +39,21 @@
       "Bash(node drive3.js)",
       "Bash(node drive4.js)",
       "Bash(node drive5.js)",
-      "Bash(node visual_test3.js)"
+      "Bash(node visual_test3.js)",
+      "Bash(mkdir -p legado/aranhas legado/escorpioes legado/serpentes)",
+      "Bash(mv index.html legado/index.html)",
+      "Bash(mv css *)",
+      "Bash(mv aranhas/*.html legado/aranhas/)",
+      "Bash(mv escorpioes/*.html legado/escorpioes/)",
+      "Bash(mv src/index.html index.html)",
+      "Bash(mv src/css css)",
+      "Bash(mv src/js js)",
+      "Bash(rmdir src *)",
+      "Bash(node drive_root.js)",
+      "Bash(curl -sf http://localhost:8642/legado/index.html)",
+      "Read(//tmp/**)",
+      "Bash(curl -so /dev/null -w \"%{http_code}\\\\n\" http://localhost:8642/legado/css/estilo.css)",
+      "Bash(curl -so /dev/null -w \"%{http_code}\\\\n\" http://localhost:8642/legado/aranhas/pergunta1.html)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Bruno\\OneDrive\\Área de Trabalho\\chave-dicotomica-interativa\\src"

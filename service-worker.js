@@ -1,4 +1,4 @@
-const CACHE_NAME = "missao-fauna-v1"; // MUDE sempre que atualizar
+const CACHE_NAME = "missao-fauna-v2"; // MUDE sempre que atualizar
 
 const urlsToCache = [
   "./",
@@ -8,72 +8,80 @@ const urlsToCache = [
   "./icone-192.png",
   "./icone-512.png",
 
-  "./css/imagens/fundo.png",
-  
-  // ARANHAS
-  "./aranhas/pergunta1.html",
-  "./aranhas/pergunta2.html",
-  "./aranhas/pergunta3.html",
-  "./aranhas/pergunta4.html",
-  "./aranhas/pergunta5.html",
-  "./aranhas/aranha_armadeira.html",
-  "./aranhas/aranha_marrom.html",
-  "./aranhas/aranha_nao_peconhenta.html",
-  "./aranhas/viuva_negra.html",
-  "./aranhas/caranguejeira_sem_importancia_medica.html",
+  // JAVASCRIPT (Missão Fauna Brasil)
+  "./js/app.js",
+  "./js/navegacao.js",
+  "./js/componentes/cartaoMissao.js",
+  "./js/componentes/cartaoPergunta.js",
+  "./js/componentes/fichaCientifica.js",
+  "./js/componentes/icone.js",
+  "./js/nucleo/missoes.js",
+  "./js/nucleo/motorDeInvestigacao.js",
+  "./js/telas/boasVindas.js",
+  "./js/telas/encerramento.js",
+  "./js/telas/explicacaoCientifica.js",
+  "./js/telas/introducaoMissao.js",
+  "./js/telas/investigacao.js",
+  "./js/telas/laboratorio.js",
+  "./js/telas/mapaMissoes.js",
+  "./js/telas/resultado.js",
+  "./js/telas/telaInicial.js",
+  "./js/utils/assets.js",
+
+  // BASE DE CONHECIMENTO (JSON)
+  "./database/scripts/database.js",
+  "./database/scripts/importer.js",
+  "./database/scripts/indexeddb.js",
+  "./database/json/configuracoes.json",
+  "./database/json/conquistas.json",
+  "./database/json/especies.json",
+  "./database/json/grupos.json",
+  "./database/json/missoes.json",
+  "./database/json/perguntas.json",
 
   // IMAGENS ARANHAS
-  "./aranhas/imagens/imagem1.png",
+  "./aranhas/imagens/imagem1.jpg",
   "./aranhas/imagens/aranha armadeira.jpg",
   "./aranhas/imagens/aranha comum.png",
-  "./aranhas/imagens/aranha marom.webp",
-  "./aranhas/imagens/caranguejeira.png",
-  "./aranhas/imagens/viuva negra.png",
-
-  // ESCORPIÕES
-  "./escorpioes/pergunta1.html",
-  "./escorpioes/pergunta2.html",
-  "./escorpioes/pergunta3.html",
-  "./escorpioes/pergunta4.html",
-  "./escorpioes/pergunta5.html",
-  "./escorpioes/escorpiao_amarelo.html",
-  "./escorpioes/escorpiao_marrom.html",
-  "./escorpioes/escorpiao_nordeste.html",
-  "./escorpioes/escorpiao_preto.html",
-  "./escorpioes/nao_escorpiao.html",
-  "./escorpioes/outro_escorpiao.html",
+  "./aranhas/imagens/aranha marom.jpg",
+  "./aranhas/imagens/caranguejeira.jpg",
+  "./aranhas/imagens/viuva negra.jpg",
+  "./aranhas/imagens/img-pergunta1.png",
+  "./aranhas/imagens/img-pergunta2.png",
+  "./aranhas/imagens/img-pergunta3.png",
+  "./aranhas/imagens/img-pergunta4.png",
+  "./aranhas/imagens/img-pergunta5.png",
+  "./aranhas/imagens/img-pergunta6.png",
+  "./aranhas/imagens/img-pergunta7.png",
+  "./aranhas/imagens/img-pergunta8.png",
 
   // IMAGENS ESCORPIÕES
-  "./escorpioes/imagens/image.png",
   "./escorpioes/imagens/escorpiao_amarelo.jpg",
   "./escorpioes/imagens/escorpiao_amarelo_do_nordeste.webp",
-  "./escorpioes/imagens/escorpiao_marrom.png",
+  "./escorpioes/imagens/escorpiao_marrom.jpg",
   "./escorpioes/imagens/escorpiao_preto.jpeg",
   "./escorpioes/imagens/pseudo.png",
   "./escorpioes/imagens/vermelho.jpg",
-
-  // SERPENTES
-  "./serpentes/pergunta1.html",
-  "./serpentes/pergunta2.html",
-  "./serpentes/pergunta3.html",
-  "./serpentes/pergunta4.html",
-  "./serpentes/pergunta5.html",
-  "./serpentes/pergunta6.html",
-  "./serpentes/pergunta7.html",
-  "./serpentes/pergunta8.html",
-  "./serpentes/cascavel.html",
-  "./serpentes/jararaca.html",
-  "./serpentes/coral_falsa.html",
-  "./serpentes/coral_verdadeira.html",
-  "./serpentes/serpente_sem_importancia_medica.html",
+  "./escorpioes/imagens/img-pergunta1.png",
+  "./escorpioes/imagens/img-pergunta2.png",
+  "./escorpioes/imagens/img-pergunta3.png",
+  "./escorpioes/imagens/img-pergunta4.png",
+  "./escorpioes/imagens/img-pergunta5.png",
 
   // IMAGENS SERPENTES
-  "./serpentes/imagens/image.png",
-  "./serpentes/imagens/Cascavel.webp",
-  "./serpentes/imagens/coral_falsa.webp",
-  "./serpentes/imagens/coral_verdadeira.webp",
+  "./serpentes/imagens/Cascavel.jpg",
+  "./serpentes/imagens/coral_falsa.jpeg",
+  "./serpentes/imagens/coral_verdadeira.jpg",
   "./serpentes/imagens/jararaca.jpg",
-  "./serpentes/imagens/jiboia.webp"
+  "./serpentes/imagens/jiboia.jpeg",
+  "./serpentes/imagens/img-pergunta1.png",
+  "./serpentes/imagens/img-pergunta2.png",
+  "./serpentes/imagens/img-pergunta3.png",
+  "./serpentes/imagens/img-pergunta4.png",
+  "./serpentes/imagens/img-pergunta5.png",
+  "./serpentes/imagens/img-pergunta6.png",
+  "./serpentes/imagens/img-pergunta7.png",
+  "./serpentes/imagens/img-pergunta8.png"
 ];
 
 

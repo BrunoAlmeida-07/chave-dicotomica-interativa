@@ -1,0 +1,485 @@
+/* RESET BÁSICO */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ESTILO GERAL */
+body {
+  font-family: Constantia, "Times New Roman", serif;
+
+  /* 🔽 NOVO FUNDO */
+  background-color: #e7ece7; /* verde suave */
+  
+  color: #333;
+  line-height: 1.2;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+
+  background-image: url("imagens/fundo.png");
+  background-repeat: repeat;
+  background-size: 270px;
+
+  opacity: 0.15; /* 🔥 controla intensidade */
+  
+  z-index: -1;
+}
+
+/* CABEÇALHO */
+header {
+  background-color: #145516;
+  color: #fff;
+  padding: 25px 20px;
+  text-align: center;
+}
+
+header h1 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+header p {
+  margin-top: 10px;
+  padding: 4px 10px;
+  background-color: rgba(255,255,255,0.1);
+  border-radius: 8px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* CONTEÚDO PRINCIPAL */
+main {
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* SEÇÃO DE PERGUNTAS */
+.pergunta {
+  background-color: #ffffff;
+  border-radius: 14px;
+  padding: 25px;
+
+  max-width: 850px;
+  width: 95%;
+  margin: 0 auto 20px auto;
+
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.pergunta h2 {
+  color: #2e7d32; /* ALTERADO */
+  margin-bottom: 16px;
+  font-size: 1.5rem;
+}
+
+/* IMAGENS */
+.imagem-chave {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 12px;
+}
+.imagem-pergunta {
+  width: 100%;
+  max-width: 300px;
+  display: block;
+  margin: 10px auto 15px auto;
+  border-radius: 10px;
+}
+/* LEGENDA DO NOME CIENTÍFICO */
+.imagem-container {
+  max-width: 450px;
+  margin: 0 auto 20px auto;
+  background-color: #f1f3f2; /* leve cinza esverdeado */
+  padding: 15px;
+  border-radius: 16px;
+}
+
+.nome-cientifico {
+  display: block;
+  text-align: right;
+  margin-top: 6px;
+  font-size: 0.95rem;
+  font-style: italic;
+}
+
+/* TEXTO */
+section p {
+  font-size: 1.15rem;
+  margin-bottom: 18px;
+  text-align: justify;
+  line-height: 1.8;
+}
+
+section h2 {
+  font-size: 1.4rem;
+  margin-bottom: 12px;
+  color: #2e7d32; /* ALTERADO */
+}
+
+/* BOTÕES PRINCIPAIS (SIM / NÃO) */
+.botoes {
+  display: flex;
+  justify-content: center; /* centraliza melhor que space-around */
+  gap: 12px; /* espaço mais equilibrado */
+  margin-top: 20px;
+  flex-wrap: wrap; /* evita quebrar layout em telas pequenas */
+}
+
+.botao {
+  display: inline-block; /* garante comportamento correto */
+  background-color: #145516;
+  color: #ffffff;
+  text-decoration: none;
+  padding: 10px 18px;
+  border-radius: 18px;
+  font-size: 0.95rem;
+  font-weight: bold;
+  transition: background-color 0.3s;
+  min-width: 110px;
+  text-align: center;
+}
+
+.botao:hover {
+  background-color: #388e3c;
+}
+
+/* BOTÃO VOLTAR (DISCRETO) */
+.voltar-container {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.botao-voltar {
+  color: #2e7d32;
+  text-decoration: none;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.botao-voltar:hover {
+  text-decoration: underline;
+}
+
+/* SEÇÃO DE CONSERVAÇÃO */
+.conservacao {
+  background-color: #e8f5e9;; /* leve tom de laranja suave */
+  padding: 5px;
+  border-left: 6px solid #123b14; /* ALTERADO */
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+.conservacao p {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0 auto 0px auto;
+  font-size: 15px;
+}
+
+/* RODAPÉ */
+footer {
+  text-align: center;
+  padding: 10px;
+  font-size: 0.9rem;
+}
+
+footer a {
+  color: #2e7d32;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+/* ===== ESTILO DA PÁGINA INICIAL ===== */
+
+.menu-principal {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px; /* levemente menor */
+  justify-items: center;
+  margin-top: 10px; /* 🔽 REDUZIDO (era 30px) */
+}
+
+.card-animal {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 18px; /* levemente menor */
+  text-align: center;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+  transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 420px; /* 🔽 REDUZIDO (era 460px) */
+}
+
+.card-animal:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.18);
+}
+
+.card-animal img {
+  width: 100%;
+  max-width: 220px;
+  height: 130px; /* 🔽 levemente menor */
+  object-fit: cover;
+  margin: 0 auto 10px auto; /* 🔽 menos espaço abaixo */
+  display: block;
+  border-radius: 12px;
+}
+
+.card-animal h2 {
+  color: #145516;
+  margin-bottom: 10px; /* 🔽 controla espaço */
+}
+
+.card-animal p {
+  font-size: 1rem;
+  margin-bottom: 15px; /* 🔽 menor */
+  text-align: justify;
+  line-height: 1.6; /* 🔽 mais compacto */
+  min-height: 110px; /* 🔽 menor */
+}
+
+.card-animal a {
+  display: inline-block;
+  background-color: #145516;
+  color: #ffffff;
+  text-decoration: none;
+  padding: 12px 20px; /* 🔽 menor */
+  border-radius: 25px;
+  font-weight: bold;
+  font-size: 1rem; /* 🔽 menor */
+  transition: background-color 0.3s;
+  margin-top: auto;
+}
+
+.card-animal a:hover {
+  background-color: #388e3c;
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 600px) {
+
+  body {
+    font-size: 20px;
+  }
+
+  header {
+    padding: 10px 10px;
+  }
+
+  header h1 {
+    font-size: 2.0rem;
+  }
+
+  header p {
+    padding: 4px 1px; /* 🔽 reduz altura */
+    font-size: 1.1rem;
+    font-size: 0.95rem; /* 🔽 menor */
+    background-color: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.3);
+  }
+
+  main {
+    padding: 12px;
+    margin: 0;
+    max-width: 100%;
+  }
+
+  .pergunta {
+    padding: 20px 16px;
+    border-radius: 16px;
+  }
+
+  .pergunta h2 {
+    font-size: 1.6rem;
+  }
+
+  section p {
+    font-size: 1.2rem;
+    line-height: 1.5;
+  }
+
+  /* BOTÕES MAIS GRANDES E FÁCEIS DE TOCAR */
+ @media (max-width: 600px) {
+  .botoes {
+    flex-wrap: nowrap; /* impede quebrar linha */
+  }
+
+  .botao {
+    min-width: auto; /* remove largura mínima */
+    padding: 10px 12px; /* reduz tamanho */
+    font-size: 0.9rem;
+    flex: 1; /* divide espaço igualmente */
+  }
+}
+
+  /* IMAGEM MAIS IMPACTANTE */
+  .imagem-chave {
+    max-width: 100%;
+  }
+
+  .imagem-container {
+    max-width: 100%;
+  }
+
+  .nome-cientifico {
+    font-size: 1rem;
+  }
+
+  /* CARTÕES DA HOME */
+  .menu-principal {
+    grid-template-columns: 1fr;
+  }
+
+  .card-animal {
+    padding: 22px;
+  }
+
+  .card-animal h2 {
+    font-size: 1.6rem;
+  }
+
+  .card-animal p {
+    font-size: 1.1rem;
+  }
+
+  .card-animal a {
+    width: 100%;
+    padding: 16px;
+    font-size: 1.1rem;
+  }
+  .card-animal {
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
+}
+}
+
+/* ===== SCROLL HORIZONTAL (PÁGINA INICIAL) ===== */
+
+.container-scroll {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.container-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.pagina {
+  min-width: 100%;
+
+  scroll-snap-align: start;
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+
+  padding: 10px 15px;
+  box-sizing: border-box;
+}
+
+/* ===== NAVEGAÇÃO SUPERIOR ===== */
+
+.navegacao {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 8px 0;
+}
+
+.navegacao button {
+  padding: 8px 10px;
+  border: none;
+  border-radius: 20px;
+  background: #2e7d32;
+  color: white;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.navegacao button:hover {
+  background: #1b5e20;
+}
+
+/* ===== INDICADORES (BOLINHAS) ===== */
+
+.indicadores {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #bbb;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.dot.ativo {
+  background: #2e7d32;
+  transform: scale(1.1);
+}
+/* ESTILO PARA PÁGINAS DE RESULTADO */
+.resultado h2 {
+  color: #ff6f00;
+}
+
+.resultado .conservacao {
+  border-left: 6px solid #ff6f00;
+  background-color: #fff3e0;
+}
+
+.resultado .botao {
+  background-color: #ff6f00;
+}
+
+.resultado .botao:hover {
+  background-color: #e65100;
+}
+/* BOTÃO VOLTAR (DISCRETO) */
+/* CONTAINER (se ainda não tiver) */
+.voltar-container {
+  text-align: center;
+  margin-top: 15px;
+}
+
+/* BOTÃO VOLTAR */
+.botao-voltar {
+  display: inline-block;
+  padding: 2px 5px;
+  border: 1.5px solid #2e7d32; /* contorno */
+  border-radius: 18px;
+  background-color: transparent; /* sem preenchimento */
+  color: #2e7d32; /* mantém legível */
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+/* HOVER */
+.botao-voltar:hover {
+  background-color: rgba(46, 125, 50, 0.1);
+}
