@@ -1,1 +1,51 @@
-[]
+[
+  {
+    "id": "primeira-descoberta",
+    "nome": "Primeira Descoberta",
+    "descricao": "Conclua sua primeira missão de investigação.",
+    "icone": "medalha",
+    "criterio": { "tipo": "completar_missoes_fase", "referenciaId": null, "quantidade": 1 }
+  },
+  {
+    "id": "observador",
+    "nome": "Observador",
+    "descricao": "Conclua a investigação de 1 grupo zoológico.",
+    "icone": "lupa",
+    "criterio": { "tipo": "completar_grupo", "referenciaId": null, "quantidade": 1 }
+  },
+  {
+    "id": "naturalista",
+    "nome": "Naturalista",
+    "descricao": "Conclua a investigação de 2 grupos zoológicos.",
+    "icone": "folha",
+    "criterio": { "tipo": "completar_grupo", "referenciaId": null, "quantidade": 2 }
+  },
+  {
+    "id": "pesquisador-veterano",
+    "nome": "Pesquisador Veterano",
+    "descricao": "Conclua a investigação dos 3 grupos zoológicos do catálogo.",
+    "icone": "estrela",
+    "criterio": { "tipo": "completar_grupo", "referenciaId": null, "quantidade": 3 }
+  },
+  {
+    "id": "especialista-aranhas",
+    "nome": "Especialista em Aranhas",
+    "descricao": "Conclua a missão de investigação de Aranhas.",
+    "icone": "pata",
+    "criterio": { "tipo": "completar_grupo", "referenciaId": "aranhas", "quantidade": null }
+  },
+  {
+    "id": "especialista-escorpioes",
+    "nome": "Especialista em Escorpiões",
+    "descricao": "Conclua a missão de investigação de Escorpiões.",
+    "icone": "pata",
+    "criterio": { "tipo": "completar_grupo", "referenciaId": "escorpioes", "quantidade": null }
+  },
+  {
+    "id": "especialista-serpentes",
+    "nome": "Especialista em Serpentes",
+    "descricao": "Conclua a missão de investigação de Serpentes.",
+    "icone": "pata",
+    "criterio": { "tipo": "completar_grupo", "referenciaId": "serpentes", "quantidade": null }
+  }
+]

@@ -91,6 +91,23 @@ body {
   min-height: 100vh;
 }
 
+/* Fundo global, reaproveitado da chave dicotômica original (cobras, aranhas,
+   escorpiões e folhas em traço). Fixo (não rola com a página), atrás de
+   tudo, extremamente discreto — é textura de ambientação, não deve competir
+   com nenhum card. Se alguma tela específica perder legibilidade, ajuste só
+   a opacidade abaixo, não o desenho. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image: url("imagens/fundo.png");
+  background-repeat: repeat;
+  background-size: 260px;
+  opacity: 0.045;
+  pointer-events: none;
+}
+
 #tela-atual {
   padding: var(--espaco-5) var(--espaco-4) var(--espaco-7);
 }
@@ -1139,6 +1156,295 @@ img {
 
 .encerramento-cartao p {
   color: var(--cor-texto-secundario);
+}
+
+/* ===== LABORATÓRIO DO PESQUISADOR =====
+   Identidade predominantemente laranja (descoberta, catalogação, progresso
+   científico, conquistas) — em contraste com o verde usado na Investigação
+   e na Ficha Científica. O laranja aparece em títulos, ícones, barra de
+   progresso e selos; fundos e texto seguem o mesmo design system do resto
+   do app — não é uma tela toda laranja. */
+.tela-laboratorio {
+  max-width: 960px;
+}
+
+.laboratorio__topo {
+  text-align: center;
+  margin-bottom: var(--espaco-5);
+}
+
+.laboratorio__etiqueta {
+  color: var(--cor-acento-laranja-escura);
+}
+
+.laboratorio__titulo {
+  font-size: 1.8rem;
+  color: var(--cor-acento-laranja-escura);
+  margin: var(--espaco-2) 0;
+}
+
+.laboratorio__subtitulo {
+  color: var(--cor-texto-secundario);
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* Perfil do pesquisador */
+.laboratorio__perfil {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espaco-5);
+  justify-content: space-around;
+  margin-bottom: var(--espaco-4);
+}
+
+.laboratorio__stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--espaco-1);
+  min-width: 120px;
+}
+
+.laboratorio__stat-icone {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--cor-acento-laranja-clara);
+  color: var(--cor-acento-laranja-escura);
+  margin-bottom: var(--espaco-1);
+}
+
+.laboratorio__stat-numero {
+  font-size: 1.4rem;
+  color: var(--cor-texto);
+}
+
+.laboratorio__stat-rotulo {
+  font-size: 0.82rem;
+  color: var(--cor-texto-secundario);
+  text-align: center;
+}
+
+/* Cards principais (Progresso científico, Catálogo, Conquistas) */
+.laboratorio__cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-4);
+}
+
+.laboratorio__cards > .cartao {
+  position: relative;
+  overflow: hidden;
+  animation: entrada-card 320ms ease both;
+}
+
+.laboratorio__cards > .cartao::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--cor-acento-laranja);
+}
+
+.laboratorio__card-titulo {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-3);
+  font-size: 1.05rem;
+  margin-bottom: var(--espaco-4);
+}
+
+.laboratorio__card-titulo .icone {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--cor-acento-laranja-clara);
+  color: var(--cor-acento-laranja-escura);
+  flex-shrink: 0;
+}
+
+/* Progresso científico */
+.laboratorio__progresso-legenda {
+  color: var(--cor-texto-secundario);
+  font-size: 0.9rem;
+  margin-bottom: var(--espaco-2);
+}
+
+.barra-progresso {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-3);
+}
+
+.barra-progresso__trilha {
+  flex: 1;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--cor-acento-laranja-clara);
+  overflow: hidden;
+}
+
+.barra-progresso__preenchimento {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--cor-acento-laranja), var(--cor-acento-laranja-escura));
+  transition: width 480ms ease;
+}
+
+.barra-progresso__numero {
+  font-weight: 700;
+  color: var(--cor-acento-laranja-escura);
+  white-space: nowrap;
+}
+
+/* Catálogo */
+.laboratorio__grade-especies {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: var(--espaco-3);
+}
+
+.cartao-especie {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--espaco-2);
+  padding: var(--espaco-2);
+  border: none;
+  border-radius: var(--raio-md);
+  background: var(--cor-fundo);
+  font: inherit;
+  cursor: default;
+  transition: transform var(--transicao), box-shadow var(--transicao);
+}
+
+.cartao-especie--descoberta {
+  cursor: pointer;
+  background: var(--cor-acento-laranja-clara);
+}
+
+.cartao-especie--descoberta:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--sombra-sm);
+}
+
+.cartao-especie__imagem-wrapper {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--raio-sm);
+  overflow: hidden;
+  background: var(--cor-borda);
+}
+
+.cartao-especie__imagem {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cartao-especie--bloqueada .cartao-especie__imagem {
+  filter: grayscale(1) brightness(0.15);
+  opacity: 0.5;
+}
+
+.cartao-especie__nome {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-align: center;
+  color: var(--cor-texto);
+}
+
+.cartao-especie--bloqueada .cartao-especie__nome {
+  color: var(--cor-texto-secundario);
+}
+
+/* Conquistas */
+.laboratorio__grade-conquistas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--espaco-3);
+}
+
+.cartao-conquista {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--espaco-2);
+  padding: var(--espaco-4) var(--espaco-3);
+  border-radius: var(--raio-md);
+  background: var(--cor-fundo);
+  text-align: center;
+}
+
+.cartao-conquista--desbloqueada {
+  background: var(--cor-acento-laranja-clara);
+}
+
+.cartao-conquista__icone {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--cor-superficie);
+  color: var(--cor-acento-laranja-escura);
+}
+
+.cartao-conquista--bloqueada .cartao-conquista__icone {
+  color: var(--cor-texto-secundario);
+}
+
+.cartao-conquista__nome {
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.cartao-conquista--bloqueada .cartao-conquista__nome {
+  color: var(--cor-texto-secundario);
+}
+
+.cartao-conquista__descricao {
+  font-size: 0.78rem;
+  color: var(--cor-texto-secundario);
+}
+
+/* Modal da Ficha Científica, aberta a partir do Catálogo */
+.laboratorio__modal {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--espaco-4);
+}
+
+.laboratorio__modal[hidden] {
+  display: none;
+}
+
+.laboratorio__modal-fundo {
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 30, 22, 0.55);
+}
+
+.laboratorio__modal-painel {
+  position: relative;
+  z-index: 1;
+  max-width: 960px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--cor-fundo);
+  border-radius: var(--raio-lg);
+  box-shadow: var(--sombra-lg);
+  padding: var(--espaco-4);
+}
+
+.laboratorio__modal-fechar {
+  margin-bottom: var(--espaco-3);
 }
 
 /* ===== RESPONSIVIDADE GERAL ===== */

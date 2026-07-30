@@ -35,11 +35,13 @@ import {
   lerPerguntas,
   lerEspecies,
   lerMissoes,
+  lerConquistas,
   lerConfiguracoes,
   salvarGrupos,
   salvarPerguntas,
   salvarEspecies,
   salvarMissoes,
+  salvarConquistas,
   salvarConfiguracoes,
 } from "./indexeddb.js";
 
@@ -97,14 +99,15 @@ async function tentarCarregarDoIndexedDB() {
   let dados;
 
   try {
-    const [grupos, perguntas, especies, missoes, configuracoes] = await Promise.all([
+    const [grupos, perguntas, especies, missoes, conquistas, configuracoes] = await Promise.all([
       lerGrupos(),
       lerPerguntas(),
       lerEspecies(),
       lerMissoes(),
+      lerConquistas(),
       lerConfiguracoes(),
     ]);
-    dados = { grupos, perguntas, especies, missoes, configuracoes };
+    dados = { grupos, perguntas, especies, missoes, conquistas, configuracoes };
   } catch (erro) {
     console.warn("Não foi possível ler a Base de Conhecimento do IndexedDB:", erro);
     return null;
@@ -124,8 +127,8 @@ async function tentarCarregarDoIndexedDB() {
  * @param {{grupos: unknown, perguntas: unknown, especies: unknown, missoes: unknown, configuracoes: unknown}} dados
  * @returns {boolean}
  */
-function baseEstaIntegra({ grupos, perguntas, especies, missoes, configuracoes }) {
-  const listasValidas = [grupos, perguntas, especies, missoes].every(
+function baseEstaIntegra({ grupos, perguntas, especies, missoes, conquistas, configuracoes }) {
+  const listasValidas = [grupos, perguntas, especies, missoes, conquistas].every(
     (lista) => Array.isArray(lista) && lista.length > 0
   );
   const configuracoesValidas =
@@ -142,13 +145,14 @@ function baseEstaIntegra({ grupos, perguntas, especies, missoes, configuracoes }
  * @param {{grupos: object[], perguntas: object[], especies: object[], missoes: object[], configuracoes: object}} dados
  * @returns {Promise<void>}
  */
-async function salvarNoIndexedDB({ grupos, perguntas, especies, missoes, configuracoes }) {
+async function salvarNoIndexedDB({ grupos, perguntas, especies, missoes, conquistas, configuracoes }) {
   try {
     await Promise.all([
       salvarGrupos(grupos),
       salvarPerguntas(perguntas),
       salvarEspecies(especies),
       salvarMissoes(missoes),
+      salvarConquistas(conquistas),
       salvarConfiguracoes(configuracoes),
     ]);
   } catch (erro) {
@@ -252,4 +256,13 @@ export async function listarMissoes() {
 export async function obterMissaoPorId(id) {
   const { missoes } = await obterBase();
   return missoes.find((missao) => missao.id === id) ?? null;
+}
+
+/**
+ * Lista todas as conquistas definidas na Base de Conhecimento.
+ * @returns {Promise<object[]>}
+ */
+export async function listarConquistas() {
+  const { conquistas } = await obterBase();
+  return conquistas;
 }

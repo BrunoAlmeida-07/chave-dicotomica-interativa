@@ -1,22 +1,26 @@
-const CACHE_NAME = "missao-fauna-v2"; // MUDE sempre que atualizar
+const CACHE_NAME = "missao-fauna-v3"; // MUDE sempre que atualizar
 
 const urlsToCache = [
   "./",
   "./index.html",
   "./manifest.json",
   "./css/estilo.css",
+  "./css/imagens/fundo.png",
   "./icone-192.png",
   "./icone-512.png",
 
   // JAVASCRIPT (Missão Fauna Brasil)
   "./js/app.js",
   "./js/navegacao.js",
+  "./js/componentes/cartaoConquista.js",
+  "./js/componentes/cartaoEspecie.js",
   "./js/componentes/cartaoMissao.js",
   "./js/componentes/cartaoPergunta.js",
   "./js/componentes/fichaCientifica.js",
   "./js/componentes/icone.js",
   "./js/nucleo/missoes.js",
   "./js/nucleo/motorDeInvestigacao.js",
+  "./js/nucleo/progressoCientifico.js",
   "./js/telas/boasVindas.js",
   "./js/telas/encerramento.js",
   "./js/telas/explicacaoCientifica.js",

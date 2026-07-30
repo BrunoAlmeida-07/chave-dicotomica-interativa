@@ -170,19 +170,21 @@ Onde `tipo` em `opcaoSim`/`opcaoNao` é `"pergunta"` (segue para outro nó da á
 
 ---
 
-## 7. Conquista *(estrutura prevista para a v2.x)*
+## 7. Conquista *(conteúdo real implementado em 2026-07-30, junto com o Laboratório do Pesquisador)*
 
 | Campo | Tipo | Obrigatório | Descrição |
 |---|---|---|---|
 | `id` | string (slug) | Sim | Identificador único. |
 | `nome` | string | Sim | Nome da conquista. Ex.: `"Especialista em Aranhas"`. |
 | `descricao` | string | Sim | Texto explicativo do critério. |
-| `icone` | string (caminho) | Sim | Ícone/emblema exibido no Laboratório do Pesquisador. |
+| `icone` | string (chave de `js/componentes/icone.js`) | Sim | Ícone exibido no Laboratório do Pesquisador. Reaproveita o mesmo sistema de ícones SVG inline usado no resto do app (não é um caminho de arquivo de imagem). |
 | `criterio.tipo` | enum: `"identificar_especie"` \| `"completar_grupo"` \| `"completar_missoes_fase"` \| `"sequencia_acertos"` | Sim | Tipo de regra que desbloqueia a conquista. |
-| `criterio.referenciaId` | string (FK → Grupo, Espécie ou fase) | Não | Alvo específico do critério, quando aplicável (ex.: id do grupo em `"completar_grupo"`). |
-| `criterio.quantidade` | number | Não | Quantidade necessária, quando aplicável (ex.: nº de acertos seguidos). |
+| `criterio.referenciaId` | string ou null (FK → Grupo, Espécie ou fase) | Não | Alvo específico do critério, quando aplicável (ex.: id do grupo em `"completar_grupo"`). `null` = qualquer grupo/missão conta para o critério (usado com `criterio.quantidade` para limiares gerais, ex.: "complete 2 grupos quaisquer"). |
+| `criterio.quantidade` | number ou null | Não | Quantidade necessária, quando aplicável (ex.: nº de grupos concluídos). |
 
 **Relacionamentos:** uma Conquista pode referenciar opcionalmente um Grupo ou uma Espécie através de `criterio.referenciaId`, e pode ser associada a uma ou mais Missões.
+
+**Nota de implementação (2026-07-30):** das 7 conquistas do conteúdo atual, nenhuma usa `"identificar_especie"` nem `"sequencia_acertos"` — o primeiro exigiria rastrear qual espécie individual o jogador descobriu (não implementado, ver seção 9), e o segundo exige um conceito de acerto/erro que a chave dicotômica atual não tem (é determinística, não um quiz). Todas as 7 usam `"completar_grupo"`, com ou sem `referenciaId`, calculado a partir de `progressoMissoes` (seção 9) cruzado com o `grupoId` de cada Missão.
 
 ---
 
@@ -204,7 +206,7 @@ Objeto único e global (não é uma coleção de registros).
 
 Este schema descreve **apenas o conteúdo científico e estrutural** do aplicativo (o que existe, independente de quem joga).
 
-Dados de **progresso do jogador** — missões concluídas, espécies descobertas no Laboratório, XP, sequência de acertos, conquistas obtidas por um usuário específico — são gerados em tempo de uso e vivem **somente no IndexedDB local**, em coleções separadas das coleções de conteúdo. O restante (espécies descobertas, XP, conquistas) ainda será modelado quando o Laboratório do Pesquisador e as recompensas forem implementados.
+Dados de **progresso do jogador** — missões concluídas, espécies descobertas no Laboratório, XP, sequência de acertos, conquistas obtidas por um usuário específico — são gerados em tempo de uso e vivem **somente no IndexedDB local**, em coleções separadas das coleções de conteúdo.
 
 **Progresso de missões (implementado em 2026-07-28):** store `progressoMissoes` (`database/scripts/indexeddb.js`, banco `MissaoFaunaBrasil`), com um registro por missão concluída:
 
@@ -213,7 +215,9 @@ Dados de **progresso do jogador** — missões concluídas, espécies descoberta
 | `missaoId` | string (FK → Missão) | Chave da store. |
 | `concluidaEm` | string (ISO datetime) | Quando a missão foi concluída (a gravação mais recente vence, se concluída de novo). |
 
-Gravada por `concluirMissao()` em `src/js/nucleo/missoes.js`, chamada pela tela de Encerramento — o único ponto da interface que sabe que o jogador terminou um caso. Lida por `listarMissoes()` do mesmo módulo, para calcular o `status` de cada missão (seção 6).
+Gravada por `concluirMissao()` em `js/nucleo/missoes.js`, chamada pela tela de Encerramento — o único ponto da interface que sabe que o jogador terminou um caso. Lida por `listarMissoes()` do mesmo módulo, para calcular o `status` de cada missão (seção 6).
+
+**Laboratório do Pesquisador (implementado em 2026-07-30) — decisão deliberada de não criar nova store de progresso:** o Laboratório (`js/telas/laboratorio.js`, cálculo em `js/nucleo/progressoCientifico.js`) deriva tudo o que exibe unicamente de `progressoMissoes` (acima) cruzado com o conteúdo já existente (`missoes.json`, `especies.json`, `grupos.json`) — **não existe rastreamento de qual espécie individual o jogador descobriu**. Consequência direta: "espécies catalogadas" e o grid do Catálogo tratam **todas as espécies de um grupo como catalogadas assim que a missão daquele grupo é concluída** (`missao-aranhas` → as 5 espécies de Aranhas ficam desbloqueadas de uma vez), não uma a uma conforme a árvore de perguntas é percorrida. Rastreamento por espécie individual, XP e sequência de acertos continuam em aberto para uma evolução futura do sistema, que exigirá uma nova store de progresso (ex.: `especiesDescobertas`) — fora do escopo desta etapa.
 
 ---
 

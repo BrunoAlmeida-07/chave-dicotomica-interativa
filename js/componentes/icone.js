@@ -38,6 +38,10 @@ const ICONES = {
     '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 14h5v7h4v-7h5Z"></path></svg>',
   pata:
     '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="15" r="4"></circle><circle cx="5" cy="9" r="2"></circle><circle cx="10" cy="5" r="2"></circle><circle cx="16" cy="5" r="2"></circle><circle cx="20" cy="10" r="2"></circle></svg>',
+  medalha:
+    '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3 5 10"></path><path d="M16 3l3 7"></path><circle cx="12" cy="15" r="6"></circle></svg>',
+  estrela:
+    '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"></polygon></svg>',
 };
 
 /**

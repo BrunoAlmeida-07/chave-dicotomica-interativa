@@ -53,7 +53,11 @@
       "Bash(curl -sf http://localhost:8642/legado/index.html)",
       "Read(//tmp/**)",
       "Bash(curl -so /dev/null -w \"%{http_code}\\\\n\" http://localhost:8642/legado/css/estilo.css)",
-      "Bash(curl -so /dev/null -w \"%{http_code}\\\\n\" http://localhost:8642/legado/aranhas/pergunta1.html)"
+      "Bash(curl -so /dev/null -w \"%{http_code}\\\\n\" http://localhost:8642/legado/aranhas/pergunta1.html)",
+      "Bash(identify legado/css/imagens/fundo.png)",
+      "Bash(grep -n \"^/\\\\* =====\\\\|^\\\\.tela-laboratorio\\\\|ENCERRAMENTO\\\\|RESPONSIVIDADE GERAL\" css/estilo.css)",
+      "Bash(node drive_lab.js)",
+      "Bash(node drive_fundo.js)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Bruno\\OneDrive\\Área de Trabalho\\chave-dicotomica-interativa\\src"

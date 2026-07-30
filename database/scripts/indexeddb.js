@@ -4,9 +4,10 @@
  * Camada de persistência local da Base de Conhecimento Biológica.
  *
  * Responsável por abrir/versionar o banco IndexedDB e expor operações
- * básicas de leitura, escrita e limpeza das cinco coleções de conteúdo
- * definidas em `database/schema.md` (grupos, perguntas, espécies, missões e
- * configurações) e da store de progresso do jogador (`progressoMissoes`).
+ * básicas de leitura, escrita e limpeza das seis coleções de conteúdo
+ * definidas em `database/schema.md` (grupos, perguntas, espécies, missões,
+ * conquistas e configurações) e da store de progresso do jogador
+ * (`progressoMissoes`).
  *
  * `progressoMissoes` não é conteúdo — não vem de nenhum arquivo JSON, não é
  * tocada por `importer.js`, e é gravada aos poucos (uma missão concluída de
@@ -22,17 +23,19 @@
  */
 
 const DATABASE_NAME = "MissaoFaunaBrasil";
-// v3: adiciona a store "progressoMissoes" (registro de quais missões o
-// jogador já concluiu). Bump não destrutivo — quem já tinha as stores
-// anteriores ganha a nova no próximo carregamento, sem perder nada.
-const DATABASE_VERSION = 3;
+// v4: adiciona a store "conquistas" (conteúdo — definição das conquistas do
+// Laboratório do Pesquisador, vinda de conquistas.json). Bump não
+// destrutivo — quem já tinha as stores anteriores ganha a nova no próximo
+// carregamento, sem perder nada.
+const DATABASE_VERSION = 4;
 
-/** Nomes das object stores: cinco de conteúdo + uma de progresso do jogador. */
+/** Nomes das object stores: seis de conteúdo + uma de progresso do jogador. */
 const STORES = {
   grupos: "grupos",
   perguntas: "perguntas",
   especies: "especies",
   missoes: "missoes",
+  conquistas: "conquistas",
   configuracoes: "configuracoes",
   progressoMissoes: "progressoMissoes",
 };
@@ -77,6 +80,9 @@ function abrirBanco() {
         }
         if (!db.objectStoreNames.contains(STORES.missoes)) {
           db.createObjectStore(STORES.missoes, { keyPath: "id" });
+        }
+        if (!db.objectStoreNames.contains(STORES.conquistas)) {
+          db.createObjectStore(STORES.conquistas, { keyPath: "id" });
         }
         if (!db.objectStoreNames.contains(STORES.configuracoes)) {
           // Configuração é um objeto único, não uma coleção — sem keyPath
@@ -179,6 +185,16 @@ export function salvarMissoes(missoes) {
 /** Lê todas as missões salvas no IndexedDB. */
 export function lerMissoes() {
   return lerDaStore(STORES.missoes);
+}
+
+/** Salva a lista de conquistas, substituindo o conteúdo atual da store. */
+export function salvarConquistas(conquistas) {
+  return salvarNaStore(STORES.conquistas, conquistas);
+}
+
+/** Lê todas as conquistas salvas no IndexedDB. */
+export function lerConquistas() {
+  return lerDaStore(STORES.conquistas);
 }
 
 /**
