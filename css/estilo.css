@@ -93,18 +93,20 @@ body {
 
 /* Fundo global, reaproveitado da chave dicotômica original (cobras, aranhas,
    escorpiões e folhas em traço). Fixo (não rola com a página), atrás de
-   tudo, extremamente discreto — é textura de ambientação, não deve competir
-   com nenhum card. Se alguma tela específica perder legibilidade, ajuste só
-   a opacidade abaixo, não o desenho. */
+   tudo — textura de ambientação, não deve competir com nenhum card. WebP
+   (108 KB, era PNG de 2 MB) com leve reforço de contraste no traço, para
+   ficar perceptível numa opacidade um pouco maior sem lavar a tela. Se
+   alguma tela específica perder legibilidade, ajuste só a opacidade abaixo,
+   não o desenho. */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: -1;
-  background-image: url("imagens/fundo.png");
+  background-image: url("imagens/fundo.webp");
   background-repeat: repeat;
   background-size: 260px;
-  opacity: 0.045;
+  opacity: 0.09;
   pointer-events: none;
 }
 

@@ -58,7 +58,15 @@
       "Bash(grep -n \"^/\\\\* =====\\\\|^\\\\.tela-laboratorio\\\\|ENCERRAMENTO\\\\|RESPONSIVIDADE GERAL\" css/estilo.css)",
       "Bash(node drive_lab.js)",
       "Bash(node drive_fundo.js)",
-      "Bash(node drive_gate.js)"
+      "Bash(node drive_gate.js)",
+      "Bash(magick -version)",
+      "Bash(convert -version)",
+      "Bash(ffmpeg -version)",
+      "Bash(node converter_fundo.js)",
+      "Bash(cp \"C:/Users/Bruno/AppData/Local/Temp/claude/c--Users-Bruno-OneDrive--rea-de-Trabalho-chave-dicotomica-interativa/fed8d842-ff2c-446b-8df9-4a7b41137a9a/scratchpad/fundo-640-contraste-q85.webp\" \"css/imagens/fundo.webp\")",
+      "Bash(rm \"css/imagens/fundo.png\")",
+      "Bash(node drive_perf.js)",
+      "Bash(node drive_fundo2.js)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Bruno\\OneDrive\\Área de Trabalho\\chave-dicotomica-interativa\\src"

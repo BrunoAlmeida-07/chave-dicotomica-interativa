@@ -1,11 +1,17 @@
-const CACHE_NAME = "missao-fauna-v3"; // MUDE sempre que atualizar
+const CACHE_NAME = "missao-fauna-v4"; // MUDE sempre que atualizar
 
+// Pré-cache só do essencial para o app abrir (HTML, CSS, JS, manifest,
+// ícones, dados de conteúdo). As imagens de espécies/perguntas (~40 MB) NÃO
+// entram aqui de propósito — ficam de fora da instalação e são cacheadas sob
+// demanda pelo próprio handler de "fetch" abaixo, na primeira vez que cada
+// uma é realmente usada (a mesma lógica de "rede primeiro, guarda em cache"
+// já se aplica a qualquer requisição, precache ou não).
 const urlsToCache = [
   "./",
   "./index.html",
   "./manifest.json",
   "./css/estilo.css",
-  "./css/imagens/fundo.png",
+  "./css/imagens/fundo.webp",
   "./icone-192.png",
   "./icone-512.png",
 
@@ -43,49 +49,13 @@ const urlsToCache = [
   "./database/json/missoes.json",
   "./database/json/perguntas.json",
 
-  // IMAGENS ARANHAS
-  "./aranhas/imagens/imagem1.jpg",
-  "./aranhas/imagens/aranha armadeira.jpg",
-  "./aranhas/imagens/aranha comum.png",
-  "./aranhas/imagens/aranha marom.jpg",
-  "./aranhas/imagens/caranguejeira.jpg",
-  "./aranhas/imagens/viuva negra.jpg",
-  "./aranhas/imagens/img-pergunta1.png",
-  "./aranhas/imagens/img-pergunta2.png",
-  "./aranhas/imagens/img-pergunta3.png",
-  "./aranhas/imagens/img-pergunta4.png",
-  "./aranhas/imagens/img-pergunta5.png",
-  "./aranhas/imagens/img-pergunta6.png",
-  "./aranhas/imagens/img-pergunta7.png",
-  "./aranhas/imagens/img-pergunta8.png",
-
-  // IMAGENS ESCORPIÕES
-  "./escorpioes/imagens/escorpiao_amarelo.jpg",
-  "./escorpioes/imagens/escorpiao_amarelo_do_nordeste.webp",
-  "./escorpioes/imagens/escorpiao_marrom.jpg",
-  "./escorpioes/imagens/escorpiao_preto.jpeg",
-  "./escorpioes/imagens/pseudo.png",
-  "./escorpioes/imagens/vermelho.jpg",
-  "./escorpioes/imagens/img-pergunta1.png",
-  "./escorpioes/imagens/img-pergunta2.png",
-  "./escorpioes/imagens/img-pergunta3.png",
-  "./escorpioes/imagens/img-pergunta4.png",
-  "./escorpioes/imagens/img-pergunta5.png",
-
-  // IMAGENS SERPENTES
-  "./serpentes/imagens/Cascavel.jpg",
-  "./serpentes/imagens/coral_falsa.jpeg",
-  "./serpentes/imagens/coral_verdadeira.jpg",
-  "./serpentes/imagens/jararaca.jpg",
-  "./serpentes/imagens/jiboia.jpeg",
-  "./serpentes/imagens/img-pergunta1.png",
-  "./serpentes/imagens/img-pergunta2.png",
-  "./serpentes/imagens/img-pergunta3.png",
-  "./serpentes/imagens/img-pergunta4.png",
-  "./serpentes/imagens/img-pergunta5.png",
-  "./serpentes/imagens/img-pergunta6.png",
-  "./serpentes/imagens/img-pergunta7.png",
-  "./serpentes/imagens/img-pergunta8.png"
+  // As imagens de aranhas/, escorpioes/ e serpentes/ (espécies, perguntas,
+  // ficha, laboratório — ~40 MB ao todo) foram removidas de propósito deste
+  // pré-cache. Continuam funcionando offline normalmente: o handler de
+  // "fetch" abaixo já cacheia qualquer requisição na primeira vez que ela
+  // acontece, então cada imagem entra em cache sozinha, sob demanda, na
+  // primeira vez que a Investigação, a Ficha Científica ou o Laboratório
+  // realmente a exibem — não mais todas de uma vez na instalação.
 ];
 
 
