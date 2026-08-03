@@ -110,8 +110,12 @@ body::before {
   pointer-events: none;
 }
 
+/* Padding fluido: encolhe em telas baixas (celular landscape), mas nunca
+   passa do valor original em telas altas (tablet/desktop) — o vh sempre
+   excede o teto do clamp() nesses casos, então o resultado é idêntico ao
+   de antes. Sem breakpoints específicos de aparelho. */
 #tela-atual {
-  padding: var(--espaco-5) var(--espaco-4) var(--espaco-7);
+  padding: clamp(12px, 3vh, 32px) clamp(12px, 3vw, 24px) clamp(16px, 5vh, 48px);
 }
 
 h1, h2, h3 {
@@ -234,7 +238,7 @@ img {
   display: flex;
   align-items: center;
   gap: var(--espaco-3);
-  margin-bottom: var(--espaco-5);
+  margin-bottom: clamp(10px, 3vh, 24px);
 }
 
 .tela-cabecalho h1 {
@@ -377,7 +381,7 @@ img {
 /* ===== TELA INICIAL ===== */
 .tela-inicial__topo {
   text-align: center;
-  margin-bottom: var(--espaco-6);
+  margin-bottom: clamp(12px, 4vh, 32px);
 }
 
 .tela-inicial__topo h1 {
@@ -391,7 +395,7 @@ img {
 
 .menu-principal {
   display: grid;
-  gap: var(--espaco-3);
+  gap: clamp(8px, 2vh, 12px);
 }
 
 .botao-menu {
@@ -399,7 +403,7 @@ img {
   align-items: center;
   gap: var(--espaco-4);
   width: 100%;
-  padding: var(--espaco-4) var(--espaco-5);
+  padding: clamp(10px, 2.5vh, 16px) var(--espaco-5);
   background: var(--cor-superficie);
   border: none;
   border-radius: var(--raio-md);
@@ -445,7 +449,6 @@ img {
   gap: var(--espaco-2);
   text-align: left;
   padding: var(--espaco-4);
-  min-height: 140px;
 }
 
 .cartao-missao:not(:disabled):hover {
@@ -499,7 +502,7 @@ img {
   background: var(--cor-superficie);
   border-radius: var(--raio-lg);
   box-shadow: var(--sombra-md);
-  padding: var(--espaco-6) var(--espaco-5);
+  padding: clamp(16px, 4vh, 32px) var(--espaco-5);
 }
 
 .introducao-cartao h1 {
@@ -509,7 +512,7 @@ img {
 
 .introducao-cartao p {
   color: var(--cor-texto-secundario);
-  margin-bottom: var(--espaco-5);
+  margin-bottom: clamp(12px, 3vh, 24px);
 }
 
 /* ===== INVESTIGAÇÃO ===== */
@@ -522,7 +525,7 @@ img {
   flex-wrap: wrap;
   align-items: center;
   gap: var(--espaco-3) var(--espaco-5);
-  margin-bottom: var(--espaco-5);
+  margin-bottom: clamp(10px, 3vh, 24px);
 }
 
 .investigacao-cabecalho__navegacao {
@@ -567,7 +570,7 @@ img {
 .investigacao-rodape {
   display: flex;
   justify-content: center;
-  margin-top: var(--espaco-3);
+  margin-top: clamp(6px, 2vh, 12px);
 }
 
 /*
@@ -580,11 +583,11 @@ img {
   display: flex;
   flex-direction: row;
   align-items: stretch;
-  gap: var(--espaco-5);
+  gap: clamp(8px, 3vh, 24px);
   background: var(--cor-superficie);
   border-radius: var(--raio-lg);
   box-shadow: var(--sombra-md);
-  padding: var(--espaco-5);
+  padding: clamp(8px, 3vh, 24px);
   animation: entrada-tela 260ms ease both;
 }
 
@@ -598,8 +601,13 @@ img {
 
 .cartao-pergunta__imagem {
   width: 100%;
-  height: 100%;
-  min-height: 180px;
+  /* Altura FIXA (não min-height): com height:100% + object-fit:cover, a
+     proporção intrínseca de cada foto acabava ditando a altura real do
+     cartão inteiro (fotos "paisagem" ficavam bem mais altas que o mínimo).
+     Um valor definido aqui garante que a imagem nunca ultrapasse o
+     orçamento de altura da tela, não importa a proporção da foto — fluido
+     por vh, mesmo teto de antes (180px) em telas altas. */
+  height: clamp(90px, 26vh, 180px);
   object-fit: cover;
   border-radius: var(--raio-md);
 }
@@ -610,7 +618,7 @@ img {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: var(--espaco-3);
+  gap: clamp(6px, 1.5vh, 12px);
 }
 
 .cartao-pergunta__dica {
@@ -646,7 +654,7 @@ img {
   }
 
   .cartao-pergunta__imagem {
-    min-height: 140px;
+    height: clamp(70px, 22vh, 140px);
   }
 
   .cartao-pergunta__texto {
@@ -675,7 +683,7 @@ img {
   }
 
   .cartao-pergunta__imagem {
-    min-height: 110px;
+    height: clamp(60px, 18vh, 110px);
   }
 
   .cartao-pergunta__conteudo {
@@ -724,11 +732,11 @@ img {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--espaco-3);
+  gap: clamp(6px, 1.5vh, 12px);
   background: linear-gradient(160deg, var(--cor-acento), var(--cor-superficie) 70%);
   border-radius: var(--raio-lg);
   box-shadow: var(--sombra-md);
-  padding: var(--espaco-5) var(--espaco-4);
+  padding: clamp(12px, 3vh, 24px) var(--espaco-4);
   text-align: center;
   animation: entrada-tela 380ms ease both;
 }
@@ -800,7 +808,7 @@ img {
 .ficha-cientifica__imagem-wrapper {
   position: relative;
   width: 100%;
-  max-width: 180px;
+  max-width: clamp(84px, 20vh, 180px);
   border-radius: var(--raio-md);
   overflow: hidden;
   box-shadow: var(--sombra-sm);
@@ -1012,21 +1020,24 @@ img {
   height: 12px;
 }
 
-/* Curiosidades: cada item vira uma pequena nota, não um bloco de texto. */
+/* Curiosidades: cada item vira uma pequena nota, não um bloco de texto.
+   Sempre 3 colunas (não usa auto-fit/minmax) — em vez de quebrar linha
+   quando a coluna direita fica mais estreita, cada nota encolhe um pouco
+   (padding/fonte reduzidos abaixo), mas o layout ┌───┬───┬───┐ se mantém. */
 .ficha-cientifica__notas {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: var(--espaco-3);
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--espaco-2);
 }
 
 .ficha-cientifica__nota {
   background: rgba(255, 255, 255, 0.65);
   border: 1px dashed rgba(0, 0, 0, 0.15);
   border-radius: var(--raio-sm);
-  padding: var(--espaco-3);
-  font-size: 0.9rem;
+  padding: var(--espaco-2);
+  font-size: 0.82rem;
   color: var(--cor-texto);
-  line-height: 1.5;
+  line-height: 1.45;
 }
 
 /* Distribuição geográfica: etiqueta de localização em vez de parágrafo solto. */
@@ -1098,7 +1109,7 @@ img {
   display: flex;
   align-items: center;
   gap: var(--espaco-3);
-  margin-bottom: var(--espaco-5);
+  margin-bottom: clamp(10px, 3vh, 24px);
 }
 
 .resultado-cabecalho h1 {
@@ -1154,7 +1165,7 @@ img {
   background: var(--cor-superficie);
   border-radius: var(--raio-lg);
   box-shadow: var(--sombra-md);
-  padding: var(--espaco-6) var(--espaco-5);
+  padding: clamp(16px, 4vh, 32px) var(--espaco-5);
   text-align: center;
 }
 
@@ -1462,10 +1473,6 @@ img {
 
 /* ===== RESPONSIVIDADE GERAL ===== */
 @media (min-width: 640px) {
-  #tela-atual {
-    padding: var(--espaco-6) var(--espaco-5) var(--espaco-7);
-  }
-
   .menu-principal {
     grid-template-columns: 1fr;
   }

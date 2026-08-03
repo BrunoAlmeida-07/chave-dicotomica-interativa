@@ -71,7 +71,10 @@
       "WebFetch(domain:web.dev)",
       "WebFetch(domain:meta.discourse.org)",
       "Bash(node drive_final.js)",
-      "Bash(node drive_fluxo.js)"
+      "Bash(node drive_fluxo.js)",
+      "Bash(node drive_altura.js)",
+      "Bash(node medir_investigacao.js)",
+      "Bash(node screenshots_finais.js)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Bruno\\OneDrive\\Área de Trabalho\\chave-dicotomica-interativa\\src"
