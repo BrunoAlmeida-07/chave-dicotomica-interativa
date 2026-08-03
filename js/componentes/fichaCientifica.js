@@ -10,10 +10,15 @@
  * Investigação. Usado hoje pela tela de Resultado; pensado para ser
  * reaproveitado sem alterações pelo futuro Laboratório do Pesquisador.
  *
- * É assíncrono só por causa do "Registro nº X de Y" do painel: para isso
- * consulta `listarEspecies()` (database.js) e calcula a posição da espécie
- * na coleção. Todo o resto do conteúdo vem inteiramente do objeto `especie`
- * recebido, sem nenhuma outra consulta à Base de Conhecimento.
+ * O "Registro nº X de Y" do painel é opcional (parâmetro `mostrarRegistro`):
+ * é informação de catálogo, relevante quando se está consultando a coleção
+ * (Laboratório do Pesquisador), não no momento da descoberta em si
+ * (Resultado da investigação), onde o espaço do painel prioriza foto, nome,
+ * risco e família. Só quando exibido é que o componente consulta
+ * `listarEspecies()` (database.js) para calcular a posição da espécie na
+ * coleção — do contrário é síncrono. Todo o resto do conteúdo vem
+ * inteiramente do objeto `especie` recebido, sem nenhuma outra consulta à
+ * Base de Conhecimento.
  *
  * Os cards são orientados a dados: cada entrada de CONFIGURACAO_CARDS define
  * título, ícone, condição de exibição e forma de renderização, e são
@@ -136,21 +141,26 @@ const CONFIGURACAO_CARDS = [
  * Cria a ficha científica completa de uma espécie.
  *
  * @param {object} especie - Registro de espécie já resolvido (ver database/schema.md).
+ * @param {{ mostrarRegistro?: boolean }} [opcoes] - `mostrarRegistro` (padrão true) exibe
+ *   "Registro nº X de Y" no painel; a tela de Resultado passa `false`.
  * @returns {Promise<HTMLElement>}
  */
-export async function criarFichaCientifica(especie) {
+export async function criarFichaCientifica(especie, { mostrarRegistro = true } = {}) {
   const ficha = document.createElement("article");
   ficha.className = "ficha-cientifica";
 
   const imagemPrincipal = (especie.imagens ?? []).find((imagem) => imagem.principal) ?? especie.imagens?.[0];
   const rotuloRisco = ROTULOS_RISCO[especie.grauImportanciaMedica] ?? especie.grauImportanciaMedica;
 
-  const todasEspecies = await listarEspecies();
-  const posicaoCatalogo = todasEspecies.findIndex((item) => item.id === especie.id);
-  const registro =
-    posicaoCatalogo >= 0
-      ? `Registro nº ${String(posicaoCatalogo + 1).padStart(2, "0")} de ${todasEspecies.length}`
-      : null;
+  let registro = null;
+  if (mostrarRegistro) {
+    const todasEspecies = await listarEspecies();
+    const posicaoCatalogo = todasEspecies.findIndex((item) => item.id === especie.id);
+    registro =
+      posicaoCatalogo >= 0
+        ? `Registro nº ${String(posicaoCatalogo + 1).padStart(2, "0")} de ${todasEspecies.length}`
+        : null;
+  }
 
   ficha.innerHTML = `
     <aside class="ficha-cientifica__painel">

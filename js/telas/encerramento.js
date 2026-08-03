@@ -19,10 +19,7 @@ export function renderEncerramento(container, dados = {}) {
       <div class="encerramento-cartao">
         <div class="banner-conquista banner-conquista--encerramento">
           <span class="icone banner-conquista__icone">${criarIcone("medalha")}</span>
-          <div class="banner-conquista__texto">
-            <strong class="banner-conquista__titulo">Missão concluída</strong>
-            <span class="banner-conquista__subtitulo">Caso encerrado com sucesso.</span>
-          </div>
+          <strong class="banner-conquista__titulo">Missão concluída</strong>
         </div>
         <p>Resumo da missão (em construção).</p>
       </div>

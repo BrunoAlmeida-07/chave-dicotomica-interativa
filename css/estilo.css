@@ -238,6 +238,12 @@ img {
    continuam crescendo além do espaço disponível e a página rola, como hoje. */
 .tela {
   flex: 1 0 auto;
+  /* width:100% é o que faz a tela realmente esticar até o max-width (o de
+     cada tela específica, ex.: 960px na Investigação) — sem isso, a margem
+     automática nas laterais anula o stretch padrão do eixo cruzado do
+     flexbox, e a tela encolhe para caber só no conteúdo em vez de usar o
+     espaço disponível (bug latente desde que .tela virou display:flex). */
+  width: 100%;
   display: flex;
   flex-direction: column;
   max-width: 700px;
@@ -614,8 +620,10 @@ img {
   flex: 1;
   display: flex;
   flex-direction: column;
+  /* Quando sobra mais altura do que o cartão precisa (max-height abaixo), o
+     espaço extra vira respiro centralizado — não fica vazio "perdido" no
+     topo nem força o cartão a esticar além de uma proporção elegante. */
   justify-content: center;
-  gap: var(--espaco-5);
 }
 
 .investigacao-rodape {
@@ -625,12 +633,22 @@ img {
 }
 
 /*
- * Layout horizontal fixo: imagem e pergunta ficam lado a lado em qualquer
- * largura de tela, incluindo celulares. Em telas estreitas, quem cede
- * espaço é o espaçamento, a fonte e a altura da imagem — nunca a orientação
- * (ver breakpoints logo abaixo).
+ * O cartão ocupa o espaço vertical disponível entre cabeçalho e rodapé, mas
+ * com um teto (max-height): em celulares em paisagem, o espaço disponível
+ * é menor que o teto, então o cartão simplesmente preenche esse espaço,
+ * como antes (sem rolagem). Em telas altas (tablet/desktop), o espaço
+ * disponível ultrapassa o teto — sem ele, o cartão esticaria além de uma
+ * proporção elegante para sua largura (~960px no máximo), deixando a
+ * imagem esticada/distorcida. min-height: 0 é necessário para que o
+ * cartão possa de fato encolher abaixo do tamanho natural do seu conteúdo
+ * quando o espaço disponível for pequeno (comportamento padrão do
+ * flexbox impediria isso). Imagem e pergunta ficam lado a lado em
+ * qualquer largura de tela, incluindo celulares.
  */
 .cartao-pergunta {
+  flex: 1;
+  min-height: 0;
+  max-height: 460px;
   display: flex;
   flex-direction: row;
   align-items: stretch;
@@ -643,6 +661,7 @@ img {
 }
 
 .cartao-pergunta__imagem-wrapper {
+  position: relative;
   flex: 0 0 38%;
   border-radius: var(--raio-md);
   overflow: hidden;
@@ -651,16 +670,15 @@ img {
 }
 
 .cartao-pergunta__imagem {
+  /* position:absolute + inset:0 faz a foto preencher a coluna inteira,
+     qualquer que seja a altura real do cartão — sem depender de uma
+     altura fixa em pixels e sem sobrar área vazia de fundo ao redor da
+     imagem quando a coluna de texto for mais alta ou mais baixa que ela. */
+  position: absolute;
+  inset: 0;
   width: 100%;
-  /* Altura FIXA (não min-height): com height:100% + object-fit:cover, a
-     proporção intrínseca de cada foto acabava ditando a altura real do
-     cartão inteiro (fotos "paisagem" ficavam bem mais altas que o mínimo).
-     Um valor definido aqui garante que a imagem nunca ultrapasse o
-     orçamento de altura da tela, não importa a proporção da foto — fluido
-     por vh, mesmo teto de antes (180px) em telas altas. */
-  height: clamp(90px, 26vh, 180px);
+  height: 100%;
   object-fit: cover;
-  border-radius: var(--raio-md);
 }
 
 .cartao-pergunta__conteudo {
@@ -704,10 +722,6 @@ img {
     padding: var(--espaco-3);
   }
 
-  .cartao-pergunta__imagem {
-    height: clamp(70px, 22vh, 140px);
-  }
-
   .cartao-pergunta__texto {
     font-size: 1.05rem;
   }
@@ -731,10 +745,6 @@ img {
 
   .cartao-pergunta__imagem-wrapper {
     flex-basis: 35%;
-  }
-
-  .cartao-pergunta__imagem {
-    height: clamp(60px, 18vh, 110px);
   }
 
   .cartao-pergunta__conteudo {
@@ -1158,44 +1168,35 @@ img {
 
 /* ===== BANNER DE CONQUISTA (Resultado e Encerramento) =====
    Os dois marcam um momento de progresso, não uma seção navegável — por
-   isso ganham tratamento de "anúncio" (ícone em círculo + título + subtítulo
-   dentro de um bloco com identidade própria), não de cabeçalho comum. As
-   variantes usam cores e ícones diferentes de propósito: verde/check para
-   "Investigação concluída" (identificação confirmada, no meio do fluxo) e
-   laranja/medalha para "Missão concluída" (fim do caso, mesma cor associada
-   a conquistas no Laboratório do Pesquisador) — para que fiquem
-   reconhecíveis como etapas distintas, mesmo com a mesma estrutura. */
+   isso ganham tratamento de "anúncio" (ícone em círculo + título dentro de
+   um bloco com identidade própria), não de cabeçalho comum. Tamanho único,
+   natural — sem clamp() nem breakpoint reduzindo ícone/texto em telas
+   baixas: a diferenciação entre os dois marcos vem inteiramente da cor e
+   do ícone, não de um texto extra que precisaria ceder espaço depois.
+   Variantes: verde/check para "Investigação concluída" (identificação
+   confirmada, no meio do fluxo) e laranja/medalha para "Missão concluída"
+   (fim do caso, mesma cor associada a conquistas no Laboratório). */
 .banner-conquista {
   display: flex;
   align-items: center;
-  gap: clamp(6px, 2vh, 12px);
-  padding: clamp(4px, 1.8vh, 12px) var(--espaco-4);
+  gap: var(--espaco-3);
+  padding: var(--espaco-2) var(--espaco-4);
   border-radius: var(--raio-md);
-  margin-bottom: clamp(8px, 2.5vh, 20px);
+  /* Só o espaçamento (não o ícone nem o texto) cede um pouco em telas mais
+     baixas — é distância entre blocos, não um componente sendo encolhido. */
+  margin-bottom: clamp(6px, 2vh, 16px);
 }
 
 .banner-conquista__icone {
   flex-shrink: 0;
-  width: clamp(26px, 8vh, 40px);
-  height: clamp(26px, 8vh, 40px);
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
 }
 
-.banner-conquista__texto {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  text-align: left;
-}
-
 .banner-conquista__titulo {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 700;
-}
-
-.banner-conquista__subtitulo {
-  font-size: 0.85rem;
-  color: var(--cor-texto-secundario);
 }
 
 .banner-conquista--resultado {
@@ -1223,28 +1224,6 @@ img {
 
 .banner-conquista--encerramento .banner-conquista__titulo {
   color: var(--cor-acento-laranja-escura);
-}
-
-/* Em celulares muito baixos em paisagem, o subtítulo (segunda linha, só
-   reforço) cede espaço primeiro — mesmo critério já usado em
-   .cartao-pergunta__dica: o texto de apoio, não o essencial, é o que
-   desaparece quando o espaço vertical aperta. O título e o ícone continuam
-   comunicando o marco por si só. */
-@media (max-height: 400px) {
-  .banner-conquista__subtitulo {
-    display: none;
-  }
-
-  .banner-conquista {
-    gap: var(--espaco-2);
-    padding: 4px var(--espaco-4);
-    margin-bottom: 4px;
-  }
-
-  .banner-conquista__icone {
-    width: 24px;
-    height: 24px;
-  }
 }
 
 .risco-caixa {

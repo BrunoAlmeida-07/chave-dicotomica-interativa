@@ -25,10 +25,7 @@ export async function renderResultado(container, dados = {}) {
     <section class="tela tela-resultado">
       <div class="banner-conquista banner-conquista--resultado">
         <span class="icone banner-conquista__icone">${criarIcone("check")}</span>
-        <div class="banner-conquista__texto">
-          <strong class="banner-conquista__titulo">Investigação concluída</strong>
-          <span class="banner-conquista__subtitulo">Espécie identificada — confira o registro científico abaixo.</span>
-        </div>
+        <strong class="banner-conquista__titulo">Investigação concluída</strong>
       </div>
       <div data-conteudo-resultado class="resultado-corpo">
         <p class="mensagem-carregando">Carregando resultado...</p>
@@ -61,5 +58,5 @@ export async function renderResultado(container, dados = {}) {
   }
 
   areaResultado.innerHTML = "";
-  areaResultado.appendChild(await criarFichaCientifica(especie));
+  areaResultado.appendChild(await criarFichaCientifica(especie, { mostrarRegistro: false }));
 }
