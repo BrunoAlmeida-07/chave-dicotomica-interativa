@@ -16,8 +16,11 @@
     Aviso de orientação: puramente CSS (ver estilo.css), para funcionar mesmo
     que o JavaScript falhe ao carregar. Não é uma "tela" do navegacao.js —
     é chrome do app-shell, sempre presente, mostrado/escondido só por media
-    query. Girar o aparelho some com o aviso instantaneamente, sem recarregar
-    a página nem perder o progresso da investigação em andamento.
+    query. É um overlay sobre o #tela-atual, não um substituto dele — o app
+    carrega e renderiza normalmente por trás, mesmo em retrato (só fica
+    coberto e sem interação). Girar o aparelho some com o aviso
+    instantaneamente, sem recarregar a página nem perder o progresso da
+    investigação em andamento.
   -->
   <div class="tela-rotacao" id="tela-rotacao">
     <div class="tela-rotacao__cartao">

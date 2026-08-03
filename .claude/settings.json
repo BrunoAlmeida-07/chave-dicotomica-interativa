@@ -57,7 +57,8 @@
       "Bash(identify legado/css/imagens/fundo.png)",
       "Bash(grep -n \"^/\\\\* =====\\\\|^\\\\.tela-laboratorio\\\\|ENCERRAMENTO\\\\|RESPONSIVIDADE GERAL\" css/estilo.css)",
       "Bash(node drive_lab.js)",
-      "Bash(node drive_fundo.js)"
+      "Bash(node drive_fundo.js)",
+      "Bash(node drive_gate.js)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Bruno\\OneDrive\\Área de Trabalho\\chave-dicotomica-interativa\\src"

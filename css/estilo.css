@@ -131,9 +131,18 @@ img {
 }
 
 /* ===== AVISO DE ORIENTAÇÃO (app-shell, não é uma "tela") =====
-   Landscape-first: o jogo não é exibido em retrato. A troca é só CSS (ver
-   comentário no index.html) — instantânea ao girar o aparelho, sem perder
-   o estado da investigação em andamento.
+   Landscape-first: em retrato, um overlay opaco (position: fixed, sempre
+   presente na mesma posição — só o `display` muda) cobre a aplicação. O
+   app.js e o #tela-atual por trás NUNCA são escondidos via display:none —
+   continuam carregando, montando o DOM e reagindo normalmente, só ficam
+   visualmente cobertos e inacessíveis ao toque (pointer-events: none)
+   enquanto o overlay está ativo. Isso evita que a inicialização do app
+   dependa da orientação no exato momento em que o PWA abre — uma fonte de
+   instabilidade observada na primeira abertura no Android, por conflitar
+   com o bloqueio de orientação do manifest.json.
+
+   A troca é só CSS (ver comentário no index.html) — instantânea ao girar o
+   aparelho, sem perder o estado da investigação em andamento.
 
    Condição: sempre que a orientação for retrato (independente da largura —
    um tablet grande "em pé" continua com a proporção errada para este
@@ -144,22 +153,24 @@ img {
    não cabe de jeito nenhum, mesmo paisagem. */
 .tela-rotacao {
   display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  align-items: center;
+  justify-content: center;
+  padding: var(--espaco-5);
+  background: linear-gradient(160deg, var(--cor-primaria-escura), var(--cor-primaria));
 }
 
 @media (orientation: portrait), (max-width: 600px) {
   .tela-rotacao {
-    position: fixed;
-    inset: 0;
-    z-index: 999;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: var(--espaco-5);
-    background: linear-gradient(160deg, var(--cor-primaria-escura), var(--cor-primaria));
   }
 
+  /* Continua renderizando por trás do overlay — só perde a interatividade,
+     nunca é removido do layout nem do fluxo de inicialização do app. */
   #tela-atual {
-    display: none;
+    pointer-events: none;
   }
 }
 
