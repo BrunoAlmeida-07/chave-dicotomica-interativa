@@ -39,25 +39,31 @@
 
   <!--
     Registro do Service Worker: mesma lógica de antes (instalação offline +
-    aviso de atualização disponível), só que agora a partir da raiz.
+    aviso de atualização disponível), só que adiado para o evento "load" da
+    janela — recomendação atual do Chrome (web.dev/articles/service-workers-registration)
+    para não competir por rede/CPU com o carregamento da própria página. Em
+    visitas seguintes (SW já ativo) isso não muda nada: o SW já assume o
+    controle antes mesmo de qualquer requisição ser feita.
   -->
   <script>
     if ("serviceWorker" in navigator) {
-      let novoWorker;
+      window.addEventListener("load", () => {
+        let novoWorker;
 
-      navigator.serviceWorker.register("service-worker.js").then((registro) => {
-        registro.onupdatefound = () => {
-          novoWorker = registro.installing;
-          novoWorker.onstatechange = () => {
-            if (novoWorker.state === "installed" && navigator.serviceWorker.controller) {
-              mostrarBotaoAtualizar(novoWorker);
-            }
+        navigator.serviceWorker.register("service-worker.js").then((registro) => {
+          registro.onupdatefound = () => {
+            novoWorker = registro.installing;
+            novoWorker.onstatechange = () => {
+              if (novoWorker.state === "installed" && navigator.serviceWorker.controller) {
+                mostrarBotaoAtualizar(novoWorker);
+              }
+            };
           };
-        };
-      });
+        });
 
-      navigator.serviceWorker.addEventListener("controllerchange", () => {
-        window.location.reload();
+        navigator.serviceWorker.addEventListener("controllerchange", () => {
+          window.location.reload();
+        });
       });
     }
 

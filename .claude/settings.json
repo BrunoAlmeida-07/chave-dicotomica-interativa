@@ -66,7 +66,11 @@
       "Bash(cp \"C:/Users/Bruno/AppData/Local/Temp/claude/c--Users-Bruno-OneDrive--rea-de-Trabalho-chave-dicotomica-interativa/fed8d842-ff2c-446b-8df9-4a7b41137a9a/scratchpad/fundo-640-contraste-q85.webp\" \"css/imagens/fundo.webp\")",
       "Bash(rm \"css/imagens/fundo.png\")",
       "Bash(node drive_perf.js)",
-      "Bash(node drive_fundo2.js)"
+      "Bash(node drive_fundo2.js)",
+      "WebFetch(domain:dontkillmyapp.com)",
+      "WebFetch(domain:web.dev)",
+      "WebFetch(domain:meta.discourse.org)",
+      "Bash(node drive_final.js)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Bruno\\OneDrive\\Área de Trabalho\\chave-dicotomica-interativa\\src"
