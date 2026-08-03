@@ -16,7 +16,6 @@ import { renderMapaMissoes } from "./telas/mapaMissoes.js";
 import { renderIntroducaoMissao } from "./telas/introducaoMissao.js";
 import { renderInvestigacao } from "./telas/investigacao.js";
 import { renderResultado } from "./telas/resultado.js";
-import { renderExplicacaoCientifica } from "./telas/explicacaoCientifica.js";
 import { renderEncerramento } from "./telas/encerramento.js";
 import { renderLaboratorio } from "./telas/laboratorio.js";
 
@@ -26,7 +25,6 @@ registrarTela("mapaMissoes", renderMapaMissoes);
 registrarTela("introducaoMissao", renderIntroducaoMissao);
 registrarTela("investigacao", renderInvestigacao);
 registrarTela("resultado", renderResultado);
-registrarTela("explicacaoCientifica", renderExplicacaoCientifica);
 registrarTela("encerramento", renderEncerramento);
 registrarTela("laboratorio", renderLaboratorio);
 

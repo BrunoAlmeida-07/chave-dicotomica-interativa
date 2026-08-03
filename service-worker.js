@@ -1,4 +1,4 @@
-const CACHE_NAME = "missao-fauna-v4"; // MUDE sempre que atualizar
+const CACHE_NAME = "missao-fauna-v5"; // MUDE sempre que atualizar
 
 // Pré-cache só do essencial para o app abrir (HTML, CSS, JS, manifest,
 // ícones, dados de conteúdo). As imagens de espécies/perguntas (~40 MB) NÃO
@@ -29,7 +29,6 @@ const urlsToCache = [
   "./js/nucleo/progressoCientifico.js",
   "./js/telas/boasVindas.js",
   "./js/telas/encerramento.js",
-  "./js/telas/explicacaoCientifica.js",
   "./js/telas/introducaoMissao.js",
   "./js/telas/investigacao.js",
   "./js/telas/laboratorio.js",

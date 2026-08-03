@@ -31,7 +31,7 @@ export async function renderResultado(container, dados = {}) {
         <p class="mensagem-carregando">Carregando resultado...</p>
       </div>
       <div class="resultado-acoes">
-        <button type="button" class="botao botao-primario" data-acao="avancar">Ver explicação científica</button>
+        <button type="button" class="botao botao-primario" data-acao="avancar">Encerrar missão</button>
         <button type="button" class="botao botao-fantasma" data-acao="voltar">Voltar às missões</button>
       </div>
     </section>
@@ -41,7 +41,7 @@ export async function renderResultado(container, dados = {}) {
     irPara("mapaMissoes");
   });
   container.querySelector('[data-acao="avancar"]').addEventListener("click", () => {
-    irPara("explicacaoCientifica", dados);
+    irPara("encerramento", dados);
   });
 
   const areaResultado = container.querySelector("[data-conteudo-resultado]");

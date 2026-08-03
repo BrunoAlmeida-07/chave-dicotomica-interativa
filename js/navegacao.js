@@ -12,9 +12,9 @@
  * Missões, Laboratório) têm destino de "voltar" fixo e previsível — usam
  * `irPara(nomeFixo)` explicitamente, não `voltar()`, porque podem ser
  * alcançadas de vários lugares e devem sempre retornar ao mesmo lugar. Só as
- * telas do fluxo de investigação (Introdução da Missão, Investigação,
- * Explicação Científica) usam `voltar()`, porque ali o retorno depender do
- * caminho percorrido pelo jogador é o comportamento desejado.
+ * telas do fluxo de investigação (Introdução da Missão, Investigação) usam
+ * `voltar()`, porque ali o retorno depender do caminho percorrido pelo
+ * jogador é o comportamento desejado.
  */
 
 /** @type {Map<string, (container: HTMLElement, dados?: object) => void>} */
