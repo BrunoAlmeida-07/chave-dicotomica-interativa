@@ -88,7 +88,14 @@ body {
   background: radial-gradient(circle at top, #eef6ee, var(--cor-fundo) 60%);
   color: var(--cor-texto);
   line-height: 1.5;
-  min-height: 100vh;
+  /* dvh (não vh): em navegadores móveis, vh é calculado contra a maior
+     altura possível da viewport (barra de endereço recolhida), não contra
+     o espaço realmente visível no momento — por isso uma tela podia caber
+     perfeitamente no Playwright/DevTools (viewport fixo) e ainda assim
+     precisar rolar alguns pixels em aparelho real, com a barra visível.
+     dvh acompanha a área visível de verdade. Mesmo raciocínio aplicado a
+     todo clamp() com vh no restante do arquivo. */
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
 }
@@ -124,7 +131,7 @@ body::before {
   flex: 1 0 auto;
   display: flex;
   flex-direction: column;
-  padding: clamp(12px, 3vh, 32px) clamp(12px, 3vw, 24px) clamp(16px, 5vh, 48px);
+  padding: clamp(12px, 3dvh, 32px) clamp(12px, 3vw, 24px) clamp(16px, 5dvh, 48px);
 }
 
 h1, h2, h3 {
@@ -270,7 +277,7 @@ img {
   display: flex;
   align-items: center;
   gap: var(--espaco-3);
-  margin-bottom: clamp(10px, 3vh, 24px);
+  margin-bottom: clamp(10px, 3dvh, 24px);
 }
 
 .tela-cabecalho h1 {
@@ -382,7 +389,7 @@ img {
 }
 
 /* ===== TELA DE BOAS-VINDAS =====
-   min-height:60vh era uma aproximação; agora a tela já ocupa a altura real
+   min-height:60dvh era uma aproximação; agora a tela já ocupa a altura real
    disponível (flex:1 herdado de .tela), então justify-content/align-items
    centralizam o cartão de verdade, nas duas direções. */
 .tela-boas-vindas {
@@ -411,7 +418,7 @@ img {
 /* ===== TELA INICIAL ===== */
 .tela-inicial__topo {
   text-align: center;
-  margin-bottom: clamp(12px, 4vh, 32px);
+  margin-bottom: clamp(12px, 4dvh, 32px);
 }
 
 .tela-inicial__topo h1 {
@@ -425,7 +432,7 @@ img {
 
 .menu-principal {
   display: grid;
-  gap: clamp(8px, 2vh, 12px);
+  gap: clamp(8px, 2dvh, 12px);
 }
 
 .botao-menu {
@@ -433,7 +440,7 @@ img {
   align-items: center;
   gap: var(--espaco-4);
   width: 100%;
-  padding: clamp(10px, 2.5vh, 16px) var(--espaco-5);
+  padding: clamp(10px, 2.5dvh, 16px) var(--espaco-5);
   background: var(--cor-superficie);
   border: none;
   border-radius: var(--raio-md);
@@ -466,9 +473,17 @@ img {
   max-width: 900px;
 }
 
+/* auto-fit (não auto-fill) + minmax com teto fixo (não 1fr): com auto-fill,
+   colunas "fantasma" sem card continuavam reivindicando sua fatia de
+   largura (1fr sempre preenche 100% do espaço, ocupada ou não), empurrando
+   os cards existentes para a esquerda. Com auto-fit, colunas vazias
+   colapsam; com um teto fixo em vez de 1fr, os cards não esticam para
+   preencher o vão — sobra espaço real, que justify-content centraliza.
+   Com muitos cards (grid cheio), o resultado é idêntico a antes. */
 .lista-missoes {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 232px));
+  justify-content: center;
   align-content: center;
   gap: var(--espaco-4);
   /* Ocupa o espaço vertical que sobrar depois do cabeçalho: quando há poucas
@@ -543,7 +558,7 @@ img {
   background: var(--cor-superficie);
   border-radius: var(--raio-lg);
   box-shadow: var(--sombra-md);
-  padding: clamp(16px, 4vh, 32px) var(--espaco-5);
+  padding: clamp(16px, 4dvh, 32px) var(--espaco-5);
 }
 
 .introducao-cartao h1 {
@@ -553,7 +568,7 @@ img {
 
 .introducao-cartao p {
   color: var(--cor-texto-secundario);
-  margin-bottom: clamp(12px, 3vh, 24px);
+  margin-bottom: clamp(12px, 3dvh, 24px);
 }
 
 /* ===== INVESTIGAÇÃO ===== */
@@ -561,23 +576,18 @@ img {
   max-width: 960px;
 }
 
-/* Dois níveis, não uma pilha de texto solto: navegação + título dividem a
-   mesma linha (como antes, sem custo extra de altura) e os metadados viram
-   uma linha própria de chips — "Grupo investigado" e "Pergunta N" passam a
-   ser irmãos, mesmo tratamento visual, em vez de um texto solto competindo
-   com um selo isolado no canto oposto do cabeçalho. */
+/* Um nível só: navegação + título dividem a mesma linha. O título em si
+   ("Investigação" + nome da missão) é um único bloco visual, lado a lado,
+   não mais empilhado — o rótulo da seção funciona como prefixo do nome da
+   missão, não como uma linha própria. Sem linha de metadados: nem "Grupo
+   investigado" (removido) nem "Pergunta N" (mudou para dentro do cartão,
+   ver .cartao-pergunta__etapa) ficam mais no cabeçalho. */
 .investigacao-cabecalho {
-  display: flex;
-  flex-direction: column;
-  gap: var(--espaco-2);
-  margin-bottom: clamp(10px, 3vh, 24px);
-}
-
-.investigacao-cabecalho__linha-superior {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--espaco-2) var(--espaco-5);
+  margin-bottom: clamp(10px, 3dvh, 24px);
 }
 
 .investigacao-cabecalho__navegacao {
@@ -589,31 +599,19 @@ img {
 .investigacao-cabecalho__titulo {
   flex: 1;
   min-width: 200px;
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--espaco-2);
+}
+
+.investigacao-cabecalho__titulo .etiqueta {
+  margin-bottom: 0;
+  white-space: nowrap;
 }
 
 .investigacao-cabecalho__titulo h1 {
   font-size: 1.4rem;
-  margin-top: 2px;
-}
-
-.investigacao-cabecalho__meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--espaco-2);
-}
-
-.investigacao-cabecalho__chip,
-.investigacao-cabecalho__etapa {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--espaco-1);
-  background: var(--cor-acento);
-  color: var(--cor-primaria-escura);
-  font-weight: 700;
-  font-size: 0.82rem;
-  padding: var(--espaco-2) var(--espaco-3);
-  border-radius: 999px;
 }
 
 .investigacao-corpo {
@@ -629,7 +627,7 @@ img {
 .investigacao-rodape {
   display: flex;
   justify-content: center;
-  margin-top: clamp(6px, 2vh, 12px);
+  margin-top: clamp(6px, 2dvh, 12px);
 }
 
 /*
@@ -646,18 +644,35 @@ img {
  * qualquer largura de tela, incluindo celulares.
  */
 .cartao-pergunta {
+  position: relative;
   flex: 1;
   min-height: 0;
   max-height: 460px;
   display: flex;
   flex-direction: row;
   align-items: stretch;
-  gap: clamp(8px, 3vh, 24px);
+  gap: clamp(8px, 3dvh, 24px);
   background: var(--cor-superficie);
   border-radius: var(--raio-lg);
   box-shadow: var(--sombra-md);
-  padding: clamp(8px, 3vh, 24px);
+  padding: clamp(8px, 3dvh, 24px);
   animation: entrada-tela 260ms ease both;
+}
+
+/* Selo discreto "Pergunta N" — antes vivia no cabeçalho da tela; agora fica
+   ancorado no próprio cartão, canto superior direito, perto do conteúdo a
+   que se refere. */
+.cartao-pergunta__etapa {
+  position: absolute;
+  top: var(--espaco-3);
+  right: var(--espaco-3);
+  z-index: 1;
+  background: var(--cor-acento);
+  color: var(--cor-primaria-escura);
+  font-weight: 700;
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 999px;
 }
 
 .cartao-pergunta__imagem-wrapper {
@@ -687,7 +702,7 @@ img {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: clamp(6px, 1.5vh, 12px);
+  gap: clamp(6px, 1.5dvh, 12px);
 }
 
 .cartao-pergunta__dica {
@@ -793,11 +808,11 @@ img {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: clamp(6px, 1.5vh, 12px);
+  gap: clamp(6px, 1.5dvh, 12px);
   background: linear-gradient(160deg, var(--cor-acento), var(--cor-superficie) 70%);
   border-radius: var(--raio-lg);
   box-shadow: var(--sombra-md);
-  padding: clamp(12px, 3vh, 24px) var(--espaco-4);
+  padding: clamp(12px, 3dvh, 24px) var(--espaco-4);
   text-align: center;
   animation: entrada-tela 380ms ease both;
 }
@@ -869,7 +884,7 @@ img {
 .ficha-cientifica__imagem-wrapper {
   position: relative;
   width: 100%;
-  max-width: clamp(84px, 20vh, 180px);
+  max-width: clamp(94px, 26dvh, 210px);
   border-radius: var(--raio-md);
   overflow: hidden;
   box-shadow: var(--sombra-sm);
@@ -1184,7 +1199,7 @@ img {
   border-radius: var(--raio-md);
   /* Só o espaçamento (não o ícone nem o texto) cede um pouco em telas mais
      baixas — é distância entre blocos, não um componente sendo encolhido. */
-  margin-bottom: clamp(6px, 2vh, 16px);
+  margin-bottom: clamp(6px, 2dvh, 16px);
 }
 
 .banner-conquista__icone {
@@ -1281,7 +1296,7 @@ img {
   background: var(--cor-superficie);
   border-radius: var(--raio-lg);
   box-shadow: var(--sombra-md);
-  padding: clamp(16px, 4vh, 32px) var(--espaco-5);
+  padding: clamp(16px, 4dvh, 32px) var(--espaco-5);
   text-align: center;
 }
 
@@ -1570,7 +1585,7 @@ img {
   z-index: 1;
   max-width: 960px;
   width: 100%;
-  max-height: 90vh;
+  max-height: 90dvh;
   overflow-y: auto;
   background: var(--cor-fundo);
   border-radius: var(--raio-lg);

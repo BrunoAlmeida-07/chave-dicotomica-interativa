@@ -17,12 +17,12 @@
  *
  * Recebe em `dados.perguntaInicialId` o ponto de partida na árvore,
  * resolvido pela tela anterior (introducaoMissao.js). `dados.missaoId`,
- * quando presente, é usado só para exibir o nome da missão e do grupo no
- * cabeçalho — não afeta a navegação da árvore.
+ * quando presente, é usado só para exibir o nome da missão no cabeçalho —
+ * não afeta a navegação da árvore.
  */
 
 import { irPara, voltar } from "../navegacao.js";
-import { obterPerguntaPorId, obterGrupoPorId } from "../../database/scripts/database.js";
+import { obterPerguntaPorId } from "../../database/scripts/database.js";
 import { obterMissao } from "../nucleo/missoes.js";
 import { criarMotorDeInvestigacao } from "../nucleo/motorDeInvestigacao.js";
 import { criarCartaoPergunta } from "../componentes/cartaoPergunta.js";
@@ -35,31 +35,18 @@ export async function renderInvestigacao(container, dados = {}) {
   const { perguntaInicialId, missaoId } = dados;
 
   const missao = missaoId ? await obterMissao({ missaoId }) : null;
-  const grupo = missao ? await obterGrupoPorId(missao.grupoId) : null;
 
   container.innerHTML = `
     <section class="tela tela-investigacao">
       <header class="investigacao-cabecalho">
-        <div class="investigacao-cabecalho__linha-superior">
-          <div class="investigacao-cabecalho__navegacao">
-            <button type="button" class="botao botao-fantasma" data-acao="voltar">
-              <span class="icone">${criarIcone("voltar")}</span> Voltar à introdução
-            </button>
-          </div>
-          <div class="investigacao-cabecalho__titulo">
-            <span class="etiqueta">Investigação</span>
-            <h1>${missao ? missao.titulo : "Investigação"}</h1>
-          </div>
+        <div class="investigacao-cabecalho__navegacao">
+          <button type="button" class="botao botao-fantasma" data-acao="voltar">
+            <span class="icone">${criarIcone("voltar")}</span> Voltar à introdução
+          </button>
         </div>
-        <div class="investigacao-cabecalho__meta">
-          ${
-            grupo
-              ? `<span class="investigacao-cabecalho__chip">
-                   <span class="icone">${criarIcone("lupa")}</span> Grupo investigado: ${grupo.nome}
-                 </span>`
-              : ""
-          }
-          <span class="investigacao-cabecalho__etapa" data-etapa hidden></span>
+        <div class="investigacao-cabecalho__titulo">
+          <span class="etiqueta">Investigação</span>
+          <h1>${missao ? missao.titulo : "Investigação"}</h1>
         </div>
       </header>
       <div data-conteudo-pergunta class="investigacao-corpo"></div>
@@ -82,7 +69,6 @@ export async function renderInvestigacao(container, dados = {}) {
   });
 
   const areaPergunta = container.querySelector("[data-conteudo-pergunta]");
-  const areaEtapa = container.querySelector("[data-etapa]");
 
   if (!perguntaInicialId) {
     areaPergunta.innerHTML = '<p class="mensagem-vazia">Nenhuma investigação disponível para este caso ainda.</p>';
@@ -101,13 +87,12 @@ export async function renderInvestigacao(container, dados = {}) {
       return;
     }
 
-    areaEtapa.hidden = false;
-    areaEtapa.textContent = `Pergunta ${motor.profundidadeAtual()}`;
     botaoAnterior.hidden = !motor.podeVoltar();
 
     const cartao = criarCartaoPergunta({
       texto: pergunta.texto,
       imagem: pergunta.imagem ? resolverCaminhoImagem(pergunta.imagem) : "",
+      etapa: `Pergunta ${motor.profundidadeAtual()}`,
       aoResponderSim: () => responder("sim"),
       aoResponderNao: () => responder("nao"),
     });

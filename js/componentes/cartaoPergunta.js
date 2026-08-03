@@ -14,6 +14,7 @@
  *   texto: string,
  *   imagem?: string,
  *   dica?: string,
+ *   etapa?: string,
  *   aoResponderSim: () => void,
  *   aoResponderNao: () => void,
  * }} opcoes
@@ -23,12 +24,14 @@ export function criarCartaoPergunta({
   texto,
   imagem = "",
   dica = "Observe atentamente a imagem antes de responder.",
+  etapa = "",
   aoResponderSim,
   aoResponderNao,
 }) {
   const cartao = document.createElement("div");
   cartao.className = "cartao-pergunta";
   cartao.innerHTML = `
+    ${etapa ? `<span class="cartao-pergunta__etapa">${etapa}</span>` : ""}
     ${
       imagem
         ? `<div class="cartao-pergunta__imagem-wrapper">

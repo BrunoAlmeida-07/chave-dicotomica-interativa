@@ -80,7 +80,9 @@
       "Bash(node screenshots_tablet.js)",
       "Bash(node debug_flex.js)",
       "Bash(node check_registro.js)",
-      "Bash(node medir_cartao_desktop.js)"
+      "Bash(node medir_cartao_desktop.js)",
+      "Bash(xxd)",
+      "Bash(node medir_mapa.js)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Bruno\\OneDrive\\Área de Trabalho\\chave-dicotomica-interativa\\src"
