@@ -17,8 +17,13 @@ export function renderEncerramento(container, dados = {}) {
   container.innerHTML = `
     <section class="tela tela-encerramento">
       <div class="encerramento-cartao">
-        <span class="icone icone-sucesso">${criarIcone("check")}</span>
-        <h1>Missão concluída</h1>
+        <div class="banner-conquista banner-conquista--encerramento">
+          <span class="icone banner-conquista__icone">${criarIcone("medalha")}</span>
+          <div class="banner-conquista__texto">
+            <strong class="banner-conquista__titulo">Missão concluída</strong>
+            <span class="banner-conquista__subtitulo">Caso encerrado com sucesso.</span>
+          </div>
+        </div>
         <p>Resumo da missão (em construção).</p>
       </div>
       <div class="resultado-acoes">

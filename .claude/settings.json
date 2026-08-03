@@ -74,7 +74,8 @@
       "Bash(node drive_fluxo.js)",
       "Bash(node drive_altura.js)",
       "Bash(node medir_investigacao.js)",
-      "Bash(node screenshots_finais.js)"
+      "Bash(node screenshots_finais.js)",
+      "Bash(pkill -f \"serve -l 8642\")"
     ],
     "additionalDirectories": [
       "c:\\Users\\Bruno\\OneDrive\\Área de Trabalho\\chave-dicotomica-interativa\\src"

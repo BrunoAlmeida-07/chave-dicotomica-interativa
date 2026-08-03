@@ -40,23 +40,27 @@ export async function renderInvestigacao(container, dados = {}) {
   container.innerHTML = `
     <section class="tela tela-investigacao">
       <header class="investigacao-cabecalho">
-        <div class="investigacao-cabecalho__navegacao">
-          <button type="button" class="botao botao-fantasma" data-acao="voltar">
-            <span class="icone">${criarIcone("voltar")}</span> Voltar à introdução
-          </button>
+        <div class="investigacao-cabecalho__linha-superior">
+          <div class="investigacao-cabecalho__navegacao">
+            <button type="button" class="botao botao-fantasma" data-acao="voltar">
+              <span class="icone">${criarIcone("voltar")}</span> Voltar à introdução
+            </button>
+          </div>
+          <div class="investigacao-cabecalho__titulo">
+            <span class="etiqueta">Investigação</span>
+            <h1>${missao ? missao.titulo : "Investigação"}</h1>
+          </div>
         </div>
-        <div class="investigacao-cabecalho__info">
-          <span class="etiqueta">Investigação</span>
-          <h1>${missao ? missao.titulo : "Investigação"}</h1>
+        <div class="investigacao-cabecalho__meta">
           ${
             grupo
-              ? `<p class="investigacao-cabecalho__grupo">
+              ? `<span class="investigacao-cabecalho__chip">
                    <span class="icone">${criarIcone("lupa")}</span> Grupo investigado: ${grupo.nome}
-                 </p>`
+                 </span>`
               : ""
           }
+          <span class="investigacao-cabecalho__etapa" data-etapa hidden></span>
         </div>
-        <div class="investigacao-cabecalho__etapa" data-etapa hidden></div>
       </header>
       <div data-conteudo-pergunta class="investigacao-corpo"></div>
       <div class="investigacao-rodape">
