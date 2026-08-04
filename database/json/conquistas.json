@@ -1,51 +1,93 @@
 [
   {
-    "id": "primeira-descoberta",
-    "nome": "Primeira Descoberta",
-    "descricao": "Conclua sua primeira missão de investigação.",
+    "id": "primeiro-registro",
+    "nome": "Primeiro Registro",
+    "descricao": "Catalogou a primeira espécie da sua coleção científica.",
+    "icone": "frasco",
+    "criterio": { "tipo": "identificar_especie", "referenciaId": null, "quantidade": 1 }
+  },
+  {
+    "id": "colecao-em-expansao",
+    "nome": "Coleção em Expansão",
+    "descricao": "Catalogou 5 espécies diferentes na Base de Conhecimento.",
+    "icone": "livro",
+    "criterio": { "tipo": "identificar_especie", "referenciaId": null, "quantidade": 5 }
+  },
+  {
+    "id": "acervo-consolidado",
+    "nome": "Acervo Consolidado",
+    "descricao": "Catalogou 10 espécies diferentes — um acervo já bastante representativo da fauna estudada.",
+    "icone": "arvore",
+    "criterio": { "tipo": "identificar_especie", "referenciaId": null, "quantidade": 10 }
+  },
+  {
+    "id": "catalogo-completo",
+    "nome": "Catálogo Completo",
+    "descricao": "Catalogou todas as 16 espécies da Base de Conhecimento Biológica.",
+    "icone": "estrela",
+    "criterio": { "tipo": "identificar_especie", "referenciaId": null, "quantidade": 16 }
+  },
+  {
+    "id": "especialista-aranhas",
+    "nome": "Especialista em Aranhas",
+    "descricao": "Catalogou todas as espécies de aranhas conhecidas pelo aplicativo.",
+    "icone": "pata",
+    "criterio": { "tipo": "catalogar_grupo", "referenciaId": "aranhas", "quantidade": null }
+  },
+  {
+    "id": "especialista-escorpioes",
+    "nome": "Especialista em Escorpiões",
+    "descricao": "Catalogou todas as espécies de escorpiões conhecidas pelo aplicativo.",
+    "icone": "pata",
+    "criterio": { "tipo": "catalogar_grupo", "referenciaId": "escorpioes", "quantidade": null }
+  },
+  {
+    "id": "especialista-serpentes",
+    "nome": "Especialista em Serpentes",
+    "descricao": "Catalogou todas as espécies de serpentes conhecidas pelo aplicativo.",
+    "icone": "pata",
+    "criterio": { "tipo": "catalogar_grupo", "referenciaId": "serpentes", "quantidade": null }
+  },
+  {
+    "id": "sentinela-saude-publica",
+    "nome": "Sentinela da Saúde Pública",
+    "descricao": "Catalogou todas as espécies de alta importância médica — conhecimento essencial para a prevenção de acidentes graves.",
+    "icone": "alerta",
+    "criterio": { "tipo": "catalogar_risco", "referenciaId": "alta", "quantidade": null }
+  },
+  {
+    "id": "primeira-missao",
+    "nome": "Primeira Missão Concluída",
+    "descricao": "Concluiu sua primeira missão de investigação.",
     "icone": "medalha",
     "criterio": { "tipo": "completar_missoes_fase", "referenciaId": null, "quantidade": 1 }
   },
   {
-    "id": "observador",
-    "nome": "Observador",
-    "descricao": "Conclua a investigação de 1 grupo zoológico.",
+    "id": "ciclo-investigacoes-completo",
+    "nome": "Ciclo de Investigações Completo",
+    "descricao": "Concluiu as missões de investigação de todos os grupos zoológicos disponíveis.",
+    "icone": "check",
+    "criterio": { "tipo": "completar_grupo", "referenciaId": null, "quantidade": 3 }
+  },
+  {
+    "id": "primeiros-passos",
+    "nome": "Primeiros Passos",
+    "descricao": "Concluiu o treinamento e aprendeu a utilizar a chave dicotômica.",
+    "icone": "mapa",
+    "criterio": { "tipo": "concluir_treinamento", "referenciaId": null, "quantidade": null }
+  },
+  {
+    "id": "pesquisador-em-formacao",
+    "nome": "Pesquisador em Formação",
+    "descricao": "Concluiu a investigação do seu primeiro grupo zoológico em campo real.",
     "icone": "lupa",
     "criterio": { "tipo": "completar_grupo", "referenciaId": null, "quantidade": 1 }
   },
   {
     "id": "naturalista",
     "nome": "Naturalista",
-    "descricao": "Conclua a investigação de 2 grupos zoológicos.",
+    "descricao": "Catalogou 8 espécies diferentes, alcançando metade da Base de Conhecimento Biológica.",
     "icone": "folha",
-    "criterio": { "tipo": "completar_grupo", "referenciaId": null, "quantidade": 2 }
-  },
-  {
-    "id": "pesquisador-veterano",
-    "nome": "Pesquisador Veterano",
-    "descricao": "Conclua a investigação dos 3 grupos zoológicos do catálogo.",
-    "icone": "estrela",
-    "criterio": { "tipo": "completar_grupo", "referenciaId": null, "quantidade": 3 }
-  },
-  {
-    "id": "especialista-aranhas",
-    "nome": "Especialista em Aranhas",
-    "descricao": "Conclua a missão de investigação de Aranhas.",
-    "icone": "pata",
-    "criterio": { "tipo": "completar_grupo", "referenciaId": "aranhas", "quantidade": null }
-  },
-  {
-    "id": "especialista-escorpioes",
-    "nome": "Especialista em Escorpiões",
-    "descricao": "Conclua a missão de investigação de Escorpiões.",
-    "icone": "pata",
-    "criterio": { "tipo": "completar_grupo", "referenciaId": "escorpioes", "quantidade": null }
-  },
-  {
-    "id": "especialista-serpentes",
-    "nome": "Especialista em Serpentes",
-    "descricao": "Conclua a missão de investigação de Serpentes.",
-    "icone": "pata",
-    "criterio": { "tipo": "completar_grupo", "referenciaId": "serpentes", "quantidade": null }
+    "criterio": { "tipo": "identificar_especie", "referenciaId": null, "quantidade": 8 }
   }
 ]

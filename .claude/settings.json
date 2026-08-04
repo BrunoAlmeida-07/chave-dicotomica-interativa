@@ -82,7 +82,11 @@
       "Bash(node check_registro.js)",
       "Bash(node medir_cartao_desktop.js)",
       "Bash(xxd)",
-      "Bash(node medir_mapa.js)"
+      "Bash(node medir_mapa.js)",
+      "Bash(python3 -c ' *)",
+      "Bash(node validar_conquistas.js)",
+      "Bash(node validar_sync.js)",
+      "Bash(curl -sI \"http://localhost:8642/database/scripts/database.js\")"
     ],
     "additionalDirectories": [
       "c:\\Users\\Bruno\\OneDrive\\Área de Trabalho\\chave-dicotomica-interativa\\src"

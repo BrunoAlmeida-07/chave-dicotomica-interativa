@@ -178,13 +178,13 @@ Onde `tipo` em `opcaoSim`/`opcaoNao` é `"pergunta"` (segue para outro nó da á
 | `nome` | string | Sim | Nome da conquista. Ex.: `"Especialista em Aranhas"`. |
 | `descricao` | string | Sim | Texto explicativo do critério. |
 | `icone` | string (chave de `js/componentes/icone.js`) | Sim | Ícone exibido no Laboratório do Pesquisador. Reaproveita o mesmo sistema de ícones SVG inline usado no resto do app (não é um caminho de arquivo de imagem). |
-| `criterio.tipo` | enum: `"identificar_especie"` \| `"completar_grupo"` \| `"completar_missoes_fase"` \| `"sequencia_acertos"` | Sim | Tipo de regra que desbloqueia a conquista. |
-| `criterio.referenciaId` | string ou null (FK → Grupo, Espécie ou fase) | Não | Alvo específico do critério, quando aplicável (ex.: id do grupo em `"completar_grupo"`). `null` = qualquer grupo/missão conta para o critério (usado com `criterio.quantidade` para limiares gerais, ex.: "complete 2 grupos quaisquer"). |
-| `criterio.quantidade` | number ou null | Não | Quantidade necessária, quando aplicável (ex.: nº de grupos concluídos). |
+| `criterio.tipo` | enum: `"identificar_especie"` \| `"completar_grupo"` \| `"completar_missoes_fase"` \| `"catalogar_grupo"` \| `"catalogar_risco"` \| `"concluir_treinamento"` \| `"sequencia_acertos"` | Sim | Tipo de regra que desbloqueia a conquista. |
+| `criterio.referenciaId` | string ou null (FK → Grupo, Espécie, valor de `grauImportanciaMedica` ou fase) | Não | Alvo específico do critério, quando aplicável (ex.: id do grupo em `"completar_grupo"`/`"catalogar_grupo"`, valor `"alta"`/`"moderada"`/`"baixa"`/`"nenhuma"` em `"catalogar_risco"`). `null` = qualquer grupo/espécie conta para o critério (usado com `criterio.quantidade` para limiares gerais, ex.: "catalogue 8 espécies quaisquer"). |
+| `criterio.quantidade` | number ou null | Não | Quantidade necessária, quando aplicável (ex.: nº de grupos concluídos ou espécies catalogadas). |
 
 **Relacionamentos:** uma Conquista pode referenciar opcionalmente um Grupo ou uma Espécie através de `criterio.referenciaId`, e pode ser associada a uma ou mais Missões.
 
-**Nota de implementação (2026-07-30, atualizada em 2026-08-04):** das 7 conquistas do conteúdo atual, nenhuma usa `"identificar_especie"` nem `"sequencia_acertos"` — o segundo exige um conceito de acerto/erro que a chave dicotômica atual não tem (é determinística, não um quiz). O primeiro, `"identificar_especie"`, já é avaliável em `js/nucleo/progressoCientifico.js` desde que o rastreamento por espécie individual foi implementado (store `especiesDescobertas`, ver seção 9) — segue o mesmo padrão de `"completar_grupo"` (`referenciaId` verifica uma espécie específica; ausência de `referenciaId` verifica `criterio.quantidade` espécies descobertas, de qualquer grupo). Nenhuma conquista desse tipo foi adicionada a `conquistas.json` ainda — é uma decisão de conteúdo em aberto, não uma limitação técnica. Todas as 7 atuais usam `"completar_grupo"`, com ou sem `referenciaId`, calculado a partir de `progressoMissoes` (seção 9) cruzado com o `grupoId` de cada Missão.
+**Nota de implementação (2026-07-30, revisada em 2026-08-04):** o conteúdo atual (13 conquistas, revisado para cobrir categorias distintas de progresso — catalogação, especialização por grupo, especialização por risco médico, missões e exploração geral) usa seis dos sete tipos de critério: `"identificar_especie"` (quantidade de espécies catalogadas, de qualquer grupo), `"completar_grupo"` (missão de grupo concluída), `"completar_missoes_fase"` (primeira missão de qualquer tipo), `"catalogar_grupo"` (**todas** as espécies de um grupo catalogadas — mais forte que `"completar_grupo"`, que só olha a missão), `"catalogar_risco"` (todas as espécies de um grau de importância médica catalogadas) e `"concluir_treinamento"` (Missão de Treinamento especificamente, não conta missão de grupo). Nenhuma conquista usa `"sequencia_acertos"` — exige um conceito de acerto/erro que a chave dicotômica determinística não tem. Avaliação em `js/nucleo/progressoCientifico.js` (`avaliarConquista`), a partir de `progressoMissoes` e `especiesDescobertas` (seção 9) cruzados com o conteúdo de Grupo/Espécie/Missão.
 
 ---
 
@@ -228,20 +228,21 @@ Gravada por `registrarDescoberta()` em `js/nucleo/progressoCientifico.js`, chama
 
 XP e sequência de acertos continuam em aberto para uma evolução futura do sistema — fora do escopo desta etapa.
 
+**Sincronização de conteúdo (implementado em 2026-08-04):** editar qualquer um dos seis JSON de conteúdo (`database/json/*.json`) passa a refletir automaticamente no IndexedDB de quem já tinha o app carregado — sem exigir limpar dados do navegador. `database.js` (`inicializarBase`) calcula um hash SHA-256 (Web Crypto API nativa) do conteúdo de cada coleção a cada carregamento e compara com o hash salvo na visita anterior (guardado na store `configuracoes`, sob a chave `hashesConteudo` — não é conteúdo em si, é bookkeeping da sincronização, não documentado como campo de `Configuração` na seção 8). Só as coleções cujo hash mudou são regravadas. `configuracoes.versaoBaseDados` (seção 8) continua existindo como campo informativo, mas não é mais o que decide a sincronização — foi substituído pela comparação de hash, que não depende de ninguém lembrar de incrementar um número. Esse mecanismo nunca toca `progressoMissoes` nem `especiesDescobertas` (progresso vive em stores completamente separadas), e não tem como "esquecer" conquistas desbloqueadas: como o desbloqueio de cada conquista é sempre calculado a partir do progresso real (nunca armazenado), sincronizar `conquistas` só atualiza as definições contra as quais esse cálculo é feito. Se a busca dos JSON falhar (sem rede), o app usa só o que já está salvo — a sincronização nunca compromete o funcionamento offline.
+
 ---
 
-## 10. Camada de acesso aos dados — responsabilidades (visão geral, sem implementação)
+## 10. Camada de acesso aos dados — responsabilidades
 
-Nomes já definidos para os scripts em `database/scripts/`:
+Scripts implementados em `database/scripts/`:
 
 | Script | Responsabilidade |
 |---|---|
-| `database.js` | Ponto de entrada/fachada. Orquestra `importer.js` e `indexeddb.js` para garantir que os dados estejam disponíveis antes de qualquer consulta. |
-| `indexeddb.js` | Camada de persistência local: abrir/versionar o banco IndexedDB e expor operações básicas de leitura/escrita das coleções (Grupo, Espécie, Pergunta, Missão, Conquista, Configuração). |
-| `importer.js` | Lê os arquivos `database/json/*.json` e popula/atualiza o IndexedDB, respeitando `versaoBaseDados` de `Configuração` para evitar reimportações desnecessárias. |
-| `search.js` | Funções de consulta usadas pelas páginas/telas (ex.: obter espécie por id, listar espécies por grupo, obter pergunta por id), sempre lendo do IndexedDB. |
+| `database.js` | Ponto de entrada/fachada. Orquestra `importer.js` e `indexeddb.js`: busca os JSON e o conteúdo salvo em paralelo, decide o que usar/gravar (primeira visita, sincronização por hash, ou fallback offline — ver seção 9) antes de responder qualquer consulta. |
+| `indexeddb.js` | Camada de persistência local: abrir/versionar o banco IndexedDB e expor operações básicas de leitura/escrita das seis coleções de conteúdo (Grupo, Espécie, Pergunta, Missão, Conquista, Configuração) e das stores de progresso (`progressoMissoes`, `especiesDescobertas`). |
+| `importer.js` | Lê os arquivos `database/json/*.json` (sempre, a cada carregamento — o hash de cada coleção só pode ser calculado a partir do conteúdo real) e valida o formato de cada coleção. Não decide sozinho quando gravar no IndexedDB — isso é `database.js`. |
 
-Nenhum desses scripts será implementado nesta etapa — a tabela acima serve apenas para registrar a divisão de responsabilidades já combinada, para orientar a implementação futura.
+`search.js` não existe como arquivo separado — as funções de consulta (obter espécie por id, listar espécies por grupo, etc.) são exportadas diretamente por `database.js`.
 
 ---
 

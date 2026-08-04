@@ -14,6 +14,12 @@
  * Encerramento). Antes disso, o Catálogo aproximava "descoberta" por grupo
  * inteiro assim que a missão do grupo era concluída; essa aproximação foi
  * removida (ver database/schema.md, seção 9).
+ *
+ * As conquistas (2026-08-04) cobrem cinco formas distintas de progresso —
+ * catalogação por quantidade, especialização por grupo, especialização por
+ * risco médico, conclusão de missões e marcos gerais de exploração — para
+ * não ficarem redundantes entre si (ver `avaliarConquista` abaixo para os
+ * tipos de critério suportados).
  */
 
 import { listarMissoes } from "./missoes.js";
@@ -82,7 +88,7 @@ export async function obterProgressoCientifico() {
     registrosDescobertas.map((registro) => registro.especieId).filter((id) => idsEspeciesValidos.has(id))
   );
 
-  const contexto = { treinamentoConcluido, totalGruposConcluidos, gruposConcluidosIds, especiesCatalogadas };
+  const contexto = { treinamentoConcluido, totalGruposConcluidos, gruposConcluidosIds, especiesCatalogadas, especies };
   const conquistas = conquistasDefinidas.map((conquista) => avaliarConquista(conquista, contexto));
 
   return {
@@ -100,15 +106,29 @@ export async function obterProgressoCientifico() {
 
 /**
  * Avalia se uma conquista está desbloqueada, a partir do seu `criterio`
- * (database/schema.md, seção 7) e do progresso já calculado. Tipos
- * avaliados: `"completar_missoes_fase"` (interpretado como "concluiu ao
- * menos uma missão, de qualquer tipo — Treinamento ou de grupo", único caso
- * do conteúdo atual), `"completar_grupo"` e `"identificar_especie"` (mesmo
- * padrão de `completar_grupo`: `referenciaId` verifica uma espécie
- * específica, ausência de `referenciaId` verifica uma quantidade). Nenhuma
- * conquista atual usa `"identificar_especie"` nem `"sequencia_acertos"`
- * (ver nota na seção 7 do schema) — o primeiro já é avaliável aqui, pronto
- * para quando/se uma conquista desse tipo for criada em conquistas.json.
+ * (database/schema.md, seção 7) e do progresso já calculado.
+ *
+ * Tipos avaliados:
+ * - `"completar_missoes_fase"`: concluiu ao menos uma missão, de qualquer
+ *   tipo — Treinamento ou de grupo.
+ * - `"completar_grupo"`: `referenciaId` verifica um grupo específico
+ *   (missão concluída); ausência de `referenciaId` verifica uma quantidade
+ *   de grupos concluídos.
+ * - `"identificar_especie"`: mesmo padrão de `completar_grupo`, mas sobre
+ *   espécies catalogadas — `referenciaId` verifica uma espécie específica,
+ *   ausência verifica uma quantidade.
+ * - `"catalogar_grupo"`: `referenciaId` (id de grupo) verifica se **todas**
+ *   as espécies daquele grupo já foram catalogadas individualmente — mais
+ *   forte que `completar_grupo`, que só olha a missão.
+ * - `"catalogar_risco"`: `referenciaId` (valor de `grauImportanciaMedica`)
+ *   verifica se todas as espécies com aquele grau já foram catalogadas.
+ * - `"concluir_treinamento"`: concluiu especificamente a Missão de
+ *   Treinamento (sem contar missões de grupo, diferente de
+ *   `"completar_missoes_fase"`).
+ *
+ * Nenhuma conquista atual usa `"sequencia_acertos"` (ver nota na seção 7 do
+ * schema — exige um conceito de acerto/erro que a chave dicotômica
+ * determinística não tem).
  *
  * @param {object} conquista
  * @param {{
@@ -116,11 +136,12 @@ export async function obterProgressoCientifico() {
  *   totalGruposConcluidos: number,
  *   gruposConcluidosIds: Set<string>,
  *   especiesCatalogadas: Set<string>,
+ *   especies: Array<{ id: string, grupoId: string, grauImportanciaMedica: string }>,
  * }} contexto
  */
 function avaliarConquista(
   conquista,
-  { treinamentoConcluido, totalGruposConcluidos, gruposConcluidosIds, especiesCatalogadas }
+  { treinamentoConcluido, totalGruposConcluidos, gruposConcluidosIds, especiesCatalogadas, especies }
 ) {
   const { tipo, referenciaId, quantidade } = conquista.criterio;
   let desbloqueada = false;
@@ -131,6 +152,14 @@ function avaliarConquista(
     desbloqueada = referenciaId ? gruposConcluidosIds.has(referenciaId) : totalGruposConcluidos >= (quantidade ?? 1);
   } else if (tipo === "identificar_especie") {
     desbloqueada = referenciaId ? especiesCatalogadas.has(referenciaId) : especiesCatalogadas.size >= (quantidade ?? 1);
+  } else if (tipo === "catalogar_grupo") {
+    const especiesDoGrupo = especies.filter((especie) => especie.grupoId === referenciaId);
+    desbloqueada = especiesDoGrupo.length > 0 && especiesDoGrupo.every((especie) => especiesCatalogadas.has(especie.id));
+  } else if (tipo === "catalogar_risco") {
+    const especiesDoRisco = especies.filter((especie) => especie.grauImportanciaMedica === referenciaId);
+    desbloqueada = especiesDoRisco.length > 0 && especiesDoRisco.every((especie) => especiesCatalogadas.has(especie.id));
+  } else if (tipo === "concluir_treinamento") {
+    desbloqueada = treinamentoConcluido;
   }
 
   return {

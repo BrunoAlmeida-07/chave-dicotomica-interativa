@@ -46,6 +46,16 @@ const STORES = {
 const CHAVE_CONFIGURACOES = "atual";
 
 /**
+ * Chave fixa usada para gravar o mapa de hashes de conteúdo (um hash por
+ * coleção), na mesma store de configurações — não é conteúdo em si (não vem
+ * de nenhum JSON), é bookkeeping da sincronização (ver `database.js`,
+ * `sincronizarComConteudoAtual`). Reaproveita a store `configuracoes`
+ * (que já não tem keyPath próprio, aceita qualquer chave externa) em vez de
+ * criar uma store nova só para isto.
+ */
+const CHAVE_HASHES_CONTEUDO = "hashesConteudo";
+
+/**
  * Promise memoizada com a conexão aberta do banco. Evita abrir uma nova
  * conexão a cada operação de leitura/escrita.
  * @type {Promise<IDBDatabase> | null}
@@ -231,6 +241,42 @@ export async function lerConfiguracoes() {
   return new Promise((resolve, reject) => {
     const transacao = db.transaction(STORES.configuracoes, "readonly");
     const requisicao = transacao.objectStore(STORES.configuracoes).get(CHAVE_CONFIGURACOES);
+
+    requisicao.onsuccess = () => resolve(requisicao.result ?? null);
+    requisicao.onerror = () => reject(requisicao.error);
+  });
+}
+
+/**
+ * Salva o mapa de hashes de conteúdo (um hash SHA-256 por coleção),
+ * calculado a partir do JSON recém-importado — usado para decidir, na
+ * próxima visita, quais coleções realmente mudaram desde então.
+ *
+ * @param {{grupos: string, perguntas: string, especies: string, missoes: string, conquistas: string, configuracoes: string}} hashes
+ * @returns {Promise<void>}
+ */
+export async function salvarHashesConteudo(hashes) {
+  const db = await abrirBanco();
+
+  return new Promise((resolve, reject) => {
+    const transacao = db.transaction(STORES.configuracoes, "readwrite");
+    transacao.objectStore(STORES.configuracoes).put(hashes, CHAVE_HASHES_CONTEUDO);
+
+    transacao.oncomplete = () => resolve();
+    transacao.onerror = () => reject(transacao.error);
+  });
+}
+
+/**
+ * Lê o mapa de hashes de conteúdo salvo na visita anterior.
+ * @returns {Promise<object|null>} O mapa salvo, ou `null` se nunca foi salvo.
+ */
+export async function lerHashesConteudo() {
+  const db = await abrirBanco();
+
+  return new Promise((resolve, reject) => {
+    const transacao = db.transaction(STORES.configuracoes, "readonly");
+    const requisicao = transacao.objectStore(STORES.configuracoes).get(CHAVE_HASHES_CONTEUDO);
 
     requisicao.onsuccess = () => resolve(requisicao.result ?? null);
     requisicao.onerror = () => reject(requisicao.error);

@@ -9,20 +9,32 @@
  * precisa saber se os dados vieram do IndexedDB ou de um fetch recém-feito.
  *
  * Fluxo de inicialização (ver `inicializarBase`), executado uma única vez:
- *   1. Na primeira chamada a qualquer função de consulta, tenta ler a Base
- *      de Conhecimento já salva no IndexedDB (indexeddb.js).
- *   2. Se as quatro coleções existirem e estiverem íntegras, usa esses dados.
- *   3. Caso contrário, importa os JSON originais (importer.js).
- *   4. Salva o resultado importado no IndexedDB, para a próxima visita.
- *   5. Retorna a Base de Conhecimento (do IndexedDB ou recém-importada).
- *   6. Chamadas seguintes reaproveitam o mesmo resultado em memória
- *      (`promessaBase`), sem repetir os passos 1-5.
+ *   1. Busca os JSON originais (importer.js) e o que já está salvo no
+ *      IndexedDB (indexeddb.js) em paralelo.
+ *   2. Se não houver nada salvo (primeira visita, ou dados corrompidos):
+ *      grava tudo do zero e sai.
+ *   3. Caso contrário, compara — coleção por coleção (grupos, perguntas,
+ *      espécies, missões, conquistas, configurações) — um hash SHA-256 do
+ *      conteúdo recém-importado com o hash salvo na visita anterior.
+ *      Só as coleções cujo hash mudou são regravadas; as demais continuam
+ *      com os dados já salvos, sem escrita desnecessária. Ver
+ *      `sincronizarComConteudoAtual`.
+ *   4. Se a busca dos JSON falhar (ex.: sem rede) mas já houver dados
+ *      salvos, usa só o que está salvo — nunca quebra o funcionamento
+ *      offline por causa de uma tentativa de sincronização.
+ *   5. Chamadas seguintes reaproveitam o mesmo resultado em memória
+ *      (`promessaBase`), sem repetir os passos 1-4.
  *
- * Fora do escopo atual: comparar `configuracoes.versaoBaseDados` para decidir
- * se os dados salvos no IndexedDB estão desatualizados frente a uma nova
- * versão do JSON. O fluxo acima já está estruturado para receber essa
- * checagem futuramente dentro de `tentarCarregarDoIndexedDB`, sem exigir
- * mudança na API pública deste módulo.
+ * Esta sincronização automática substitui o que antes era uma lacuna
+ * documentada ("comparar configuracoes.versaoBaseDados"): hash de conteúdo
+ * não depende de ninguém lembrar de incrementar um número a cada mudança em
+ * database/json/*.json — qualquer mudança real de conteúdo já é detectada
+ * sozinha. `versaoBaseDados` continua existindo em configuracoes.json como
+ * campo informativo, mas não é mais o que decide a sincronização.
+ *
+ * Progresso do jogador (`progressoMissoes`, `especiesDescobertas`) nunca é
+ * tocado por este fluxo — vive em stores completamente separadas das seis
+ * coleções de conteúdo tratadas aqui.
  *
  * Não implementa lógica de navegação da chave dicotômica (isso pertence ao
  * módulo Chave Dicotômica). importer.js e indexeddb.js permanecem
@@ -43,6 +55,8 @@ import {
   salvarMissoes,
   salvarConquistas,
   salvarConfiguracoes,
+  lerHashesConteudo,
+  salvarHashesConteudo,
 } from "./indexeddb.js";
 
 /**
@@ -68,23 +82,157 @@ function obterBase() {
 }
 
 /**
- * Executa o fluxo de inicialização da Base de Conhecimento: tenta reaproveitar
- * o que já está salvo no IndexedDB (passos 1-2) e, se não houver nada íntegro
- * salvo, importa os JSON originais e persiste o resultado para a próxima
- * visita (passos 3-5).
+ * Executa o fluxo de inicialização da Base de Conhecimento: busca os JSON
+ * originais e o que já está salvo no IndexedDB em paralelo, e decide o que
+ * fazer a partir da combinação dos dois (ver comentário no topo do arquivo).
  *
  * @returns {Promise<{grupos: object[], perguntas: object[], especies: object[], missoes: object[], configuracoes: object}>}
  * @throws {Error} Se não houver dados íntegros no IndexedDB e a importação dos JSON também falhar.
  */
 async function inicializarBase() {
-  const dadosSalvos = await tentarCarregarDoIndexedDB();
-  if (dadosSalvos) {
+  const [dadosImportados, dadosSalvos] = await Promise.all([
+    tentarImportarBaseDeConhecimento(),
+    tentarCarregarDoIndexedDB(),
+  ]);
+
+  if (!dadosSalvos) {
+    if (!dadosImportados) {
+      throw new Error(
+        "Não foi possível carregar a Base de Conhecimento: nada salvo localmente e a importação dos JSON também falhou."
+      );
+    }
+    await salvarNoIndexedDB(dadosImportados);
+    await salvarHashesConteudo(await calcularHashes(dadosImportados));
+    return dadosImportados;
+  }
+
+  if (!dadosImportados) {
+    // Sem rede (ou falha ao buscar os JSON): usa só o que já está salvo,
+    // sem tentar sincronizar. Nunca deixa uma tentativa de atualização
+    // quebrar o funcionamento offline.
     return dadosSalvos;
   }
 
-  const dadosImportados = await importarBaseDeConhecimento();
-  await salvarNoIndexedDB(dadosImportados);
-  return dadosImportados;
+  return sincronizarComConteudoAtual(dadosSalvos, dadosImportados);
+}
+
+/**
+ * Tenta importar os JSON originais; qualquer falha (ex.: sem rede) é tratada
+ * como "não foi possível verificar atualizações agora", não como erro fatal
+ * — quem chama decide o que fazer com `null` (ver `inicializarBase`).
+ *
+ * @returns {Promise<{grupos: object[], perguntas: object[], especies: object[], missoes: object[], conquistas: object[], configuracoes: object} | null>}
+ */
+async function tentarImportarBaseDeConhecimento() {
+  try {
+    return await importarBaseDeConhecimento();
+  } catch (erro) {
+    console.warn("Não foi possível verificar atualizações da Base de Conhecimento (offline?):", erro);
+    return null;
+  }
+}
+
+/**
+ * Compara o conteúdo recém-importado dos JSON com o que está salvo no
+ * IndexedDB, coleção por coleção, via hash SHA-256 — regrava só as que
+ * realmente mudaram desde a última visita. Progresso do jogador nunca é
+ * tocado aqui (ver comentário no topo do arquivo).
+ *
+ * @param {{grupos: object[], perguntas: object[], especies: object[], missoes: object[], conquistas: object[], configuracoes: object}} dadosSalvos
+ * @param {{grupos: object[], perguntas: object[], especies: object[], missoes: object[], conquistas: object[], configuracoes: object}} dadosImportados
+ * @returns {Promise<{grupos: object[], perguntas: object[], especies: object[], missoes: object[], conquistas: object[], configuracoes: object}>}
+ */
+async function sincronizarComConteudoAtual(dadosSalvos, dadosImportados) {
+  const hashesAtuais = await calcularHashes(dadosImportados);
+
+  let hashesSalvos;
+  try {
+    hashesSalvos = (await lerHashesConteudo()) ?? {};
+  } catch (erro) {
+    console.warn("Não foi possível ler os hashes de conteúdo salvos, sincronizando tudo por segurança:", erro);
+    hashesSalvos = {};
+  }
+
+  const resultado = { ...dadosSalvos };
+  const gravacoesPendentes = [];
+
+  if (hashesAtuais.grupos !== hashesSalvos.grupos) {
+    resultado.grupos = dadosImportados.grupos;
+    gravacoesPendentes.push(salvarGrupos(dadosImportados.grupos));
+  }
+  if (hashesAtuais.perguntas !== hashesSalvos.perguntas) {
+    resultado.perguntas = dadosImportados.perguntas;
+    gravacoesPendentes.push(salvarPerguntas(dadosImportados.perguntas));
+  }
+  if (hashesAtuais.especies !== hashesSalvos.especies) {
+    resultado.especies = dadosImportados.especies;
+    gravacoesPendentes.push(salvarEspecies(dadosImportados.especies));
+  }
+  if (hashesAtuais.missoes !== hashesSalvos.missoes) {
+    resultado.missoes = dadosImportados.missoes;
+    gravacoesPendentes.push(salvarMissoes(dadosImportados.missoes));
+  }
+  if (hashesAtuais.conquistas !== hashesSalvos.conquistas) {
+    resultado.conquistas = dadosImportados.conquistas;
+    gravacoesPendentes.push(salvarConquistas(dadosImportados.conquistas));
+  }
+  if (hashesAtuais.configuracoes !== hashesSalvos.configuracoes) {
+    resultado.configuracoes = dadosImportados.configuracoes;
+    gravacoesPendentes.push(salvarConfiguracoes(dadosImportados.configuracoes));
+  }
+
+  if (gravacoesPendentes.length > 0) {
+    try {
+      await Promise.all(gravacoesPendentes);
+      await salvarHashesConteudo(hashesAtuais);
+    } catch (erro) {
+      console.warn("Não foi possível sincronizar a Base de Conhecimento com o conteúdo atual:", erro);
+    }
+  }
+
+  return resultado;
+}
+
+/**
+ * Calcula um hash SHA-256 (Web Crypto API nativa, sem dependência externa)
+ * do conteúdo de cada uma das seis coleções — usado para detectar mudanças
+ * em database/json/*.json entre uma visita e outra, sem depender de um
+ * número de versão mantido manualmente.
+ *
+ * @param {{grupos: object[], perguntas: object[], especies: object[], missoes: object[], conquistas: object[], configuracoes: object}} dados
+ * @returns {Promise<{grupos: string, perguntas: string, especies: string, missoes: string, conquistas: string, configuracoes: string}>}
+ */
+async function calcularHashes({ grupos, perguntas, especies, missoes, conquistas, configuracoes }) {
+  const [hashGrupos, hashPerguntas, hashEspecies, hashMissoes, hashConquistas, hashConfiguracoes] = await Promise.all([
+    calcularHash(grupos),
+    calcularHash(perguntas),
+    calcularHash(especies),
+    calcularHash(missoes),
+    calcularHash(conquistas),
+    calcularHash(configuracoes),
+  ]);
+
+  return {
+    grupos: hashGrupos,
+    perguntas: hashPerguntas,
+    especies: hashEspecies,
+    missoes: hashMissoes,
+    conquistas: hashConquistas,
+    configuracoes: hashConfiguracoes,
+  };
+}
+
+/**
+ * Calcula o hash SHA-256 (em hexadecimal) de um valor serializável.
+ * @param {unknown} valor
+ * @returns {Promise<string>}
+ */
+async function calcularHash(valor) {
+  const bytes = new TextEncoder().encode(JSON.stringify(valor));
+  const buffer = await crypto.subtle.digest("SHA-256", bytes);
+  return Array.from(new Uint8Array(buffer))
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
 }
 
 /**
