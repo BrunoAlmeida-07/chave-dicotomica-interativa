@@ -136,23 +136,24 @@ Onde `tipo` em `opcaoSim`/`opcaoNao` é `"pergunta"` (segue para outro nó da á
 
 ## 6. Missão
 
-*Estrutura definitiva (2026-07-28), com conteúdo real parcial em `missoes.json` — narrativa completa, resposta correta e recompensas ainda ficam para quando o Sistema de Missões (v2.x) existir de fato.*
+*Estrutura definitiva (2026-07-28). Desde 2026-08-04, cada missão é um caso de investigação independente com narrativa própria e espécie-alvo definida — substituindo o conceito anterior de "uma missão por grupo zoológico".*
 
 | Campo | Tipo | Obrigatório | Descrição |
 |---|---|---|---|
 | `id` | string (slug) | Sim | Identificador único. |
 | `titulo` | string | Sim | Título do caso investigativo. |
 | `descricaoCurta` | string | Sim | Texto curto usado no cartão da Tela/Mapa de Missões. |
-| `grupoId` | string (FK → Grupo) | Sim | Grupo zoológico envolvido no caso. |
-| `perguntaInicialId` | string (FK → Pergunta) | Sim | Ponto de entrada na chave dicotômica desta missão. |
+| `grupoId` | string (FK → Grupo) | Sim | Grupo zoológico envolvido no caso. Várias missões podem compartilhar o mesmo `grupoId` (e o mesmo `perguntaInicialId`) — o desbloqueio (`preRequisito`, abaixo) nunca depende de `grupoId`, só de `id`. |
+| `perguntaInicialId` | string (FK → Pergunta) | Sim | Ponto de entrada na chave dicotômica desta missão — é a raiz da árvore do grupo (ex.: `"aranhas-p1"`), não um caminho específico até uma espécie. Qual espécie o jogador realmente identifica depende só das respostas reais dadas durante a investigação, não deste campo. |
 | `ordemProgressao` | number | Sim | Posição de exibição da missão na trilha (0, 1, 2...). Não é o que desbloqueia a próxima — ver `preRequisito`. |
 | `sempreDisponivel` | boolean | Não (padrão `false`) | Quando `true`, a missão nunca fica bloqueada nem mostra "concluída" (o que a tornaria não clicável), independente de progresso ou de `preRequisito` — usado pela Missão 0 (treinamento), que deve continuar jogável mesmo depois de concluída. |
 | `preRequisito` | string ou null (FK → Missão) | Não | Id da missão que precisa estar concluída para esta ficar disponível. `null` = sem pré-requisito (disponível desde o início, sujeito a `sempreDisponivel`). É o campo que define o desbloqueio — não há nenhuma cadeia fixa no código. |
 | `visivelNoMapaDeMissoes` | boolean | Não (padrão `true`) | Quando `false`, a missão não aparece na listagem do Mapa de Missões (`listarMissoes()`), mas continua acessível por id via `obterMissao` — usado pela Missão de Treinamento, alcançável só pelo botão "Como Jogar" da Tela Inicial. |
-| `contextoNarrativo` | string | Sim | Texto de introdução/história do caso. |
-| `descricaoOcorrencia` | string | Sim | Descrição da ocorrência a ser investigada. |
-| `imagemCaso` | string (caminho) | Não | Imagem ilustrativa do caso. |
-| `especieRespostaCorreta` | string (FK → Espécie) | Não | Espécie que representa a identificação correta do caso. `null` quando a missão ainda não tem um caso narrativo com resposta única definida (ex.: missões que só convidam a explorar a chave inteira de um grupo). |
+| `contextoNarrativo` | string | Sim | Texto de introdução/história do caso, exibido na tela de Introdução da Missão. |
+| `descricaoOcorrencia` | string | Sim | Descrição da ocorrência a ser investigada (local, ambiente, contexto do achado), exibida junto ao `contextoNarrativo`. |
+| `imagemCaso` | string (caminho) | Não | Reservado para uma futura imagem ilustrativa da *ocorrência* em si (ex.: o cenário do caso), distinta da fotografia do espécime — ver `imagemPrincipalIndice`. Não usado hoje. |
+| `especieRespostaCorreta` | string (FK → Espécie) | Não | Espécie realmente investigada no caso — nunca exibida ao jogador antes da identificação. Usada para (a) escolher a fotografia do espécime (`imagemPrincipalIndice`, abaixo) e (b) documentação/narrativa. **Não é um mecanismo de acerto/erro:** o resultado registrado no progresso do jogador continua sendo exclusivamente o que a árvore de perguntas realmente devolve a partir das respostas reais dadas (`especieId` do Motor de Investigação), nunca uma comparação com este campo. |
+| `imagemPrincipalIndice` | number ou null | Não | Índice (posição, a partir de 0) dentro do array `imagens` da espécie referenciada por `especieRespostaCorreta` — define qual fotografia representa o espécime encontrado nesta missão (a "imagem principal", fixa durante toda a investigação — ver seção 4, campo `imagens`). `null` quando a missão não tem espécie-alvo. Guarda só o índice, não o caminho do arquivo, para não duplicar dado que já mora em `especies.json`: hoje toda espécie tem uma única imagem (`imagemPrincipalIndice: 0`), mas o campo já permite que uma espécie ganhe fotos adicionais (`foto02.jpg`, `foto03.jpg`...) no futuro e que novas missões reaproveitem a mesma espécie com uma fotografia diferente — sem exigir nenhuma mudança de código, só de conteúdo. |
 | `explicacaoCientificaFinal` | string | Não | Texto exibido ao final, reforçando o conteúdo científico. |
 | `feedbackSucesso` | string | Não | Mensagem exibida quando o estudante acerta. |
 | `feedbackErro` | string | Não | Mensagem exibida quando o estudante erra. |
@@ -162,11 +163,11 @@ Onde `tipo` em `opcaoSim`/`opcaoNao` é `"pergunta"` (segue para outro nó da á
 
 **`status` não é um campo desta entidade.** `disponível` / `bloqueada` / `concluída` é um valor **calculado** em `src/js/nucleo/missoes.js`, não armazenado em `missoes.json` nem nas telas — cruza `sempreDisponivel`/`preRequisito` (conteúdo, acima) com a store de progresso do jogador `progressoMissoes` (ver seção 9): `sempreDisponivel` sempre vence; senão, concluída se há registro de progresso; senão, disponível se não há `preRequisito` ou se o `preRequisito` já foi concluído; bloqueada nos demais casos.
 
-**Nota temporária:** a Missão de Treinamento (`missao-0`) reaproveita a árvore de perguntas de Escorpiões (`grupoId: "escorpioes"`) só porque ainda não existe uma missão de treinamento própria, focada em ensinar a mecânica do jogo (observar, responder, interpretar) em vez de conteúdo zoológico específico. Isso é uma solução temporária, registrada para ser revisitada quando o conteúdo real de missões for escrito — nesse momento, `missao-escorpioes` continua existindo como a missão dedicada ao grupo, independente do que acontecer com a Missão de Treinamento.
+**Nota temporária:** a Missão de Treinamento (`missao-0`) reaproveita a árvore de perguntas de Escorpiões (`grupoId: "escorpioes"`) só porque ainda não existe uma missão de treinamento própria, focada em ensinar a mecânica do jogo (observar, responder, interpretar) em vez de conteúdo zoológico específico. Isso é uma solução temporária, registrada para ser revisitada quando uma missão de treinamento dedicada for escrita.
 
-**Nota (2026-07-28):** desde que `visivelNoMapaDeMissoes` foi introduzido, `missao-0` saiu da campanha principal do Mapa de Missões — a campanha agora começa em `missao-aranhas` (sem `preRequisito`), seguida de `missao-escorpioes` (exige `missao-aranhas`) e `missao-serpentes` (exige `missao-escorpioes`). `missao-0` continua existindo só como o destino do botão "Como Jogar".
+**Nota (2026-08-04, substitui a nota de 2026-07-28):** o conceito de "uma missão por grupo zoológico" foi substituído por um conjunto de 12 casos de investigação independentes (`caso-*`), cada um com narrativa, contexto de ocorrência e espécie-alvo próprios — várias missões compartilham `grupoId`/`perguntaInicialId` (ex.: 4 casos de aranhas, todos partindo de `"aranhas-p1"`), exatamente como `missao-0` e `missao-escorpioes` já faziam antes. A campanha principal do Mapa de Missões agora é essa cadeia de 12 casos, encadeados por `preRequisito` na ordem de `ordemProgressao`. `missao-0` continua existindo só como o destino do botão "Como Jogar", fora da campanha.
 
-**Relacionamentos:** uma Missão referencia um Grupo, uma Pergunta (entrada na chave) e, opcionalmente, uma Espécie (resposta correta) e zero ou mais Conquistas.
+**Relacionamentos:** uma Missão referencia um Grupo, uma Pergunta (entrada na chave) e, opcionalmente, uma Espécie (`especieRespostaCorreta`, cujo array `imagens` também é referenciado por `imagemPrincipalIndice`) e zero ou mais Conquistas.
 
 ---
 

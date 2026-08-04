@@ -17,12 +17,18 @@
  *
  * Recebe em `dados.perguntaInicialId` o ponto de partida na árvore,
  * resolvido pela tela anterior (introducaoMissao.js). `dados.missaoId`,
- * quando presente, é usado só para exibir o nome da missão no cabeçalho —
- * não afeta a navegação da árvore.
+ * quando presente, é usado para exibir o nome da missão no cabeçalho e para
+ * resolver a fotografia do espécime (`missao.especieRespostaCorreta` +
+ * `missao.imagemPrincipalIndice`) — não afeta a navegação da árvore, que
+ * continua inteiramente determinada pelas respostas reais do jogador.
+ *
+ * A fotografia do espécime (`imagemPrincipal`, fixa durante toda a
+ * investigação) é só um dado extra passado ao cartão — o Motor de
+ * Investigação não sabe que ela existe.
  */
 
 import { irPara, voltar } from "../navegacao.js";
-import { obterPerguntaPorId } from "../../database/scripts/database.js";
+import { obterPerguntaPorId, obterEspeciePorId } from "../../database/scripts/database.js";
 import { obterMissao } from "../nucleo/missoes.js";
 import { criarMotorDeInvestigacao } from "../nucleo/motorDeInvestigacao.js";
 import { criarCartaoPergunta } from "../componentes/cartaoPergunta.js";
@@ -35,6 +41,7 @@ export async function renderInvestigacao(container, dados = {}) {
   const { perguntaInicialId, missaoId } = dados;
 
   const missao = missaoId ? await obterMissao({ missaoId }) : null;
+  const imagemPrincipal = await resolverImagemPrincipal(missao);
 
   container.innerHTML = `
     <section class="tela tela-investigacao">
@@ -92,6 +99,7 @@ export async function renderInvestigacao(container, dados = {}) {
     const cartao = criarCartaoPergunta({
       texto: pergunta.texto,
       imagem: pergunta.imagem ? resolverCaminhoImagem(pergunta.imagem) : "",
+      imagemPrincipal,
       etapa: `Pergunta ${motor.profundidadeAtual()}`,
       aoResponderSim: () => responder("sim"),
       aoResponderNao: () => responder("nao"),
@@ -110,4 +118,27 @@ export async function renderInvestigacao(container, dados = {}) {
 
     desenharPergunta(resultado.pergunta);
   }
+}
+
+/**
+ * Resolve a fotografia do espécime investigado nesta missão: busca a
+ * espécie-alvo (`missao.especieRespostaCorreta`) e usa `imagemPrincipalIndice`
+ * para escolher qual das fotos de `especie.imagens` representa este caso.
+ * Retorna "" (sem imagem principal) para missões sem espécie-alvo definida
+ * (ex.: a Missão de Treinamento) — a tela continua funcionando normalmente,
+ * só sem a segunda imagem.
+ *
+ * @param {object|null} missao
+ * @returns {Promise<string>}
+ */
+async function resolverImagemPrincipal(missao) {
+  if (!missao?.especieRespostaCorreta) {
+    return "";
+  }
+
+  const especie = await obterEspeciePorId(missao.especieRespostaCorreta);
+  const imagens = especie?.imagens ?? [];
+  const imagem = imagens[missao.imagemPrincipalIndice ?? 0];
+
+  return imagem ? resolverCaminhoImagem(imagem.src) : "";
 }

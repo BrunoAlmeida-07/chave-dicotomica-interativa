@@ -1,12 +1,11 @@
 /**
  * introducaoMissao.js
  *
- * Introdução da Missão: contextualiza o caso antes da investigação começar.
- *
- * Não conhece o conceito de "grupo" diretamente — pede a missão para
- * nucleo/missoes.js, que hoje sintetiza uma missão a partir de um grupo
- * zoológico (porque missoes.json ainda está vazio) e futuramente vai ler de
- * missoes.json de verdade, sem que esta tela precise mudar.
+ * Introdução da Missão: contextualiza o caso antes da investigação começar,
+ * exibindo a narrativa (`contextoNarrativo`) e os detalhes da ocorrência
+ * (`descricaoOcorrencia`) da missão — nunca a espécie-alvo, que só é
+ * revelada ao final da investigação. Missões sem esses campos (ex.: a
+ * Missão de Treinamento) caem num texto genérico de apoio.
  */
 
 import { irPara, voltar } from "../navegacao.js";
@@ -33,11 +32,19 @@ export async function renderIntroducaoMissao(container, dados = {}) {
   const missao = await obterMissao(dados);
   const perguntaInicialId = missao ? missao.perguntaInicialId : null;
 
+  const contextoNarrativo = missao?.contextoNarrativo ?? "Conteúdo narrativo do caso (em construção).";
+  const descricaoOcorrencia = missao?.descricaoOcorrencia ?? "";
+
   const conteudo = container.querySelector("[data-conteudo]");
   conteudo.innerHTML = `
     <span class="etiqueta">Introdução da Missão</span>
     <h1>${missao ? missao.titulo : "Missão indisponível"}</h1>
-    <p>Conteúdo narrativo do caso (em construção).</p>
+    <p>${contextoNarrativo}</p>
+    ${
+      descricaoOcorrencia
+        ? `<p class="introducao-cartao__ocorrencia"><strong>Ocorrência:</strong> ${descricaoOcorrencia}</p>`
+        : ""
+    }
     <button type="button" class="botao botao-primario" data-acao="investigar">Investigar</button>
   `;
 

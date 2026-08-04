@@ -2,9 +2,17 @@
  * cartaoPergunta.js
  *
  * Componente reutilizável: apresenta uma pergunta da chave dicotômica
- * (imagem + texto + botões Sim/Não) e delega a decisão de para onde ir a
- * quem o usa. Não conhece perguntas.json nem database.js — só desenha o que
- * recebe.
+ * (imagens + texto + botões Sim/Não) e delega a decisão de para onde ir a
+ * quem o usa. Não conhece perguntas.json, missoes.json nem database.js — só
+ * desenha o que recebe.
+ *
+ * Duas imagens, papéis diferentes:
+ *   - `imagemPrincipal` (opcional): a fotografia fixa do espécime da
+ *     missão — a mesma em todas as perguntas de uma investigação. Quem
+ *     decide qual foto é essa (missão → espécie-alvo → imagens[]) é
+ *     investigacao.js, não este componente.
+ *   - `imagem` (a de sempre): a foto de apoio da pergunta atual, muda a
+ *     cada etapa da chave, destacando a característica observada.
  */
 
 /**
@@ -13,6 +21,7 @@
  * @param {{
  *   texto: string,
  *   imagem?: string,
+ *   imagemPrincipal?: string,
  *   dica?: string,
  *   etapa?: string,
  *   aoResponderSim: () => void,
@@ -23,6 +32,7 @@
 export function criarCartaoPergunta({
   texto,
   imagem = "",
+  imagemPrincipal = "",
   dica = "Observe atentamente a imagem antes de responder.",
   etapa = "",
   aoResponderSim,
@@ -33,9 +43,22 @@ export function criarCartaoPergunta({
   cartao.innerHTML = `
     ${etapa ? `<span class="cartao-pergunta__etapa">${etapa}</span>` : ""}
     ${
-      imagem
-        ? `<div class="cartao-pergunta__imagem-wrapper">
-             <img class="cartao-pergunta__imagem" src="${imagem}" alt="">
+      imagemPrincipal || imagem
+        ? `<div class="cartao-pergunta__imagens">
+             ${
+               imagemPrincipal
+                 ? `<div class="cartao-pergunta__imagem-principal-wrapper">
+                      <img class="cartao-pergunta__imagem-principal" src="${imagemPrincipal}" alt="Espécime encontrado nesta investigação">
+                    </div>`
+                 : ""
+             }
+             ${
+               imagem
+                 ? `<div class="cartao-pergunta__imagem-wrapper">
+                      <img class="cartao-pergunta__imagem" src="${imagem}" alt="">
+                    </div>`
+                 : ""
+             }
            </div>`
         : ""
     }

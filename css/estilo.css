@@ -558,17 +558,32 @@ img {
   background: var(--cor-superficie);
   border-radius: var(--raio-lg);
   box-shadow: var(--sombra-md);
-  padding: clamp(16px, 4dvh, 32px) var(--espaco-5);
+  padding: clamp(6px, 4dvh, 32px) var(--espaco-5);
 }
 
 .introducao-cartao h1 {
   font-size: 1.6rem;
-  margin: var(--espaco-1) 0 var(--espaco-3);
+  margin: var(--espaco-1) 0 clamp(4px, 1.5dvh, 12px);
 }
 
 .introducao-cartao p {
   color: var(--cor-texto-secundario);
-  margin-bottom: clamp(12px, 3dvh, 24px);
+  margin-bottom: clamp(6px, 3dvh, 24px);
+}
+
+/* Detalhes da ocorrência: bloco discreto separado da narrativa, com a
+   sensação de "ficha do caso" (fundo sutil, borda arredondada), reaproveitando
+   as mesmas cores do design system — não é uma cor nova. */
+.introducao-cartao__ocorrencia {
+  background: var(--cor-acento);
+  border-radius: var(--raio-sm);
+  padding: clamp(4px, 2dvh, 12px) var(--espaco-4);
+  color: var(--cor-texto);
+  font-size: 0.92rem;
+}
+
+.introducao-cartao__ocorrencia strong {
+  color: var(--cor-primaria-escura);
 }
 
 /* ===== INVESTIGAÇÃO ===== */
@@ -675,17 +690,42 @@ img {
   border-radius: 999px;
 }
 
+/* Coluna de imagens: a mesma largura que antes (38% do cartão), agora
+   dividida verticalmente entre a foto principal (fixa, o espécime da
+   missão) e a foto de apoio (muda a cada pergunta) — 65/35, para a foto do
+   caso ter mais destaque sem perder a referência da característica
+   observada. Quando só uma das duas existe (ex.: missão sem espécie-alvo,
+   como o Treinamento), ela sozinha ocupa a coluna inteira (flex:1 no filho
+   único preenche o espaço do outro que não foi renderizado). */
+.cartao-pergunta__imagens {
+  flex: 0 0 38%;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(4px, 1dvh, 8px);
+  min-height: 0;
+}
+
+.cartao-pergunta__imagem-principal-wrapper,
 .cartao-pergunta__imagem-wrapper {
   position: relative;
-  flex: 0 0 38%;
+  min-height: 0;
   border-radius: var(--raio-md);
   overflow: hidden;
   box-shadow: var(--sombra-sm);
   background: var(--cor-acento);
 }
 
+.cartao-pergunta__imagem-principal-wrapper {
+  flex: 65 0 0;
+}
+
+.cartao-pergunta__imagem-wrapper {
+  flex: 35 0 0;
+}
+
+.cartao-pergunta__imagem-principal,
 .cartao-pergunta__imagem {
-  /* position:absolute + inset:0 faz a foto preencher a coluna inteira,
+  /* position:absolute + inset:0 faz a foto preencher a célula inteira,
      qualquer que seja a altura real do cartão — sem depender de uma
      altura fixa em pixels e sem sobrar área vazia de fundo ao redor da
      imagem quando a coluna de texto for mais alta ou mais baixa que ela. */
@@ -758,7 +798,7 @@ img {
     padding: var(--espaco-2);
   }
 
-  .cartao-pergunta__imagem-wrapper {
+  .cartao-pergunta__imagens {
     flex-basis: 35%;
   }
 
