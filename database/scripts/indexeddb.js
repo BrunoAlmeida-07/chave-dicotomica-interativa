@@ -6,13 +6,13 @@
  * Responsável por abrir/versionar o banco IndexedDB e expor operações
  * básicas de leitura, escrita e limpeza das seis coleções de conteúdo
  * definidas em `database/schema.md` (grupos, perguntas, espécies, missões,
- * conquistas e configurações) e da store de progresso do jogador
- * (`progressoMissoes`).
+ * conquistas e configurações) e das stores de progresso do jogador
+ * (`progressoMissoes`, `especiesDescobertas`).
  *
- * `progressoMissoes` não é conteúdo — não vem de nenhum arquivo JSON, não é
- * tocada por `importer.js`, e é gravada aos poucos (uma missão concluída de
- * cada vez), diferente das stores de conteúdo, que são sempre substituídas
- * por inteiro. Ver database/schema.md, seção 9.
+ * As stores de progresso não são conteúdo — não vêm de nenhum arquivo JSON,
+ * não são tocadas por `importer.js`, e são gravadas aos poucos (um registro
+ * de cada vez), diferente das stores de conteúdo, que são sempre
+ * substituídas por inteiro. Ver database/schema.md, seção 9.
  *
  * Este módulo não sabe de onde os dados de conteúdo vêm — não importa
  * `importer.js` nem `database.js`. A ligação entre eles é responsabilidade
@@ -23,13 +23,14 @@
  */
 
 const DATABASE_NAME = "MissaoFaunaBrasil";
-// v4: adiciona a store "conquistas" (conteúdo — definição das conquistas do
-// Laboratório do Pesquisador, vinda de conquistas.json). Bump não
-// destrutivo — quem já tinha as stores anteriores ganha a nova no próximo
-// carregamento, sem perder nada.
-const DATABASE_VERSION = 4;
+// v5: adiciona a store "especiesDescobertas" (progresso — qual espécie
+// individual cada investigação concluída realmente identificou; antes
+// disso, o Catálogo aproximava "descoberta" por grupo inteiro, ver
+// database/schema.md seção 9). Bump não destrutivo — quem já tinha as
+// stores anteriores ganha a nova no próximo carregamento, sem perder nada.
+const DATABASE_VERSION = 5;
 
-/** Nomes das object stores: seis de conteúdo + uma de progresso do jogador. */
+/** Nomes das object stores: seis de conteúdo + duas de progresso do jogador. */
 const STORES = {
   grupos: "grupos",
   perguntas: "perguntas",
@@ -38,6 +39,7 @@ const STORES = {
   conquistas: "conquistas",
   configuracoes: "configuracoes",
   progressoMissoes: "progressoMissoes",
+  especiesDescobertas: "especiesDescobertas",
 };
 
 /** Chave fixa usada para gravar o objeto único de configurações. */
@@ -91,6 +93,11 @@ function abrirBanco() {
         }
         if (!db.objectStoreNames.contains(STORES.progressoMissoes)) {
           db.createObjectStore(STORES.progressoMissoes, { keyPath: "missaoId" });
+        }
+        if (!db.objectStoreNames.contains(STORES.especiesDescobertas)) {
+          // keyPath por especieId: gravar a mesma espécie de novo (missão
+          // revisitada) apenas sobrescreve o mesmo registro — nunca duplica.
+          db.createObjectStore(STORES.especiesDescobertas, { keyPath: "especieId" });
         }
       };
 
@@ -256,8 +263,34 @@ export function lerProgressoMissoes() {
 }
 
 /**
- * Limpa as seis stores (grupos, perguntas, espécies, missões, configurações
- * e progresso de missões) em uma única transação.
+ * Salva (ou atualiza) um único registro de espécie descoberta, sem apagar
+ * os demais já salvos. Mesmo padrão de `salvarProgressoMissao`: gravado aos
+ * poucos, uma descoberta de cada vez.
+ *
+ * @param {{especieId: string, descobertaEm: string}} registro
+ * @returns {Promise<void>}
+ */
+export async function salvarEspecieDescoberta(registro) {
+  const db = await abrirBanco();
+
+  return new Promise((resolve, reject) => {
+    const transacao = db.transaction(STORES.especiesDescobertas, "readwrite");
+    transacao.objectStore(STORES.especiesDescobertas).put(registro);
+
+    transacao.oncomplete = () => resolve();
+    transacao.onerror = () => reject(transacao.error);
+  });
+}
+
+/** Lê todos os registros de espécies descobertas salvos no IndexedDB. */
+export function lerEspeciesDescobertas() {
+  return lerDaStore(STORES.especiesDescobertas);
+}
+
+/**
+ * Limpa as oito stores (grupos, perguntas, espécies, missões, conquistas,
+ * configurações, progresso de missões e espécies descobertas) em uma única
+ * transação.
  * @returns {Promise<void>}
  */
 export async function limparTudo() {

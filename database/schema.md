@@ -184,7 +184,7 @@ Onde `tipo` em `opcaoSim`/`opcaoNao` é `"pergunta"` (segue para outro nó da á
 
 **Relacionamentos:** uma Conquista pode referenciar opcionalmente um Grupo ou uma Espécie através de `criterio.referenciaId`, e pode ser associada a uma ou mais Missões.
 
-**Nota de implementação (2026-07-30):** das 7 conquistas do conteúdo atual, nenhuma usa `"identificar_especie"` nem `"sequencia_acertos"` — o primeiro exigiria rastrear qual espécie individual o jogador descobriu (não implementado, ver seção 9), e o segundo exige um conceito de acerto/erro que a chave dicotômica atual não tem (é determinística, não um quiz). Todas as 7 usam `"completar_grupo"`, com ou sem `referenciaId`, calculado a partir de `progressoMissoes` (seção 9) cruzado com o `grupoId` de cada Missão.
+**Nota de implementação (2026-07-30, atualizada em 2026-08-04):** das 7 conquistas do conteúdo atual, nenhuma usa `"identificar_especie"` nem `"sequencia_acertos"` — o segundo exige um conceito de acerto/erro que a chave dicotômica atual não tem (é determinística, não um quiz). O primeiro, `"identificar_especie"`, já é avaliável em `js/nucleo/progressoCientifico.js` desde que o rastreamento por espécie individual foi implementado (store `especiesDescobertas`, ver seção 9) — segue o mesmo padrão de `"completar_grupo"` (`referenciaId` verifica uma espécie específica; ausência de `referenciaId` verifica `criterio.quantidade` espécies descobertas, de qualquer grupo). Nenhuma conquista desse tipo foi adicionada a `conquistas.json` ainda — é uma decisão de conteúdo em aberto, não uma limitação técnica. Todas as 7 atuais usam `"completar_grupo"`, com ou sem `referenciaId`, calculado a partir de `progressoMissoes` (seção 9) cruzado com o `grupoId` de cada Missão.
 
 ---
 
@@ -217,7 +217,16 @@ Dados de **progresso do jogador** — missões concluídas, espécies descoberta
 
 Gravada por `concluirMissao()` em `js/nucleo/missoes.js`, chamada pela tela de Encerramento — o único ponto da interface que sabe que o jogador terminou um caso. Lida por `listarMissoes()` do mesmo módulo, para calcular o `status` de cada missão (seção 6).
 
-**Laboratório do Pesquisador (implementado em 2026-07-30) — decisão deliberada de não criar nova store de progresso:** o Laboratório (`js/telas/laboratorio.js`, cálculo em `js/nucleo/progressoCientifico.js`) deriva tudo o que exibe unicamente de `progressoMissoes` (acima) cruzado com o conteúdo já existente (`missoes.json`, `especies.json`, `grupos.json`) — **não existe rastreamento de qual espécie individual o jogador descobriu**. Consequência direta: "espécies catalogadas" e o grid do Catálogo tratam **todas as espécies de um grupo como catalogadas assim que a missão daquele grupo é concluída** (`missao-aranhas` → as 5 espécies de Aranhas ficam desbloqueadas de uma vez), não uma a uma conforme a árvore de perguntas é percorrida. Rastreamento por espécie individual, XP e sequência de acertos continuam em aberto para uma evolução futura do sistema, que exigirá uma nova store de progresso (ex.: `especiesDescobertas`) — fora do escopo desta etapa.
+**Espécies descobertas (implementado em 2026-08-04, substitui a aproximação por grupo de 2026-07-30):** store `especiesDescobertas` (`database/scripts/indexeddb.js`, `DATABASE_VERSION` 5), com um registro por espécie individual identificada:
+
+| Campo | Tipo | Descrição |
+|---|---|---|
+| `especieId` | string (FK → Espécie) | Chave da store. |
+| `descobertaEm` | string (ISO datetime) | Quando a espécie foi identificada pela primeira vez (a gravação mais recente vence, se a missão for revisitada e chegar à mesma espécie). |
+
+Gravada por `registrarDescoberta()` em `js/nucleo/progressoCientifico.js`, chamada pela tela de Encerramento (junto de `concluirMissao()`, acima) com a `especieId` que a investigação concluída realmente identificou — a mesma que chega até ali via `dados.especieId`, produzida pelo Motor de Investigação em `js/telas/investigacao.js` e só exibida (nunca gravada) pela tela de Resultado. Lida por `obterProgressoCientifico()` do mesmo módulo, que monta `especiesCatalogadas` diretamente dessa store — o Laboratório (`js/telas/laboratorio.js`) e o grid do Catálogo passaram a refletir exatamente a espécie descoberta em cada investigação, não mais o grupo inteiro. Contas com progresso salvo antes desta versão não têm registro de qual espécie encontraram (esse dado nunca existiu) — o Catálogo dessas contas mostra 0 espécies descobertas até que as investigações sejam refeitas; não há reconstrução retroativa, para não recriar a aproximação por grupo.
+
+XP e sequência de acertos continuam em aberto para uma evolução futura do sistema — fora do escopo desta etapa.
 
 ---
 
