@@ -982,15 +982,11 @@ img {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: clamp(4px, 1.5dvh, 12px);
+  gap: clamp(6px, 1.5dvh, 12px);
   background: linear-gradient(160deg, var(--cor-acento), var(--cor-superficie) 70%);
   border-radius: var(--raio-lg);
   box-shadow: var(--sombra-md);
-  /* Piso do clamp vertical abaixado de 12px para 6px: nas telas mais baixas
-     suportadas, essa folga (não o conteúdo do painel) é o que ainda cede,
-     agora que o Resultado (caminho de acerto) também mostra o
-     feedbackSucesso da missão acima da ficha. */
-  padding: clamp(6px, 3dvh, 24px) var(--espaco-4);
+  padding: clamp(12px, 3dvh, 24px) var(--espaco-4);
   text-align: center;
   animation: entrada-tela 380ms ease both;
 }
@@ -1377,7 +1373,7 @@ img {
   border-radius: var(--raio-md);
   /* Só o espaçamento (não o ícone nem o texto) cede um pouco em telas mais
      baixas — é distância entre blocos, não um componente sendo encolhido. */
-  margin-bottom: clamp(4px, 1.5dvh, 16px);
+  margin-bottom: clamp(6px, 2dvh, 16px);
 }
 
 .banner-conquista__icone {
@@ -1441,19 +1437,6 @@ img {
   margin-bottom: clamp(8px, 3dvh, 24px);
 }
 
-/* Mensagem pedagógica curta (missao.feedbackSucesso), DEPOIS da Ficha
-   Científica no caminho de acerto (nunca antes): nas telas mais baixas
-   suportadas, o painel da ficha já usa praticamente todo o espaço vertical
-   disponível — um texto extra antes dela a empurraria pra fora da tela. Já
-   depois da ficha, na pior das hipóteses é só este texto (curto) e os
-   botões que pedem uma pequena rolagem, nunca a ficha em si. */
-.resultado-feedback {
-  color: var(--cor-texto-secundario);
-  font-size: 0.8rem;
-  line-height: 1.3;
-  margin-top: clamp(4px, 1.2dvh, 12px);
-}
-
 .risco-caixa {
   display: flex;
   align-items: center;
@@ -1489,11 +1472,7 @@ img {
   flex-direction: column;
   align-items: center;
   gap: var(--espaco-2);
-  /* clamp (não var(--espaco-5) fixo): esse espaço em branco acima dos
-     botões era o único respiro do Resultado que não cedia em telas baixas —
-     agora que o caminho de acerto pode incluir feedbackSucesso, essa folga
-     é o primeiro lugar a ceder, antes de reduzir a Ficha Científica. */
-  margin-top: clamp(8px, 3dvh, var(--espaco-5));
+  margin-top: var(--espaco-5);
 }
 
 .resultado-acoes .botao-primario {
