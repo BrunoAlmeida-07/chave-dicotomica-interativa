@@ -116,7 +116,8 @@
       "Bash(taskkill //PID 4704 //F)",
       "Bash(taskkill //PID 16440 //F)",
       "Bash(node validar_investigacao_layout.js)",
-      "Bash(taskkill //PID 15524 //F)"
+      "Bash(taskkill //PID 15524 //F)",
+      "Bash(taskkill //PID 8568 //F)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Bruno\\OneDrive\\Área de Trabalho\\chave-dicotomica-interativa\\src"

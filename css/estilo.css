@@ -808,14 +808,14 @@ img {
   animation: entrada-tela 260ms ease both;
 }
 
-/* Selo discreto "Pergunta N" — antes vivia no cabeçalho da tela; agora fica
-   ancorado no próprio cartão, canto superior direito, perto do conteúdo a
-   que se refere. */
+/* Selo discreto "Pergunta N" — vive dentro de .cartao-pergunta__conteudo,
+   primeiro elemento antes da dica/texto, centralizado acima da pergunta
+   (não mais ancorado num canto do cartão inteiro). align-self:center
+   evita que o selo estique para a largura total da coluna, já que
+   .cartao-pergunta__conteudo tem align-items:stretch por padrão (o que é
+   o que se quer para o texto/botões, mas não para este selo). */
 .cartao-pergunta__etapa {
-  position: absolute;
-  top: var(--espaco-3);
-  right: var(--espaco-3);
-  z-index: 1;
+  align-self: center;
   background: var(--cor-acento);
   color: var(--cor-primaria-escura);
   font-weight: 700;
@@ -827,15 +827,19 @@ img {
 /* Três colunas lado a lado: imagem principal | pergunta | imagem de apoio.
    As duas colunas de imagem têm largura fluida com piso e teto em px
    (clamp, não breakpoint) — ficam estáveis e previsíveis, parecidas com o
-   painel da Ficha Científica (mesma técnica). A coluna da pergunta é quem
-   sobra e flexiona de verdade (flex:1), absorvendo tanto o espaço extra em
-   telas largas quanto o aperto em telas estreitas — texto quebra graças a
-   min-width:0. Quando uma das imagens não existe (ex.: Treinamento, sem
-   espécie-alvo), a coluna dela simplesmente não é renderizada — a
-   pergunta ocupa o espaço que sobrar, sem precisar de nenhum ajuste aqui. */
+   painel da Ficha Científica (mesma técnica). ~31% principal / ~25% apoio:
+   a principal continua sendo o maior elemento (e o único com object-fit:
+   cover — sempre preenche o quadro), mas cede uma fatia à imagem de apoio,
+   que precisa de mais área porque nunca é cortada (object-fit: contain). A
+   coluna da pergunta é quem sobra e flexiona de verdade (flex:1),
+   absorvendo tanto o espaço extra em telas largas quanto o aperto em telas
+   estreitas — texto quebra graças a min-width:0. Quando uma das imagens
+   não existe (ex.: Treinamento, sem espécie-alvo), a coluna dela
+   simplesmente não é renderizada — a pergunta ocupa o espaço que sobrar,
+   sem precisar de nenhum ajuste aqui. */
 .cartao-pergunta__imagem-principal-wrapper {
   position: relative;
-  flex: 0 0 clamp(120px, 36%, 320px);
+  flex: 0 0 clamp(120px, 31%, 300px);
   min-height: 0;
   border-radius: var(--raio-md);
   overflow: hidden;
@@ -865,8 +869,17 @@ img {
 }
 
 .cartao-pergunta__imagem-wrapper {
+  /* align-self:center + aspect-ratio (em vez de esticar para a altura
+     cheia do cartão, como a coluna da imagem principal): as fotos de apoio
+     são todas 3:2 (checado nas imagens reais de perguntas.json, nos três
+     grupos). Um quadro que já nasce 3:2 faz o object-fit:contain preencher
+     a célula quase por completo — sem essa moldura extra, a foto de 190px
+     de largura ficava esticada numa célula de ~424px de altura e
+     "sobrava" (contain) a maior parte do espaço em branco ao redor dela. */
   position: relative;
-  flex: 0 0 clamp(64px, 20%, 160px);
+  align-self: center;
+  flex: 0 0 clamp(70px, 25%, 190px);
+  aspect-ratio: 3 / 2;
   min-height: 0;
   border-radius: var(--raio-md);
   overflow: hidden;

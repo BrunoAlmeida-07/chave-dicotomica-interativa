@@ -46,7 +46,6 @@ export function criarCartaoPergunta({
   const cartao = document.createElement("div");
   cartao.className = "cartao-pergunta";
   cartao.innerHTML = `
-    ${etapa ? `<span class="cartao-pergunta__etapa">${etapa}</span>` : ""}
     ${
       imagemPrincipal
         ? `<div class="cartao-pergunta__imagem-principal-wrapper">
@@ -55,6 +54,7 @@ export function criarCartaoPergunta({
         : ""
     }
     <div class="cartao-pergunta__conteudo">
+      ${etapa ? `<span class="cartao-pergunta__etapa">${etapa}</span>` : ""}
       ${dica ? `<p class="cartao-pergunta__dica">${dica}</p>` : ""}
       <p class="cartao-pergunta__texto">${texto}</p>
       <div class="cartao-pergunta__botoes">
