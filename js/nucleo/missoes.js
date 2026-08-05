@@ -20,11 +20,10 @@
  * tudo vem do dado.
  *
  * `listarMissoes()` só devolve missões com `visivelNoMapaDeMissoes !== false`
- * — é assim que a Missão de Treinamento (`missao-0`) fica de fora do Mapa de
- * Missões sem precisar de nenhuma regra específica sobre "missao-0" no
- * código. Ela continua existindo normalmente em missoes.json e continua
- * acessível por id via `obterMissao`, que não filtra nada — é assim que o
- * botão "Como Jogar" da Tela Inicial continua funcionando.
+ * — permite que uma missão futura fique de fora do Mapa de Missões sem
+ * precisar de nenhuma regra específica no código, só o dado. Nenhuma missão
+ * usa isso hoje (o antigo tutorial jogável, Missão 0, foi substituído pela
+ * tela estática "Como Jogar" — ver js/telas/comoJogar.js).
  */
 
 import { listarMissoes as listarMissoesDoBanco, obterMissaoPorId } from "../../database/scripts/database.js";
@@ -37,8 +36,9 @@ export const STATUS_CONCLUIDA = "concluida";
 /**
  * Lista as missões visíveis no Mapa de Missões (`visivelNoMapaDeMissoes !==
  * false`), na ordem de progressão, cada uma com seu `status` calculado.
- * Missões marcadas como não visíveis (ex.: a de Treinamento) continuam
- * acessíveis por id via `obterMissao`, só não entram nesta listagem.
+ * Uma missão marcada como não visível continuaria acessível por id via
+ * `obterMissao`, só não entraria nesta listagem — nenhuma missão usa isso
+ * hoje.
  *
  * @returns {Promise<object[]>}
  */
@@ -93,8 +93,8 @@ async function obterIdsConcluidas() {
  * campo `preRequisito` da própria missão (dado, não regra fixa no código):
  *
  *   1. `sempreDisponivel: true` sempre vence — a missão nunca fica
- *      bloqueada nem "some" atrás do rótulo concluída (ex.: Missão 0,
- *      que deve continuar jogável mesmo depois de concluída).
+ *      bloqueada nem "some" atrás do rótulo concluída, mesmo depois de
+ *      concluída. Nenhuma missão usa isso hoje.
  *   2. Se já foi concluída, o status é "concluida".
  *   3. Sem `preRequisito`, a missão começa disponível.
  *   4. Com `preRequisito`, só fica disponível quando a missão referenciada

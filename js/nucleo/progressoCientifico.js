@@ -4,9 +4,8 @@
  * Camada de progresso científico do jogador, para o Laboratório do
  * Pesquisador. Usa `listarMissoes()` de `missoes.js` (mesmo módulo que já
  * calcula o `status` de cada missão para o Mapa de Missões) e consulta
- * `progressoMissoes` diretamente só para saber se a Missão de Treinamento
- * (`missao-0`) foi concluída, já que ela não aparece em `listarMissoes()`
- * (não é visível no Mapa de Missões).
+ * `lerTutorialVisto()` só para saber se o jogador já concluiu o tutorial
+ * "Como Jogar" (usado pela conquista "Primeiros Passos").
  *
  * "Espécies catalogadas" vem da store `especiesDescobertas` — um registro
  * por espécie individual realmente identificada ao final de uma
@@ -24,9 +23,11 @@
 
 import { listarMissoes } from "./missoes.js";
 import { listarGrupos, listarEspecies, listarConquistas } from "../../database/scripts/database.js";
-import { lerProgressoMissoes, lerEspeciesDescobertas, salvarEspecieDescoberta } from "../../database/scripts/indexeddb.js";
-
-const ID_MISSAO_TREINAMENTO = "missao-0";
+import {
+  lerEspeciesDescobertas,
+  salvarEspecieDescoberta,
+  lerTutorialVisto,
+} from "../../database/scripts/indexeddb.js";
 
 /**
  * Registra que o jogador identificou uma espécie ao final de uma
@@ -60,17 +61,15 @@ export async function registrarDescoberta(especieId) {
  * }>}
  */
 export async function obterProgressoCientifico() {
-  const [missoesCampanha, grupos, especies, conquistasDefinidas, registrosProgresso, registrosDescobertas] =
+  const [missoesCampanha, grupos, especies, conquistasDefinidas, tutorialConcluido, registrosDescobertas] =
     await Promise.all([
       listarMissoes(),
       listarGrupos(),
       listarEspecies(),
       listarConquistas(),
-      lerProgressoMissoes(),
+      lerTutorialVisto(),
       lerEspeciesDescobertas(),
     ]);
-
-  const treinamentoConcluido = registrosProgresso.some((registro) => registro.missaoId === ID_MISSAO_TREINAMENTO);
 
   const grupos_ = grupos.map((grupo) => {
     const missaoDoGrupo = missoesCampanha.find((missao) => missao.grupoId === grupo.id);
@@ -88,7 +87,7 @@ export async function obterProgressoCientifico() {
     registrosDescobertas.map((registro) => registro.especieId).filter((id) => idsEspeciesValidos.has(id))
   );
 
-  const contexto = { treinamentoConcluido, totalGruposConcluidos, gruposConcluidosIds, especiesCatalogadas, especies };
+  const contexto = { tutorialConcluido, totalGruposConcluidos, gruposConcluidosIds, especiesCatalogadas, especies };
   const conquistas = conquistasDefinidas.map((conquista) => avaliarConquista(conquista, contexto));
 
   return {
@@ -109,8 +108,7 @@ export async function obterProgressoCientifico() {
  * (database/schema.md, seção 7) e do progresso já calculado.
  *
  * Tipos avaliados:
- * - `"completar_missoes_fase"`: concluiu ao menos uma missão, de qualquer
- *   tipo — Treinamento ou de grupo.
+ * - `"completar_missoes_fase"`: concluiu ao menos uma missão de grupo.
  * - `"completar_grupo"`: `referenciaId` verifica um grupo específico
  *   (missão concluída); ausência de `referenciaId` verifica uma quantidade
  *   de grupos concluídos.
@@ -122,9 +120,9 @@ export async function obterProgressoCientifico() {
  *   forte que `completar_grupo`, que só olha a missão.
  * - `"catalogar_risco"`: `referenciaId` (valor de `grauImportanciaMedica`)
  *   verifica se todas as espécies com aquele grau já foram catalogadas.
- * - `"concluir_treinamento"`: concluiu especificamente a Missão de
- *   Treinamento (sem contar missões de grupo, diferente de
- *   `"completar_missoes_fase"`).
+ * - `"concluir_tutorial"`: concluiu o tutorial "Como Jogar" (chegou até a
+ *   última página e clicou em "Começar investigação") — não depende de
+ *   nenhuma missão real ter sido jogada.
  *
  * Nenhuma conquista atual usa `"sequencia_acertos"` (ver nota na seção 7 do
  * schema — exige um conceito de acerto/erro que a chave dicotômica
@@ -132,7 +130,7 @@ export async function obterProgressoCientifico() {
  *
  * @param {object} conquista
  * @param {{
- *   treinamentoConcluido: boolean,
+ *   tutorialConcluido: boolean,
  *   totalGruposConcluidos: number,
  *   gruposConcluidosIds: Set<string>,
  *   especiesCatalogadas: Set<string>,
@@ -141,13 +139,13 @@ export async function obterProgressoCientifico() {
  */
 function avaliarConquista(
   conquista,
-  { treinamentoConcluido, totalGruposConcluidos, gruposConcluidosIds, especiesCatalogadas, especies }
+  { tutorialConcluido, totalGruposConcluidos, gruposConcluidosIds, especiesCatalogadas, especies }
 ) {
   const { tipo, referenciaId, quantidade } = conquista.criterio;
   let desbloqueada = false;
 
   if (tipo === "completar_missoes_fase") {
-    desbloqueada = treinamentoConcluido || totalGruposConcluidos >= 1;
+    desbloqueada = totalGruposConcluidos >= 1;
   } else if (tipo === "completar_grupo") {
     desbloqueada = referenciaId ? gruposConcluidosIds.has(referenciaId) : totalGruposConcluidos >= (quantidade ?? 1);
   } else if (tipo === "identificar_especie") {
@@ -158,8 +156,8 @@ function avaliarConquista(
   } else if (tipo === "catalogar_risco") {
     const especiesDoRisco = especies.filter((especie) => especie.grauImportanciaMedica === referenciaId);
     desbloqueada = especiesDoRisco.length > 0 && especiesDoRisco.every((especie) => especiesCatalogadas.has(especie.id));
-  } else if (tipo === "concluir_treinamento") {
-    desbloqueada = treinamentoConcluido;
+  } else if (tipo === "concluir_tutorial") {
+    desbloqueada = tutorialConcluido;
   }
 
   return {

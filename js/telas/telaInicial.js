@@ -3,11 +3,18 @@
  *
  * Tela Inicial: hub de toda sessão a partir da segunda abertura. Oferece os
  * três pontos de entrada do fluxo aprovado: Mapa de Missões, Laboratório do
- * Pesquisador e Como Jogar (atalho direto para a Missão 0 - Treinamento).
+ * Pesquisador e Como Jogar (tutorial estático de 4 páginas).
+ *
+ * "Missões" checa `lerTutorialVisto()` antes de decidir para onde ir: na
+ * primeira vez (flag ainda não gravada), mostra o tutorial "Como Jogar"
+ * primeiro — ele mesmo leva ao Mapa de Missões ao terminar. Da segunda vez
+ * em diante, vai direto ao Mapa de Missões, como antes. "Como Jogar" nunca
+ * checa a flag — é sempre o replay manual, disponível a qualquer momento.
  */
 
 import { irPara } from "../navegacao.js";
 import { criarIcone } from "../componentes/icone.js";
+import { lerTutorialVisto } from "../../database/scripts/indexeddb.js";
 
 export function renderTelaInicial(container) {
   container.innerHTML = `
@@ -34,8 +41,9 @@ export function renderTelaInicial(container) {
     </section>
   `;
 
-  container.querySelector('[data-acao="mapa-missoes"]').addEventListener("click", () => {
-    irPara("mapaMissoes");
+  container.querySelector('[data-acao="mapa-missoes"]').addEventListener("click", async () => {
+    const tutorialVisto = await lerTutorialVisto();
+    irPara(tutorialVisto ? "mapaMissoes" : "comoJogar");
   });
 
   container.querySelector('[data-acao="laboratorio"]').addEventListener("click", () => {
@@ -43,6 +51,6 @@ export function renderTelaInicial(container) {
   });
 
   container.querySelector('[data-acao="como-jogar"]').addEventListener("click", () => {
-    irPara("introducaoMissao", { missaoId: "missao-0" });
+    irPara("comoJogar");
   });
 }

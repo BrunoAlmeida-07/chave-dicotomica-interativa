@@ -1,4 +1,4 @@
-const CACHE_NAME = "missao-fauna-v5"; // MUDE sempre que atualizar
+const CACHE_NAME = "missao-fauna-v6"; // MUDE sempre que atualizar
 
 // Pré-cache só do essencial para o app abrir (HTML, CSS, JS, manifest,
 // ícones, dados de conteúdo). As imagens de espécies/perguntas (~40 MB) NÃO
@@ -28,6 +28,7 @@ const urlsToCache = [
   "./js/nucleo/motorDeInvestigacao.js",
   "./js/nucleo/progressoCientifico.js",
   "./js/telas/boasVindas.js",
+  "./js/telas/comoJogar.js",
   "./js/telas/encerramento.js",
   "./js/telas/introducaoMissao.js",
   "./js/telas/investigacao.js",
@@ -47,6 +48,15 @@ const urlsToCache = [
   "./database/json/grupos.json",
   "./database/json/missoes.json",
   "./database/json/perguntas.json",
+
+  // TUTORIAL "COMO JOGAR" — diferente das imagens de espécies/perguntas
+  // abaixo, essas 4 entram no pré-cache de propósito: são poucas, pequenas,
+  // e podem aparecer já na primeiríssima sessão (antes de qualquer conteúdo
+  // ficar em cache sob demanda), inclusive num primeiro acesso já offline.
+  "./tutorial/passo-1-mapa-missoes.png",
+  "./tutorial/passo-2-selecao-especime.png",
+  "./tutorial/passo-3-investigacao.png",
+  "./tutorial/passo-4-resultado.png",
 
   // As imagens de aranhas/, escorpioes/ e serpentes/ (espécies, perguntas,
   // ficha, laboratório — ~40 MB ao todo) foram removidas de propósito deste

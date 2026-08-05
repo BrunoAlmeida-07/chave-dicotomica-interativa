@@ -72,9 +72,9 @@
   {
     "id": "primeiros-passos",
     "nome": "Primeiros Passos",
-    "descricao": "Concluiu o treinamento e aprendeu a utilizar a chave dicotômica.",
+    "descricao": "Concluiu o tutorial e aprendeu a utilizar a chave dicotômica.",
     "icone": "mapa",
-    "criterio": { "tipo": "concluir_treinamento", "referenciaId": null, "quantidade": null }
+    "criterio": { "tipo": "concluir_tutorial", "referenciaId": null, "quantidade": null }
   },
   {
     "id": "pesquisador-em-formacao",

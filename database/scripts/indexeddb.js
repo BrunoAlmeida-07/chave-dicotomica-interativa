@@ -56,6 +56,16 @@ const CHAVE_CONFIGURACOES = "atual";
 const CHAVE_HASHES_CONTEUDO = "hashesConteudo";
 
 /**
+ * Chave fixa usada para gravar se o jogador já concluiu o tutorial "Como
+ * Jogar" — também não é conteúdo (não vem de nenhum JSON), é estado do
+ * jogador, mas de natureza mais próxima de configuração (uma flag única,
+ * como `hashesConteudo`) do que das stores de progresso por registro
+ * (`progressoMissoes`, `especiesDescobertas`). Mesma store `configuracoes`,
+ * mesmo motivo: evita criar uma store nova só para isto.
+ */
+const CHAVE_TUTORIAL_VISTO = "tutorialVisto";
+
+/**
  * Promise memoizada com a conexão aberta do banco. Evita abrir uma nova
  * conexão a cada operação de leitura/escrita.
  * @type {Promise<IDBDatabase> | null}
@@ -279,6 +289,39 @@ export async function lerHashesConteudo() {
     const requisicao = transacao.objectStore(STORES.configuracoes).get(CHAVE_HASHES_CONTEUDO);
 
     requisicao.onsuccess = () => resolve(requisicao.result ?? null);
+    requisicao.onerror = () => reject(requisicao.error);
+  });
+}
+
+/**
+ * Marca que o jogador concluiu o tutorial "Como Jogar" (chegou até a
+ * última página e clicou em "Começar investigação").
+ * @returns {Promise<void>}
+ */
+export async function salvarTutorialVisto() {
+  const db = await abrirBanco();
+
+  return new Promise((resolve, reject) => {
+    const transacao = db.transaction(STORES.configuracoes, "readwrite");
+    transacao.objectStore(STORES.configuracoes).put(true, CHAVE_TUTORIAL_VISTO);
+
+    transacao.oncomplete = () => resolve();
+    transacao.onerror = () => reject(transacao.error);
+  });
+}
+
+/**
+ * Indica se o jogador já concluiu o tutorial "Como Jogar" antes.
+ * @returns {Promise<boolean>}
+ */
+export async function lerTutorialVisto() {
+  const db = await abrirBanco();
+
+  return new Promise((resolve, reject) => {
+    const transacao = db.transaction(STORES.configuracoes, "readonly");
+    const requisicao = transacao.objectStore(STORES.configuracoes).get(CHAVE_TUTORIAL_VISTO);
+
+    requisicao.onsuccess = () => resolve(requisicao.result === true);
     requisicao.onerror = () => reject(requisicao.error);
   });
 }

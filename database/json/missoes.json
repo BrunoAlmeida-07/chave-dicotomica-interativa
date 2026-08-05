@@ -1,27 +1,5 @@
 [
   {
-    "id": "missao-0",
-    "titulo": "Treinamento",
-    "descricaoCurta": "Aprenda a investigar respondendo ao seu primeiro caso.",
-    "grupoId": "escorpioes",
-    "perguntaInicialId": "escorpioes-p1",
-    "ordemProgressao": 0,
-    "sempreDisponivel": true,
-    "visivelNoMapaDeMissoes": false,
-    "preRequisito": null,
-    "contextoNarrativo": "Este é um treinamento. Você vai praticar o uso da chave dicotômica investigando um caso simples — o objetivo aqui é aprender o processo, sem pressão.",
-    "descricaoOcorrencia": null,
-    "imagemCaso": null,
-    "especieRespostaCorreta": null,
-    "imagemPrincipalIndice": null,
-    "explicacaoCientificaFinal": "A cada novo caso, você vai aplicar esse mesmo raciocínio: observar, responder às perguntas da chave e concluir com base em evidências.",
-    "feedbackSucesso": "Você concluiu seu primeiro caso! A partir de agora, toda investigação vai funcionar assim.",
-    "feedbackErro": null,
-    "faseProgressao": "treinamento",
-    "recompensaXp": null,
-    "conquistasAssociadas": []
-  },
-  {
     "id": "caso-residencia-aranha",
     "titulo": "Aranha na Residência",
     "descricaoCurta": "Uma aranha foi encontrada atrás de um móvel, durante a limpeza da sala.",

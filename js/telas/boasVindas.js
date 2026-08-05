@@ -3,9 +3,9 @@
  *
  * Tela de Boas-vindas: aparece só na primeira abertura do aplicativo,
  * apresentando a Missão Fauna Brasil e o papel do jogador como pesquisador.
- * Depois de "Começar", leva direto à Tela Inicial — não existe nenhuma
- * etapa de tutorial separada (o aprendizado inicial acontece na Missão 0,
- * dentro do fluxo normal de missão).
+ * Depois de "Começar", leva direto à Tela Inicial. O tutorial "Como Jogar"
+ * é uma etapa separada, decidida por telaInicial.js (não por aqui) na
+ * primeira vez que o jogador abre "Missões".
  */
 
 import { irPara } from "../navegacao.js";

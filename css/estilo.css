@@ -1818,6 +1818,68 @@ img {
   margin-bottom: var(--espaco-3);
 }
 
+/* ===== COMO JOGAR (tutorial estático) =====
+   Guia visual de 4 páginas — mesma filosofia "flex real, sem breakpoint"
+   das outras telas sem rolagem: a área da imagem é flex:1/min-height:0,
+   e a foto usa object-fit:contain (as 4 imagens têm proporções diferentes
+   entre si, então um aspect-ratio fixo não serviria aqui — contain garante
+   que nenhuma delas seja cortada, qualquer que seja a forma). */
+.tela-como-jogar {
+  max-width: 900px;
+}
+
+.como-jogar__imagem-wrapper {
+  /* position:relative + a foto em position:absolute (abaixo): tira a
+     imagem do fluxo normal, senão o tamanho intrínseco dela (até
+     1798×875px) conta para o "tamanho mínimo automático" deste flex item,
+     e min-height:0 sozinho não é suficiente pra anular isso — mesma razão
+     pela qual .cartao-pergunta__imagem-wrapper (Investigação) e
+     .cartao-escolha-especie__imagem-wrapper (Seleção de Espécime) já usam
+     essa técnica. */
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+
+.como-jogar__imagem {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: var(--raio-lg);
+  box-shadow: var(--sombra-md);
+}
+
+.como-jogar__indicador {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--espaco-2);
+  margin-top: clamp(8px, 2dvh, 16px);
+}
+
+.como-jogar__ponto {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--cor-borda);
+  transition: background var(--transicao), transform var(--transicao);
+}
+
+.como-jogar__ponto--ativo {
+  background: var(--cor-primaria);
+  transform: scale(1.25);
+}
+
+.como-jogar__navegacao {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--espaco-3);
+  margin-top: clamp(8px, 2dvh, 16px);
+}
+
 /* ===== RESPONSIVIDADE GERAL ===== */
 @media (min-width: 640px) {
   .menu-principal {

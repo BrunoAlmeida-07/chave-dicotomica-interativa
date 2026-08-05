@@ -12,6 +12,7 @@
 import { registrarTela, iniciar } from "./navegacao.js";
 import { renderBoasVindas, jaViuBoasVindas } from "./telas/boasVindas.js";
 import { renderTelaInicial } from "./telas/telaInicial.js";
+import { renderComoJogar } from "./telas/comoJogar.js";
 import { renderMapaMissoes } from "./telas/mapaMissoes.js";
 import { renderIntroducaoMissao } from "./telas/introducaoMissao.js";
 import { renderSelecaoEspecie } from "./telas/selecaoEspecie.js";
@@ -22,6 +23,7 @@ import { renderLaboratorio } from "./telas/laboratorio.js";
 
 registrarTela("boasVindas", renderBoasVindas);
 registrarTela("telaInicial", renderTelaInicial);
+registrarTela("comoJogar", renderComoJogar);
 registrarTela("mapaMissoes", renderMapaMissoes);
 registrarTela("introducaoMissao", renderIntroducaoMissao);
 registrarTela("selecaoEspecie", renderSelecaoEspecie);

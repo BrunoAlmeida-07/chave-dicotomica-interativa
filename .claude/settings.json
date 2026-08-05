@@ -117,7 +117,14 @@
       "Bash(taskkill //PID 16440 //F)",
       "Bash(node validar_investigacao_layout.js)",
       "Bash(taskkill //PID 15524 //F)",
-      "Bash(taskkill //PID 8568 //F)"
+      "Bash(taskkill //PID 8568 //F)",
+      "Bash(node -e \"const m=JSON.parse\\(require\\('fs'\\).readFileSync\\('database/json/missoes.json','utf8'\\)\\); console.log\\('OK, total missoes:', m.length, 'primeira:', m[0].id\\)\")",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('database/json/conquistas.json','utf8'\\)\\); console.log\\('conquistas.json OK'\\)\")",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('database/json/missoes.json','utf8'\\)\\); console.log\\('missoes.json OK'\\)\")",
+      "Bash(node validar_tutorial.js)",
+      "Bash(node validar_tutorial_resolucoes.js)",
+      "Bash(node validar_offline_tutorial.js)",
+      "Bash(taskkill //PID 15348 //F)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Bruno\\OneDrive\\Área de Trabalho\\chave-dicotomica-interativa\\src"
