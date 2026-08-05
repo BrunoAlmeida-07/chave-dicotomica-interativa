@@ -96,7 +96,19 @@
       "Bash(node validar_historico.js)",
       "Bash(node checar_780_revisao.js)",
       "Bash(node ver_grade_escorpioes.js)",
-      "Bash(taskkill //PID 7868 //F)"
+      "Bash(taskkill //PID 7868 //F)",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('database/json/missoes.json','utf8'\\)\\); console.log\\('JSON válido, total de missões:', JSON.parse\\(require\\('fs'\\).readFileSync\\('database/json/missoes.json','utf8'\\)\\).length\\)\")",
+      "Bash(nohup npx serve -l 8642 .)",
+      "Bash(disown)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:8642/)",
+      "Bash(node revisar_narrativas.js)",
+      "Bash(node checar_introducao_780.js)",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('database/json/missoes.json','utf8'\\)\\); console.log\\('JSON válido'\\)\")",
+      "Bash(node rescreenshot_6.js)",
+      "Bash(node validar_grade_especime.js)",
+      "Bash(taskkill //PID 3692 //F)",
+      "Bash(node diagnostico_grade.js)",
+      "Bash(taskkill //PID 4120 //F)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Bruno\\OneDrive\\Área de Trabalho\\chave-dicotomica-interativa\\src"

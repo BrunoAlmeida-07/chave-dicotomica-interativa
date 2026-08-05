@@ -588,33 +588,64 @@ img {
 
 /* ===== SELEÇÃO DE ESPÉCIME =====
    Grade de fotografias, sem nomear nenhuma espécie — só "Espécime N",
-   escolhido por quem chama (selecaoEspecie.js). Mesmo padrão de
-   distribuição de .lista-missoes: cresce no espaço disponível e centraliza
-   quando há poucos cartões. */
+   escolhido por quem chama (selecaoEspecie.js). Sempre 3 cartões por linha,
+   nunca precisa rolar: linhas e cartões são flex items com `flex: 1` +
+   `min-height: 0` encadeados (mesma filosofia de .cartao-pergunta__imagens
+   na Investigação) — cada nível divide de verdade o espaço que sobrar do
+   nível acima, sem nenhuma fração fixa tipo "50%" e sem breakpoint de
+   dispositivo. Isso funciona igual para 5 espécies ([3, 2], última linha
+   centralizada) e para 6 ([3, 3]) — e continuaria funcionando sem ajustes
+   se um grupo futuro tivesse outra quantidade. */
 .tela-selecao-especie {
   max-width: 900px;
 }
 
 .selecao-especie__instrucao {
+  flex-shrink: 0;
   color: var(--cor-texto-secundario);
-  margin-bottom: clamp(12px, 3dvh, 24px);
+  margin-bottom: clamp(6px, 2dvh, 24px);
 }
 
 .selecao-especie__grade {
   flex: 1;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 160px));
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
   justify-content: center;
-  align-content: center;
-  gap: var(--espaco-4);
+  gap: clamp(4px, 1.5dvh, var(--espaco-4));
+}
+
+.selecao-especie__linha {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  justify-content: center;
+  gap: clamp(4px, 1.5dvh, var(--espaco-4));
 }
 
 .cartao-escolha-especie {
+  /* max-height acompanha max-width (mesma folga de padding/rótulo somada ao
+     teto da foto): sem ele, em telas bem altas o cartão cresceria bem além
+     de 200px de largura, e a foto — quadrada por natureza — ficaria
+     esticada em uma moldura retangular alta em vez de um quadrado. */
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+  max-width: 220px;
+  max-height: 240px;
   display: flex;
   flex-direction: column;
+  /* align-items:center (padrão, grade de várias linhas): o quadrado da foto
+     é height-driven (ver .cartao-escolha-especie__imagem-wrapper) — cresce
+     a partir de 0 dentro da altura que a linha realmente tem disponível, o
+     que é seguro em qualquer altura de tela. Numa única linha
+     (.selecao-especie__grade--linha-unica abaixo) o problema se inverte: a
+     altura sobra e a largura é o lado apertado, então esse modificador troca
+     para "stretch" e deixa o quadrado ser width-driven. */
   align-items: center;
-  gap: var(--espaco-2);
-  padding: var(--espaco-2);
+  justify-content: center;
+  gap: clamp(2px, 0.8dvh, var(--espaco-2));
+  padding: clamp(4px, 1dvh, var(--espaco-2));
   border: none;
   border-radius: var(--raio-md);
   background: var(--cor-superficie);
@@ -630,21 +661,60 @@ img {
 }
 
 .cartao-escolha-especie__imagem-wrapper {
-  width: 100%;
+  /* flex:1 com flex-basis 0% (não "auto"): o quadrado cresce a partir de
+     ZERO dentro da altura real que a linha tem disponível — nunca "pede"
+     mais espaço do que existe, o que é o que garante nunca haver rolagem em
+     grades de várias linhas (onde a altura por linha é o lado apertado).
+     width ausente de propósito: aspect-ratio calcula a largura A PARTIR
+     dessa altura seguramente resolvida, e max-width trava o resultado a
+     100% do cartão (nunca maior que a largura da coluna). */
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  max-width: 100%;
   aspect-ratio: 1 / 1;
   border-radius: var(--raio-sm);
   overflow: hidden;
   background: var(--cor-acento);
 }
 
+/* ===== SELEÇÃO DE ESPÉCIME — LINHA ÚNICA (5 espécies ou menos) =====
+   Numa única linha o problema se inverte: sobra altura (só 1 linha ocupa
+   toda a grade) e a largura vira o lado apertado (N cartões dividindo a
+   largura). Nesse caso o quadrado precisa ser width-driven, não
+   height-driven — daí o par de overrides abaixo. Isso é seguro (nunca
+   ultrapassa a altura disponível) justamente PORQUE é só uma linha: a
+   largura dividida por até 5 cartões já resulta num quadrado bem menor que
+   a altura sobrando, mesmo nas telas mais baixas suportadas. Com 2+ linhas
+   essa mesma conta deixaria de ser segura — por isso o modificador só entra
+   quando `selecaoEspecie.js` de fato monta uma única linha. */
+.selecao-especie__grade--linha-unica .selecao-especie__linha {
+  /* align-items:center (não o "stretch" padrão da linha): sem isto, o
+     cartão tenta esticar para a altura toda da linha (que é a grade
+     inteira, já que só há uma) e só é impedido pelo max-height — sobrando
+     como espaço vazio abaixo do cartão em vez de dividido/centralizado. */
+  align-items: center;
+}
+
+.selecao-especie__grade--linha-unica .cartao-escolha-especie {
+  align-items: stretch;
+}
+
+.selecao-especie__grade--linha-unica .cartao-escolha-especie__imagem-wrapper {
+  flex: 0 1 auto;
+}
+
 .cartao-escolha-especie__imagem {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
 .cartao-escolha-especie__rotulo {
-  font-size: 0.85rem;
+  flex-shrink: 0;
+  font-size: clamp(0.7rem, 1.6dvh, 0.85rem);
   font-weight: 600;
   color: var(--cor-texto);
   text-align: center;
