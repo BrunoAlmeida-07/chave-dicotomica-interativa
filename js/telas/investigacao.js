@@ -11,20 +11,26 @@
  *   - "Pergunta anterior": volta uma etapa dentro da árvore
  *     (motor.voltarUmaEtapa), sem sair da tela e sem tocar no histórico do
  *     navegador nem no de navegacao.js.
- *   - "Voltar à introdução": sai da tela e volta para a Introdução da
- *     Missão via navegacao.js (voltar()) — comportamento já existente,
- *     inalterado.
+ *   - "Voltar": sai da tela via navegacao.js (voltar(), baseado no
+ *     histórico) — leva para a Seleção de Espécime, de onde esta tela
+ *     normalmente é alcançada.
  *
  * Recebe em `dados.perguntaInicialId` o ponto de partida na árvore,
- * resolvido pela tela anterior (introducaoMissao.js). `dados.missaoId`,
- * quando presente, é usado para exibir o nome da missão no cabeçalho e para
- * resolver a fotografia do espécime (`missao.especieRespostaCorreta` +
- * `missao.imagemPrincipalIndice`) — não afeta a navegação da árvore, que
- * continua inteiramente determinada pelas respostas reais do jogador.
+ * resolvido pela tela de Introdução da Missão. `dados.especieEscolhidaId`,
+ * resolvido pela tela de Seleção de Espécime, define qual espécie o jogador
+ * está realmente investigando nesta sessão — estado efêmero, nunca gravado
+ * em `missoes.json`. `dados.missaoId` é usado só para exibir o nome da
+ * missão no cabeçalho — não afeta a navegação da árvore, que continua
+ * inteiramente determinada pelas respostas reais do jogador.
  *
  * A fotografia do espécime (`imagemPrincipal`, fixa durante toda a
- * investigação) é só um dado extra passado ao cartão — o Motor de
- * Investigação não sabe que ela existe.
+ * investigação) vem da espécie escolhida — é só um dado extra passado ao
+ * cartão, o Motor de Investigação não sabe que ela existe.
+ *
+ * Ao chegar numa folha da árvore, esta tela compara o resultado real do
+ * Motor (`resultado.especieId`) com `especieEscolhidaId` — a validação de
+ * acerto/erro acontece só aqui, uma camada acima do Motor, que continua
+ * sem nenhum conceito de "certo"/"errado".
  */
 
 import { irPara, voltar } from "../navegacao.js";
@@ -38,17 +44,17 @@ import { resolverCaminhoImagem } from "../utils/assets.js";
 const motor = criarMotorDeInvestigacao(obterPerguntaPorId);
 
 export async function renderInvestigacao(container, dados = {}) {
-  const { perguntaInicialId, missaoId } = dados;
+  const { perguntaInicialId, missaoId, especieEscolhidaId } = dados;
 
   const missao = missaoId ? await obterMissao({ missaoId }) : null;
-  const imagemPrincipal = await resolverImagemPrincipal(missao);
+  const imagemPrincipal = await resolverImagemPrincipal(especieEscolhidaId);
 
   container.innerHTML = `
     <section class="tela tela-investigacao">
       <header class="investigacao-cabecalho">
         <div class="investigacao-cabecalho__navegacao">
           <button type="button" class="botao botao-fantasma" data-acao="voltar">
-            <span class="icone">${criarIcone("voltar")}</span> Voltar à introdução
+            <span class="icone">${criarIcone("voltar")}</span> Voltar
           </button>
         </div>
         <div class="investigacao-cabecalho__titulo">
@@ -112,7 +118,12 @@ export async function renderInvestigacao(container, dados = {}) {
     const resultado = await motor.responder(resposta);
 
     if (resultado.tipo === "especie") {
-      irPara("resultado", { ...dados, especieId: resultado.especieId });
+      const identificacaoCorreta = resultado.especieId === especieEscolhidaId;
+      irPara("resultado", {
+        ...dados,
+        especieIdentificada: resultado.especieId,
+        identificacaoCorreta,
+      });
       return;
     }
 
@@ -121,24 +132,24 @@ export async function renderInvestigacao(container, dados = {}) {
 }
 
 /**
- * Resolve a fotografia do espécime investigado nesta missão: busca a
- * espécie-alvo (`missao.especieRespostaCorreta`) e usa `imagemPrincipalIndice`
- * para escolher qual das fotos de `especie.imagens` representa este caso.
- * Retorna "" (sem imagem principal) para missões sem espécie-alvo definida
- * (ex.: a Missão de Treinamento) — a tela continua funcionando normalmente,
- * só sem a segunda imagem.
+ * Resolve a fotografia do espécime investigado nesta sessão: busca a
+ * espécie escolhida pelo jogador na tela de Seleção de Espécime e usa sua
+ * imagem principal (`imagens[].principal`). Retorna "" (sem imagem
+ * principal) se por algum motivo a tela for aberta sem uma escolha prévia
+ * — a investigação continua funcionando normalmente, só sem a segunda
+ * imagem.
  *
- * @param {object|null} missao
+ * @param {string|undefined} especieEscolhidaId
  * @returns {Promise<string>}
  */
-async function resolverImagemPrincipal(missao) {
-  if (!missao?.especieRespostaCorreta) {
+async function resolverImagemPrincipal(especieEscolhidaId) {
+  if (!especieEscolhidaId) {
     return "";
   }
 
-  const especie = await obterEspeciePorId(missao.especieRespostaCorreta);
+  const especie = await obterEspeciePorId(especieEscolhidaId);
   const imagens = especie?.imagens ?? [];
-  const imagem = imagens[missao.imagemPrincipalIndice ?? 0];
+  const imagemPrincipal = imagens.find((imagem) => imagem.principal) ?? imagens[0];
 
-  return imagem ? resolverCaminhoImagem(imagem.src) : "";
+  return imagemPrincipal ? resolverCaminhoImagem(imagemPrincipal.src) : "";
 }

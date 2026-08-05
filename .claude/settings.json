@@ -88,7 +88,15 @@
       "Bash(node validar_sync.js)",
       "Bash(curl -sI \"http://localhost:8642/database/scripts/database.js\")",
       "Bash(node validar_missoes.js)",
-      "Bash(node medir_introducao.js)"
+      "Bash(node medir_introducao.js)",
+      "Bash(node validar_desacoplamento.js)",
+      "Bash(node validar_revisao.js)",
+      "Bash(node validar_acerto.js)",
+      "Bash(node validar_ajustes.js)",
+      "Bash(node validar_historico.js)",
+      "Bash(node checar_780_revisao.js)",
+      "Bash(node ver_grade_escorpioes.js)",
+      "Bash(taskkill //PID 7868 //F)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Bruno\\OneDrive\\Área de Trabalho\\chave-dicotomica-interativa\\src"

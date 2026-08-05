@@ -1,26 +1,48 @@
 /**
  * resultado.js
  *
- * Resultado: mostra a espécie a que a investigação levou, usando a Ficha
- * Científica reutilizável (componentes/fichaCientifica.js). Esta tela só
- * cuida do que é específico dela: a mensagem de identificação concluída e
- * os botões de ação — toda a exibição da espécie fica a cargo do componente.
+ * Resultado: mostra o desfecho da investigação. Dois caminhos, decididos por
+ * `dados.identificacaoCorreta` (calculado em investigacao.js, comparando o
+ * resultado real do Motor com a espécie escolhida na Seleção de Espécime):
  *
- * Ainda não compara com uma resposta "correta" de missão (depende de
- * missoes.json ter conteúdo narrativo real) — só confirma qual foi a
- * identificação.
+ *   - Correto: exatamente como antes — banner de sucesso, Ficha Científica
+ *     da espécie identificada, botão "Encerrar missão" (grava progresso).
+ *   - Incorreto: mensagem de revisão, sem revelar a espécie correta de
+ *     imediato. "Tentar novamente" reinicia a investigação com a mesma
+ *     espécie escolhida; "Visualizar a resposta correta" revela, só sob
+ *     demanda, a Ficha Científica da espécie que deveria ter sido
+ *     identificada — o nome já aparece com destaque no próprio painel da
+ *     ficha, e o card "Aparência" (sempre o primeiro) já traz as
+ *     características decisivas, então não há texto duplicado aqui.
+ *     Nenhum dos dois botões desse caminho grava progresso — só
+ *     "Encerrar missão" (caminho correto) chega a `encerramento.js`.
+ *
+ * "Tentar novamente" usa `voltar()`, não `irPara()`: a tela de Resultado
+ * (revisão) nunca chega a ser empilhada no histórico por essa ação — o
+ * histórico, ao entrar na Investigação que terminou errada, já tem no topo
+ * a própria Investigação com os dados originais (perguntaInicialId,
+ * missaoId, especieEscolhidaId intactos), então "voltar" a partir daí a
+ * reinicia do zero. Isso também é o que garante que, dentro da nova
+ * tentativa, o botão "Voltar" da Investigação leve para a tela anterior de
+ * verdade (Introdução da Missão) e não de volta para "Identificação não
+ * confirmada" — ela deixa de existir no histórico depois desse clique.
  *
  * "Voltar às missões" leva direto ao Mapa de Missões (não ao histórico de
- * navegação): depois de concluída, voltar para dentro da investigação não
- * faz sentido — faz mais sentido escolher outro caso.
+ * navegação): depois de concluída (ou revisada), voltar para dentro da
+ * investigação não faz sentido — faz mais sentido escolher outro caso.
  */
 
-import { irPara } from "../navegacao.js";
+import { irPara, voltar } from "../navegacao.js";
 import { obterEspeciePorId } from "../../database/scripts/database.js";
 import { criarIcone } from "../componentes/icone.js";
 import { criarFichaCientifica } from "../componentes/fichaCientifica.js";
 
 export async function renderResultado(container, dados = {}) {
+  if (dados.identificacaoCorreta === false) {
+    renderRevisao(container, dados);
+    return;
+  }
+
   container.innerHTML = `
     <section class="tela tela-resultado">
       <div class="banner-conquista banner-conquista--resultado">
@@ -41,17 +63,17 @@ export async function renderResultado(container, dados = {}) {
     irPara("mapaMissoes");
   });
   container.querySelector('[data-acao="avancar"]').addEventListener("click", () => {
-    irPara("encerramento", dados);
+    irPara("encerramento", { ...dados, especieId: dados.especieIdentificada });
   });
 
   const areaResultado = container.querySelector("[data-conteudo-resultado]");
 
-  if (!dados.especieId) {
+  if (!dados.especieIdentificada) {
     areaResultado.innerHTML = '<p class="mensagem-vazia">Nenhuma identificação foi realizada.</p>';
     return;
   }
 
-  const especie = await obterEspeciePorId(dados.especieId);
+  const especie = await obterEspeciePorId(dados.especieIdentificada);
   if (!especie) {
     areaResultado.innerHTML = '<p class="mensagem-vazia">Não foi possível carregar o resultado.</p>';
     return;
@@ -59,4 +81,61 @@ export async function renderResultado(container, dados = {}) {
 
   areaResultado.innerHTML = "";
   areaResultado.appendChild(await criarFichaCientifica(especie, { mostrarRegistro: false }));
+}
+
+/**
+ * Caminho de identificação incorreta: mensagem de revisão + "Tentar
+ * novamente" / "Visualizar a resposta correta". A revelação (espécie
+ * correta + características decisivas + Ficha Científica) só é buscada e
+ * montada quando o botão é clicado — nunca antes.
+ */
+function renderRevisao(container, dados) {
+  container.innerHTML = `
+    <section class="tela tela-resultado">
+      <div class="banner-conquista banner-conquista--revisao">
+        <span class="icone banner-conquista__icone">${criarIcone("alerta")}</span>
+        <strong class="banner-conquista__titulo">Identificação não confirmada</strong>
+      </div>
+      <div class="resultado-corpo" data-corpo>
+        <p class="mensagem-revisao">
+          A identificação realizada não corresponde ao espécime investigado. Revise as características
+          observadas e tente novamente.
+        </p>
+        <div class="resultado-acoes">
+          <button type="button" class="botao botao-primario" data-acao="tentar-novamente">Tentar novamente</button>
+          <button type="button" class="botao botao-fantasma" data-acao="ver-resposta">Visualizar a resposta correta</button>
+        </div>
+      </div>
+    </section>
+  `;
+
+  container.querySelector('[data-acao="tentar-novamente"]').addEventListener("click", voltar);
+
+  container.querySelector('[data-acao="ver-resposta"]').addEventListener("click", async (evento) => {
+    const botao = evento.currentTarget;
+    botao.disabled = true;
+
+    const especie = dados.especieEscolhidaId ? await obterEspeciePorId(dados.especieEscolhidaId) : null;
+    const corpo = container.querySelector("[data-corpo]");
+
+    if (!especie) {
+      corpo.innerHTML = '<p class="mensagem-vazia">Não foi possível carregar a resposta correta.</p>';
+      return;
+    }
+
+    corpo.innerHTML = `
+      <div data-conteudo-ficha></div>
+      <div class="resultado-acoes">
+        <button type="button" class="botao botao-primario" data-acao="tentar-novamente-2">Tentar novamente</button>
+        <button type="button" class="botao botao-fantasma" data-acao="voltar-mapa">Voltar às missões</button>
+      </div>
+    `;
+
+    corpo.querySelector('[data-acao="tentar-novamente-2"]').addEventListener("click", voltar);
+    corpo.querySelector('[data-acao="voltar-mapa"]').addEventListener("click", () => {
+      irPara("mapaMissoes");
+    });
+
+    corpo.querySelector("[data-conteudo-ficha]").appendChild(await criarFichaCientifica(especie, { mostrarRegistro: false }));
+  });
 }

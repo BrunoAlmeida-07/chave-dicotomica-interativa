@@ -45,7 +45,7 @@ export async function renderMapaMissoes(container) {
       titulo: missao.titulo,
       descricao: missao.descricaoCurta,
       status: missao.status,
-      aoClicar: () => irPara("introducaoMissao", { missaoId: missao.id }),
+      aoClicar: () => irPara("selecaoEspecie", { missaoId: missao.id }),
     });
     listaMissoes.appendChild(cartao);
   }
