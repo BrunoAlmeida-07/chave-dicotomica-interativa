@@ -108,7 +108,12 @@
       "Bash(node validar_grade_especime.js)",
       "Bash(taskkill //PID 3692 //F)",
       "Bash(node diagnostico_grade.js)",
-      "Bash(taskkill //PID 4120 //F)"
+      "Bash(taskkill //PID 4120 //F)",
+      "Bash(grep -n \"class=\\\\\"dica\\\\|\\\\\\\\.dica\\\\|__dica\\\\|--dica\" css/estilo.css js/**/*.js)",
+      "Bash(node diagnostico_feedback.js)",
+      "Bash(node diagnostico_feedback_todas.js)",
+      "Bash(node diagnostico_pagina_completa.js)",
+      "Bash(taskkill //PID 4704 //F)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Bruno\\OneDrive\\Área de Trabalho\\chave-dicotomica-interativa\\src"

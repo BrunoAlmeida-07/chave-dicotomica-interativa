@@ -5,8 +5,16 @@
  * `dados.identificacaoCorreta` (calculado em investigacao.js, comparando o
  * resultado real do Motor com a espécie escolhida na Seleção de Espécime):
  *
- *   - Correto: exatamente como antes — banner de sucesso, Ficha Científica
- *     da espécie identificada, botão "Encerrar missão" (grava progresso).
+ *   - Correto: banner de sucesso, Ficha Científica da espécie identificada
+ *     e, logo abaixo dela, a mensagem pedagógica curta da missão
+ *     (`missao.feedbackSucesso`, quando existir — texto curado por caso, não
+ *     por espécie, já que a espécie é sorteada na Seleção de Espécime).
+ *     Vem DEPOIS da ficha, não antes: nas telas mais baixas suportadas, o
+ *     painel da ficha já usa praticamente todo o espaço vertical
+ *     disponível — colocar o texto antes o empurraria para fora da tela.
+ *     Depois dela, na pior das hipóteses só o próprio texto (curto) e os
+ *     botões abaixo pedem uma pequena rolagem, nunca a ficha em si. Botão
+ *     "Encerrar missão" grava progresso.
  *   - Incorreto: mensagem de revisão, sem revelar a espécie correta de
  *     imediato. "Tentar novamente" reinicia a investigação com a mesma
  *     espécie escolhida; "Visualizar a resposta correta" revela, só sob
@@ -34,6 +42,7 @@
 
 import { irPara, voltar } from "../navegacao.js";
 import { obterEspeciePorId } from "../../database/scripts/database.js";
+import { obterMissao } from "../nucleo/missoes.js";
 import { criarIcone } from "../componentes/icone.js";
 import { criarFichaCientifica } from "../componentes/fichaCientifica.js";
 
@@ -73,7 +82,7 @@ export async function renderResultado(container, dados = {}) {
     return;
   }
 
-  const especie = await obterEspeciePorId(dados.especieIdentificada);
+  const [especie, missao] = await Promise.all([obterEspeciePorId(dados.especieIdentificada), obterMissao(dados)]);
   if (!especie) {
     areaResultado.innerHTML = '<p class="mensagem-vazia">Não foi possível carregar o resultado.</p>';
     return;
@@ -81,6 +90,12 @@ export async function renderResultado(container, dados = {}) {
 
   areaResultado.innerHTML = "";
   areaResultado.appendChild(await criarFichaCientifica(especie, { mostrarRegistro: false }));
+  if (missao?.feedbackSucesso) {
+    const feedback = document.createElement("p");
+    feedback.className = "resultado-feedback";
+    feedback.textContent = missao.feedbackSucesso;
+    areaResultado.appendChild(feedback);
+  }
 }
 
 /**
