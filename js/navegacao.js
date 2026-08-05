@@ -15,10 +15,31 @@
  * telas do fluxo de investigação (Introdução da Missão, Investigação) usam
  * `voltar()`, porque ali o retorno depender do caminho percorrido pelo
  * jogador é o comportamento desejado.
+ *
+ * Rolagem da página: por padrão o documento é `overflow: hidden` (ver
+ * estilo.css, seletor `html`) — a maioria das telas foi projetada para
+ * caber exatamente na viewport, e "hidden" torna a rolagem impossível de
+ * verdade nelas, em vez de só improvável (nenhuma dependência de pixel
+ * perfeito ou de comportamento específico de navegador/dispositivo).
+ * `desenharTela` é o único lugar que sabe qual tela está ativa, então é
+ * aqui que a classe `html.permite-rolagem` é ligada/desligada — só para as
+ * telas em TELAS_ROLAVEIS, que são naturalmente mais altas que a viewport
+ * por conteúdo real (não por bug): Mapa de Missões (grade de casos),
+ * Resultado (Ficha Científica com vários cards, painel fixo por
+ * `position: sticky`) e Laboratório (perfil + catálogo + conquistas).
  */
 
 /** @type {Map<string, (container: HTMLElement, dados?: object) => void>} */
 const telasRegistradas = new Map();
+
+/**
+ * Nomes de tela cujo conteúdo é naturalmente mais alto que a viewport —
+ * únicas que devem permitir rolagem da página. Qualquer tela fora desta
+ * lista foi projetada para caber exatamente: se algum dia isso deixar de
+ * ser verdade (conteúdo novo, texto maior), o sintoma correto a corrigir é
+ * o layout daquela tela, não adicionar seu nome aqui.
+ */
+const TELAS_ROLAVEIS = new Set(["mapaMissoes", "resultado", "laboratorio"]);
 
 /** Pilha de telas visitadas, usada por `voltar()`. */
 const historico = [];
@@ -84,4 +105,5 @@ function desenharTela(nome, dados) {
   elementoContainer.innerHTML = "";
   render(elementoContainer, dados);
   telaAtual = { nome, dados };
+  document.documentElement.classList.toggle("permite-rolagem", TELAS_ROLAVEIS.has(nome));
 }

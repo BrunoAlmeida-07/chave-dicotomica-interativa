@@ -83,15 +83,23 @@
   box-sizing: border-box;
 }
 
-/* overscroll-behavior-y:none em html e body (navegadores variam sobre qual
-   dos dois observam): impede o gesto de pull-to-refresh nativo do
-   navegador/PWA no topo da página, sem afetar a rolagem normal em nenhuma
-   tela — Laboratório e outras telas com conteúdo mais alto que a viewport
-   continuam rolando exatamente como antes. Só a "sobra" do gesto no limite
-   (que hoje recarregava o app e fazia telas sem rolagem voltarem a
-   precisar de rolagem) deixa de existir. */
+/* overflow:hidden por padrão no documento: a maioria das telas foi
+   projetada para caber exatamente na viewport (ver comentário em
+   navegacao.js) — em vez de tentar garantir isso só por medidas de pixel
+   (frágil: varia por fonte, densidade de tela, barra de endereço do
+   navegador móvel animando...), a rolagem fica estruturalmente impossível
+   nessas telas: "hidden" real, não scrollbar escondida com área rolável
+   ainda existindo por trás. `html.permite-rolagem` (ligada por
+   navegacao.js só nas 3 telas que são naturalmente mais altas que a
+   viewport: Mapa de Missões, Resultado, Laboratório) reabilita a rolagem
+   exatamente onde ela é conteúdo real, não sintoma de bug. */
 html {
+  overflow: hidden;
   overscroll-behavior-y: none;
+}
+
+html.permite-rolagem {
+  overflow-y: auto;
 }
 
 body {
@@ -1551,25 +1559,48 @@ img {
   max-width: 960px;
 }
 
+/* Cabeçalho compacto: "Central do pesquisador" mudou de rótulo empilhado
+   acima do título para subtítulo discreto na mesma linha do "Voltar" (
+   margin-left:auto empurra pro canto oposto, mesmo truque já usado em
+   .como-jogar__dica-swipe) — some uma linha inteira de altura, e o título
+   passa a vir logo em seguida, sem a etiqueta entre os dois. */
+.laboratorio__cabecalho {
+  margin-bottom: clamp(4px, 1.5dvh, 12px);
+}
+
 .laboratorio__topo {
   text-align: center;
-  margin-bottom: var(--espaco-5);
+  margin-bottom: clamp(8px, 2dvh, 16px);
 }
 
 .laboratorio__etiqueta {
+  margin-left: auto;
+  margin-bottom: 0;
   color: var(--cor-acento-laranja-escura);
 }
 
 .laboratorio__titulo {
   font-size: 1.8rem;
   color: var(--cor-acento-laranja-escura);
-  margin: var(--espaco-2) 0;
+  margin: 0 0 var(--espaco-1) 0;
 }
 
 .laboratorio__subtitulo {
   color: var(--cor-texto-secundario);
-  max-width: 480px;
+  /* Sem max-width fixo (antes 480px — mais estreito que o texto inteiro,
+     forçava quebra em duas linhas mesmo com espaço de sobra em paisagem):
+     texto centralizado, do jeito que o navegador já quebra por padrão —
+     uma linha só sempre que a largura disponível permitir (o caso comum,
+     paisagem), quebrando normalmente só se um dia não couber. */
   margin: 0 auto;
+}
+
+/* Padding vertical reduzido em todos os cards do Laboratório (perfil +
+   Progresso científico/Catálogo/Conquistas) — mesma horizontal de
+   .cartao (var(--espaco-5)), só menos ar em cima/embaixo. Não altera
+   .cartao em si (classe genérica usada em outras telas). */
+.tela-laboratorio .cartao {
+  padding: var(--espaco-4) var(--espaco-5);
 }
 
 /* Perfil do pesquisador */
@@ -1635,9 +1666,9 @@ img {
 .laboratorio__card-titulo {
   display: flex;
   align-items: center;
-  gap: var(--espaco-3);
+  gap: var(--espaco-2);
   font-size: 1.05rem;
-  margin-bottom: var(--espaco-4);
+  margin-bottom: var(--espaco-2);
 }
 
 .laboratorio__card-titulo .icone {
@@ -1653,7 +1684,7 @@ img {
 .laboratorio__progresso-legenda {
   color: var(--cor-texto-secundario);
   font-size: 0.9rem;
-  margin-bottom: var(--espaco-2);
+  margin-bottom: var(--espaco-1);
 }
 
 .barra-progresso {

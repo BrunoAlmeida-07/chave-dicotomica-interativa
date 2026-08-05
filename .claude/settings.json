@@ -128,7 +128,15 @@
       "Bash(node --check js/telas/comoJogar.js)",
       "Bash(node validar_carrossel.js)",
       "Bash(node validar_carrossel_touch.js)",
-      "Bash(taskkill //PID 4696 //F)"
+      "Bash(taskkill //PID 4696 //F)",
+      "Bash(node medir_overflow_animacao.js)",
+      "Bash(npx playwright *)",
+      "Bash(node medir_overflow_animacao_webkit.js)",
+      "Bash(node medir_scroll_residual.js)",
+      "Bash(node auditar_overflow_elementos.js)",
+      "Bash(node validar_overflow_hidden.js)",
+      "Bash(node validar_offline_laboratorio.js)",
+      "Bash(taskkill //PID 17664 //F)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Bruno\\OneDrive\\Área de Trabalho\\chave-dicotomica-interativa\\src"

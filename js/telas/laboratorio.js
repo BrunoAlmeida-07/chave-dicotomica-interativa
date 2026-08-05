@@ -26,14 +26,14 @@ import { listarEspecies } from "../../database/scripts/database.js";
 export async function renderLaboratorio(container) {
   container.innerHTML = `
     <section class="tela tela-laboratorio">
-      <header class="tela-cabecalho">
+      <header class="tela-cabecalho laboratorio__cabecalho">
         <button type="button" class="botao botao-fantasma" data-acao="voltar">
           <span class="icone">${criarIcone("voltar")}</span> Voltar
         </button>
+        <span class="etiqueta laboratorio__etiqueta">Central do pesquisador</span>
       </header>
 
       <div class="laboratorio__topo">
-        <span class="etiqueta laboratorio__etiqueta">Central do pesquisador</span>
         <h1 class="laboratorio__titulo">Laboratório do Pesquisador</h1>
         <p class="laboratorio__subtitulo">Acompanhe sua evolução científica e o progresso das suas descobertas.</p>
       </div>
