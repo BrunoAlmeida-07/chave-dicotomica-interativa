@@ -83,11 +83,23 @@
   box-sizing: border-box;
 }
 
+/* overscroll-behavior-y:none em html e body (navegadores variam sobre qual
+   dos dois observam): impede o gesto de pull-to-refresh nativo do
+   navegador/PWA no topo da página, sem afetar a rolagem normal em nenhuma
+   tela — Laboratório e outras telas com conteúdo mais alto que a viewport
+   continuam rolando exatamente como antes. Só a "sobra" do gesto no limite
+   (que hoje recarregava o app e fazia telas sem rolagem voltarem a
+   precisar de rolagem) deixa de existir. */
+html {
+  overscroll-behavior-y: none;
+}
+
 body {
   font-family: var(--fonte);
   background: radial-gradient(circle at top, #eef6ee, var(--cor-fundo) 60%);
   color: var(--cor-texto);
   line-height: 1.5;
+  overscroll-behavior-y: none;
   /* dvh (não vh): em navegadores móveis, vh é calculado contra a maior
      altura possível da viewport (barra de endereço recolhida), não contra
      o espaço realmente visível no momento — por isso uma tela podia caber
@@ -1818,14 +1830,66 @@ img {
   margin-bottom: var(--espaco-3);
 }
 
-/* ===== COMO JOGAR (tutorial estático) =====
-   Guia visual de 4 páginas — mesma filosofia "flex real, sem breakpoint"
-   das outras telas sem rolagem: a área da imagem é flex:1/min-height:0,
-   e a foto usa object-fit:contain (as 4 imagens têm proporções diferentes
-   entre si, então um aspect-ratio fixo não serviria aqui — contain garante
-   que nenhuma delas seja cortada, qualquer que seja a forma). */
+/* ===== COMO JOGAR (tutorial estático, carrossel) =====
+   Carrossel horizontal de 4 páginas, arrastado via Pointer Events (mesmo
+   código cobre touch e mouse — ver comoJogar.js). Mesma filosofia "flex
+   real, sem breakpoint" das outras telas sem rolagem: a área da imagem é
+   flex:1/min-height:0, e a foto (na verdade um <canvas>, já recortado por
+   cima da faixa verde — ver comoJogar.js) usa object-fit:contain. */
 .tela-como-jogar {
   max-width: 900px;
+}
+
+.como-jogar__dica-swipe {
+  /* margin-left:auto empurra só este item para o canto oposto do
+     cabeçalho, sem precisar de justify-content:space-between em
+     .tela-cabecalho (compartilhada com outras telas). */
+  margin-left: auto;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--cor-texto-secundario);
+}
+
+.como-jogar__carrossel {
+  /* display:flex (coluna) só para que .como-jogar__trilha possa herdar
+     altura via flex:1, não via height:100% — height:100% encadeado em
+     vários níveis (trilha -> página -> wrapper) não resolveu de forma
+     confiável aqui, mesmo com o carrossel já tendo altura definida; flex:1
+     em cada nível, a mesma técnica já usada em todo o resto do app,
+     resolve sem ambiguidade. */
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  cursor: grab;
+  /* pan-y: o navegador continua livre para gestos verticais (evita
+     conflito com o próprio bloqueio de pull-to-refresh); o arraste
+     horizontal é só nosso, via Pointer Events. */
+  touch-action: pan-y;
+}
+
+.como-jogar__carrossel:active {
+  cursor: grabbing;
+}
+
+.como-jogar__trilha {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  width: calc(100% * 4); /* 4 páginas lado a lado — ver PAGINAS.length em comoJogar.js */
+  transition: transform 280ms ease;
+}
+
+.como-jogar__trilha--sem-transicao {
+  transition: none;
+}
+
+.como-jogar__pagina {
+  flex: 0 0 25%; /* 100% / 4 páginas */
+  min-width: 0;
+  min-height: 0;
+  display: flex;
 }
 
 .como-jogar__imagem-wrapper {
@@ -1839,6 +1903,7 @@ img {
   position: relative;
   flex: 1;
   min-height: 0;
+  width: 100%;
 }
 
 .como-jogar__imagem {
@@ -1849,6 +1914,11 @@ img {
   object-fit: contain;
   border-radius: var(--raio-lg);
   box-shadow: var(--sombra-md);
+  /* O <canvas> não arrasta feito imagem por padrão, mas texto/seleção ao
+     redor dele durante o gesto de swipe sim — sem isso, um arraste rápido
+     seleciona texto vizinho em vez de só mover o carrossel. */
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
 .como-jogar__indicador {
@@ -1872,11 +1942,9 @@ img {
   transform: scale(1.25);
 }
 
-.como-jogar__navegacao {
+.como-jogar__acoes {
   display: flex;
   justify-content: center;
-  align-items: center;
-  gap: var(--espaco-3);
   margin-top: clamp(8px, 2dvh, 16px);
 }
 

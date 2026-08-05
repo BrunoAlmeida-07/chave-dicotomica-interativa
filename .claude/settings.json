@@ -124,7 +124,11 @@
       "Bash(node validar_tutorial.js)",
       "Bash(node validar_tutorial_resolucoes.js)",
       "Bash(node validar_offline_tutorial.js)",
-      "Bash(taskkill //PID 15348 //F)"
+      "Bash(taskkill //PID 15348 //F)",
+      "Bash(node --check js/telas/comoJogar.js)",
+      "Bash(node validar_carrossel.js)",
+      "Bash(node validar_carrossel_touch.js)",
+      "Bash(taskkill //PID 4696 //F)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Bruno\\OneDrive\\Área de Trabalho\\chave-dicotomica-interativa\\src"
