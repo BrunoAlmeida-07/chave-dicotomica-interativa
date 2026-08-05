@@ -824,24 +824,18 @@ img {
   border-radius: 999px;
 }
 
-/* Coluna de imagens: a mesma largura que antes (38% do cartão), agora
-   dividida verticalmente entre a foto principal (fixa, o espécime da
-   missão) e a foto de apoio (muda a cada pergunta) — 65/35, para a foto do
-   caso ter mais destaque sem perder a referência da característica
-   observada. Quando só uma das duas existe (ex.: missão sem espécie-alvo,
-   como o Treinamento), ela sozinha ocupa a coluna inteira (flex:1 no filho
-   único preenche o espaço do outro que não foi renderizado). */
-.cartao-pergunta__imagens {
-  flex: 0 0 38%;
-  display: flex;
-  flex-direction: column;
-  gap: clamp(4px, 1dvh, 8px);
-  min-height: 0;
-}
-
-.cartao-pergunta__imagem-principal-wrapper,
-.cartao-pergunta__imagem-wrapper {
+/* Três colunas lado a lado: imagem principal | pergunta | imagem de apoio.
+   As duas colunas de imagem têm largura fluida com piso e teto em px
+   (clamp, não breakpoint) — ficam estáveis e previsíveis, parecidas com o
+   painel da Ficha Científica (mesma técnica). A coluna da pergunta é quem
+   sobra e flexiona de verdade (flex:1), absorvendo tanto o espaço extra em
+   telas largas quanto o aperto em telas estreitas — texto quebra graças a
+   min-width:0. Quando uma das imagens não existe (ex.: Treinamento, sem
+   espécie-alvo), a coluna dela simplesmente não é renderizada — a
+   pergunta ocupa o espaço que sobrar, sem precisar de nenhum ajuste aqui. */
+.cartao-pergunta__imagem-principal-wrapper {
   position: relative;
+  flex: 0 0 clamp(120px, 36%, 320px);
   min-height: 0;
   border-radius: var(--raio-md);
   overflow: hidden;
@@ -849,20 +843,11 @@ img {
   background: var(--cor-acento);
 }
 
-.cartao-pergunta__imagem-principal-wrapper {
-  flex: 65 0 0;
-}
-
-.cartao-pergunta__imagem-wrapper {
-  flex: 35 0 0;
-}
-
-.cartao-pergunta__imagem-principal,
-.cartao-pergunta__imagem {
+.cartao-pergunta__imagem-principal {
   /* position:absolute + inset:0 faz a foto preencher a célula inteira,
-     qualquer que seja a altura real do cartão — sem depender de uma
-     altura fixa em pixels e sem sobrar área vazia de fundo ao redor da
-     imagem quando a coluna de texto for mais alta ou mais baixa que ela. */
+     qualquer que seja a altura real do cartão. object-fit:cover (não
+     "contain"): é a imagem de maior destaque, preenche o quadro por
+     completo — cortar as bordas é aceitável, esticar não. */
   position: absolute;
   inset: 0;
   width: 100%;
@@ -871,12 +856,36 @@ img {
 }
 
 .cartao-pergunta__conteudo {
-  flex: 1 1 62%;
+  flex: 1 1 0;
   min-width: 0; /* permite ao texto encolher/quebrar em vez de forçar a linha a crescer */
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: clamp(6px, 1.5dvh, 12px);
+}
+
+.cartao-pergunta__imagem-wrapper {
+  position: relative;
+  flex: 0 0 clamp(64px, 20%, 160px);
+  min-height: 0;
+  border-radius: var(--raio-md);
+  overflow: hidden;
+  box-shadow: var(--sombra-sm);
+  background: var(--cor-acento);
+}
+
+.cartao-pergunta__imagem {
+  /* object-fit:contain (não "cover"): é a foto de apoio, muda a cada
+     pergunta e costuma ter proporção diferente do quadro — precisa
+     continuar inteira e legível, então "sobra" (letterbox) é aceitável,
+     corte não. position:absolute + inset:0 ainda serve pra preencher a
+     célula com a moldura; contain garante que a foto em si não seja
+     cortada dentro dela. */
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .cartao-pergunta__dica {
@@ -896,12 +905,19 @@ img {
 
 .cartao-pergunta__botoes {
   display: flex;
+  flex-wrap: wrap; /* rede de segurança: se algum dia não couberem lado a lado, quebra em vez de vazar da coluna */
   gap: var(--espaco-3);
   margin-top: var(--espaco-2);
 }
 
 .botao-resposta {
   min-width: 0; /* evita que o texto do botão force o flex a não encolher */
+  /* Um pouco mais estreito que o padrão de .botao (20px): a coluna da
+     pergunta agora divide espaço com a imagem de apoio ao lado, então os
+     botões cedem um pouco de largura primeiro — ainda confortáveis ao
+     toque (altura/padding vertical intactos). */
+  padding-left: 16px;
+  padding-right: 16px;
 }
 
 /* Telas médias (tablets pequenos, celulares em landscape): reduz um pouco antes de precisar cortar mais. */
@@ -930,10 +946,6 @@ img {
   .cartao-pergunta {
     gap: var(--espaco-2);
     padding: var(--espaco-2);
-  }
-
-  .cartao-pergunta__imagens {
-    flex-basis: 35%;
   }
 
   .cartao-pergunta__conteudo {

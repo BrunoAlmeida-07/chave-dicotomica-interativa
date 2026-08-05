@@ -6,13 +6,18 @@
  * quem o usa. Não conhece perguntas.json, missoes.json nem database.js — só
  * desenha o que recebe.
  *
- * Duas imagens, papéis diferentes:
+ * Três colunas lado a lado (imagem principal | pergunta | imagem de apoio),
+ * cada uma um filho direto de `.cartao-pergunta` — não duas imagens
+ * empilhadas na mesma coluna como antes. Papéis diferentes:
  *   - `imagemPrincipal` (opcional): a fotografia fixa do espécime da
  *     missão — a mesma em todas as perguntas de uma investigação. Quem
  *     decide qual foto é essa (missão → espécie-alvo → imagens[]) é
- *     investigacao.js, não este componente.
+ *     investigacao.js, não este componente. Maior destaque (coluna mais
+ *     larga), `object-fit: cover`.
  *   - `imagem` (a de sempre): a foto de apoio da pergunta atual, muda a
- *     cada etapa da chave, destacando a característica observada.
+ *     cada etapa da chave, destacando a característica observada. Coluna
+ *     própria ao lado da pergunta, `object-fit: contain` — nunca cortada,
+ *     mesmo quando a proporção da foto foge do quadrado.
  */
 
 /**
@@ -43,22 +48,9 @@ export function criarCartaoPergunta({
   cartao.innerHTML = `
     ${etapa ? `<span class="cartao-pergunta__etapa">${etapa}</span>` : ""}
     ${
-      imagemPrincipal || imagem
-        ? `<div class="cartao-pergunta__imagens">
-             ${
-               imagemPrincipal
-                 ? `<div class="cartao-pergunta__imagem-principal-wrapper">
-                      <img class="cartao-pergunta__imagem-principal" src="${imagemPrincipal}" alt="Espécime encontrado nesta investigação">
-                    </div>`
-                 : ""
-             }
-             ${
-               imagem
-                 ? `<div class="cartao-pergunta__imagem-wrapper">
-                      <img class="cartao-pergunta__imagem" src="${imagem}" alt="">
-                    </div>`
-                 : ""
-             }
+      imagemPrincipal
+        ? `<div class="cartao-pergunta__imagem-principal-wrapper">
+             <img class="cartao-pergunta__imagem-principal" src="${imagemPrincipal}" alt="Espécime encontrado nesta investigação">
            </div>`
         : ""
     }
@@ -70,6 +62,13 @@ export function criarCartaoPergunta({
         <button type="button" class="botao botao-resposta" data-resposta="nao">Não</button>
       </div>
     </div>
+    ${
+      imagem
+        ? `<div class="cartao-pergunta__imagem-wrapper">
+             <img class="cartao-pergunta__imagem" src="${imagem}" alt="">
+           </div>`
+        : ""
+    }
   `;
 
   cartao.querySelector('[data-resposta="sim"]').addEventListener("click", aoResponderSim);
