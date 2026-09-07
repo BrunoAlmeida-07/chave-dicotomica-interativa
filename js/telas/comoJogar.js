@@ -19,11 +19,17 @@
  * Missões. Não há ramificação por "como cheguei aqui".
  *
  * As 4 imagens em si nunca são alteradas (mesmos arquivos de
- * tutorial/*.png). O que muda é só a moldura: cada uma traz, na própria
- * composição, uma faixa verde decorativa no topo — CROP_FRACAO_TOPO recorta
- * essa faixa por cima de um <canvas> (nunca escreve no arquivo original),
- * desenhando só a região abaixo dela. O valor cobre a faixa mais alta
- * medida entre as 4 imagens (~4,1%) com uma margem de segurança.
+ * tutorial/*.png). O que muda é só a moldura: 3 delas trazem, na própria
+ * composição, uma faixa verde decorativa no topo — CROP_FRACAO_TOPO_PADRAO
+ * recorta essa faixa por cima de um <canvas> (nunca escreve no arquivo
+ * original), desenhando só a região abaixo dela. O valor cobre a faixa mais
+ * alta medida entre elas (~4,1%) com uma margem de segurança.
+ *
+ * A imagem do passo 1 (Mapa de Missões) foi regenerada sem essa faixa — o
+ * título "Mapa de Missões" já começa perto do topo da composição, então o
+ * mesmo corte de 5% passou a cortar o próprio título. `cropFracaoTopo: 0`
+ * em PAGINAS desliga o corte só para ela; as outras 3 continuam exatamente
+ * como estavam.
  */
 
 import { irPara } from "../navegacao.js";
@@ -31,10 +37,14 @@ import { criarIcone } from "../componentes/icone.js";
 import { resolverCaminhoImagem } from "../utils/assets.js";
 import { salvarTutorialVisto } from "../../database/scripts/indexeddb.js";
 
-const CROP_FRACAO_TOPO = 0.05;
+const CROP_FRACAO_TOPO_PADRAO = 0.05;
 
 const PAGINAS = [
-  { src: "tutorial/passo-1-mapa-missoes.png", alt: "Mapa de Missões: cada cartão representa uma missão disponível." },
+  {
+    src: "tutorial/passo-1-mapa-missoes.png",
+    alt: "Mapa de Missões: cada cartão representa uma missão disponível.",
+    cropFracaoTopo: 0,
+  },
   { src: "tutorial/passo-2-selecao-especime.png", alt: "Seleção de Espécime: escolha uma fotografia para iniciar o caso." },
   { src: "tutorial/passo-3-investigacao.png", alt: "Investigação: observe as imagens e responda Sim ou Não a cada pergunta." },
   { src: "tutorial/passo-4-resultado.png", alt: "Resultado: veja a espécie identificada, curiosidades e encerre a missão." },
@@ -106,7 +116,8 @@ export function renderComoJogar(container) {
   // intacto) e só então preenche a página correspondente — em paralelo,
   // pra não atrasar a exibição de nenhuma página em função das outras.
   PAGINAS.forEach((pagina, indice) => {
-    criarCanvasRecortado(resolverCaminhoImagem(pagina.src), pagina.alt).then((canvas) => {
+    const fracaoTopo = pagina.cropFracaoTopo ?? CROP_FRACAO_TOPO_PADRAO;
+    criarCanvasRecortado(resolverCaminhoImagem(pagina.src), pagina.alt, fracaoTopo).then((canvas) => {
       container.querySelector(`[data-wrapper="${indice}"]`).appendChild(canvas);
     });
   });
@@ -194,19 +205,19 @@ export function renderComoJogar(container) {
 }
 
 /**
- * Carrega uma imagem e devolve um <canvas> com a região de
- * `CROP_FRACAO_TOPO` mais alta descartada — a foto original nunca é
- * escrita, só lida e redesenhada.
+ * Carrega uma imagem e devolve um <canvas> com a região de `fracaoTopo` mais
+ * alta descartada — a foto original nunca é escrita, só lida e redesenhada.
  *
  * @param {string} src
  * @param {string} alt
+ * @param {number} fracaoTopo
  * @returns {Promise<HTMLCanvasElement>}
  */
-function criarCanvasRecortado(src, alt) {
+function criarCanvasRecortado(src, alt, fracaoTopo) {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => {
-      const corteTopoPx = Math.round(img.naturalHeight * CROP_FRACAO_TOPO);
+      const corteTopoPx = Math.round(img.naturalHeight * fracaoTopo);
       const alturaRecortada = img.naturalHeight - corteTopoPx;
 
       const canvas = document.createElement("canvas");
