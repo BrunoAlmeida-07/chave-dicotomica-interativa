@@ -1,4 +1,4 @@
-const CACHE_NAME = "missao-fauna-v8"; // MUDE sempre que atualizar
+const CACHE_NAME = "missao-fauna-v9"; // MUDE sempre que atualizar
 
 // Pré-cache só do essencial para o app abrir (HTML, CSS, JS, manifest,
 // ícones, dados de conteúdo). As imagens de espécies/perguntas (~40 MB) NÃO

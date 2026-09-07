@@ -40,6 +40,38 @@ import { obterEspeciePorId } from "../../database/scripts/database.js";
 import { criarIcone } from "../componentes/icone.js";
 import { criarFichaCientifica } from "../componentes/fichaCientifica.js";
 
+const LARGURA_MAXIMA_RETRATO = 639;
+const LIMIAR_ROLAGEM_COMPACTO = 12;
+
+/**
+ * Encolhe o painel sticky da Ficha Científica assim que a tela rola, só no
+ * retrato (ver CSS, `.ficha-cientifica__painel--compacto` dentro de
+ * `@media (max-width: 639.98px)`). Fica só aqui, não em fichaCientifica.js:
+ * o componente é reaproveitado pelo modal do Laboratório, que tem rolagem
+ * própria e não pediu esse efeito.
+ *
+ * Sem hook de desmontagem na navegação (ver navegacao.js), o listener se
+ * limpa sozinho: a cada scroll, se o painel não estiver mais no documento
+ * (tela trocada), ele se remove — o pior caso é um scroll a mais em outra
+ * tela rolável antes da limpeza acontecer, sem custo relevante.
+ */
+function ativarPainelCompactoAoRolar(fichaElemento) {
+  const painel = fichaElemento.querySelector(".ficha-cientifica__painel");
+  if (!painel) return;
+
+  function aoRolar() {
+    if (!painel.isConnected) {
+      window.removeEventListener("scroll", aoRolar);
+      return;
+    }
+    const compacto = window.innerWidth <= LARGURA_MAXIMA_RETRATO && window.scrollY > LIMIAR_ROLAGEM_COMPACTO;
+    painel.classList.toggle("ficha-cientifica__painel--compacto", compacto);
+  }
+
+  window.addEventListener("scroll", aoRolar, { passive: true });
+  aoRolar();
+}
+
 export async function renderResultado(container, dados = {}) {
   if (dados.identificacaoCorreta === false) {
     renderRevisao(container, dados);
@@ -83,7 +115,9 @@ export async function renderResultado(container, dados = {}) {
   }
 
   areaResultado.innerHTML = "";
-  areaResultado.appendChild(await criarFichaCientifica(especie, { mostrarRegistro: false }));
+  const fichaElemento = await criarFichaCientifica(especie, { mostrarRegistro: false });
+  areaResultado.appendChild(fichaElemento);
+  ativarPainelCompactoAoRolar(fichaElemento);
 }
 
 /**
@@ -139,6 +173,8 @@ function renderRevisao(container, dados) {
       irPara("mapaMissoes");
     });
 
-    corpo.querySelector("[data-conteudo-ficha]").appendChild(await criarFichaCientifica(especie, { mostrarRegistro: false }));
+    const fichaElemento = await criarFichaCientifica(especie, { mostrarRegistro: false });
+    corpo.querySelector("[data-conteudo-ficha]").appendChild(fichaElemento);
+    ativarPainelCompactoAoRolar(fichaElemento);
   });
 }

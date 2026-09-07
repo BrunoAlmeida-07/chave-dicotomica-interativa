@@ -140,7 +140,8 @@
       "Bash(node validar_retrato.js)",
       "Bash(node validar_regressao_paisagem.js)",
       "Bash(powershell -NoProfile -Command \"Get-CimInstance Win32_Process -Filter \\\\\"Name='node.exe'\\\\\" | Select-Object ProcessId, CommandLine | Format-List\")",
-      "Bash(powershell -NoProfile -Command \"Stop-Process -Id 9300 -Force -ErrorAction SilentlyContinue; Stop-Process -Id 12684 -Force -ErrorAction SilentlyContinue; Start-Sleep -Milliseconds 500; Get-CimInstance Win32_Process -Filter \\\\\"Name='node.exe'\\\\\" | Select-Object ProcessId, CommandLine\")"
+      "Bash(powershell -NoProfile -Command \"Stop-Process -Id 9300 -Force -ErrorAction SilentlyContinue; Stop-Process -Id 12684 -Force -ErrorAction SilentlyContinue; Start-Sleep -Milliseconds 500; Get-CimInstance Win32_Process -Filter \\\\\"Name='node.exe'\\\\\" | Select-Object ProcessId, CommandLine\")",
+      "Bash(powershell -NoProfile -Command \"Stop-Process -Id 2592 -Force -ErrorAction SilentlyContinue; Stop-Process -Id 18540 -Force -ErrorAction SilentlyContinue\")"
     ],
     "additionalDirectories": [
       "c:\\Users\\Bruno\\OneDrive\\Área de Trabalho\\chave-dicotomica-interativa\\src"

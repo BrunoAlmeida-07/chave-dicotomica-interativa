@@ -441,16 +441,23 @@ img {
   max-width: 900px;
 }
 
-/* auto-fit (não auto-fill) + minmax com teto fixo (não 1fr): com auto-fill,
-   colunas "fantasma" sem card continuavam reivindicando sua fatia de
-   largura (1fr sempre preenche 100% do espaço, ocupada ou não), empurrando
-   os cards existentes para a esquerda. Com auto-fit, colunas vazias
-   colapsam; com um teto fixo em vez de 1fr, os cards não esticam para
-   preencher o vão — sobra espaço real, que justify-content centraliza.
-   Com muitos cards (grid cheio), o resultado é idêntico a antes. */
+/* Mobile-first (retrato): sempre 2 colunas — aproveita a largura do celular
+   em pé, que sobrava ociosa numa coluna só. minmax(0, 1fr) (não só 1fr)
+   impede que o conteúdo do card (texto longo) force a coluna a crescer além
+   da largura disponível, o que causaria rolagem horizontal.
+
+   A partir de 640px (celular deitado, tablet, desktop — ver nota no topo do
+   arquivo), volta ao grid original: auto-fit (não auto-fill) + minmax com
+   teto fixo (não 1fr) — com auto-fill, colunas "fantasma" sem card
+   continuavam reivindicando sua fatia de largura (1fr sempre preenche 100%
+   do espaço, ocupada ou não), empurrando os cards existentes para a
+   esquerda. Com auto-fit, colunas vazias colapsam; com um teto fixo em vez
+   de 1fr, os cards não esticam para preencher o vão — sobra espaço real,
+   que justify-content centraliza. Com muitos cards (grid cheio), o
+   resultado é idêntico a antes. */
 .lista-missoes {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 232px));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   justify-content: center;
   align-content: center;
   gap: var(--espaco-4);
@@ -458,6 +465,12 @@ img {
      missões, o grid centraliza (align-content) em vez de deixar um vão vazio
      embaixo; quando há muitas, comporta-se como antes. */
   flex: 1;
+}
+
+@media (min-width: 640px) {
+  .lista-missoes {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 232px));
+  }
 }
 
 .cartao-missao {
@@ -1011,6 +1024,15 @@ img {
 .ficha-cientifica__painel {
   position: sticky;
   top: var(--espaco-4);
+  /* Sem isto, o painel e os cards de conteúdo (.ficha-cientifica__conteudo,
+     também `position: relative`) empilham só pela ordem no DOM — como os
+     cards vêm depois do painel, eles pintam por cima dele assim que os dois
+     se sobrepõem durante a rolagem (retrato, layout em coluna), fazendo o
+     painel "sumir" atrás do conteúdo mesmo estando sticky e com fundo
+     opaco. Um z-index explícito garante que o painel sempre pinta acima,
+     independente da ordem no DOM. Não afeta a paisagem: lá painel e
+     conteúdo ficam lado a lado, nunca se sobrepõem visualmente. */
+  z-index: 2;
   isolation: isolate;
   overflow: hidden;
   display: flex;
@@ -1034,6 +1056,87 @@ img {
 
   .ficha-cientifica__painel {
     flex: 0 0 clamp(220px, 28vw, 300px);
+  }
+}
+
+/* Painel compacto (só retrato): alternado via JS em resultado.js conforme a
+   rolagem — só ali, porque só nessa tela o painel fica empilhado sobre o
+   conteúdo (na paisagem os dois ficam lado a lado, sem motivo para
+   encolher; no modal do Laboratório, que reaproveita este componente, a
+   rolagem é outra e o efeito não foi pedido). A foto é o maior fator de
+   altura do painel hoje, então é o que mais encolhe; nome, nome científico
+   e o selo de risco continuam sempre visíveis — só o selo decorativo "Nova
+   espécie catalogada" e a família (não essenciais à identificação) somem,
+   liberando espaço para as fichas (Aparência, Habitat...) abaixo. Escopado
+   inteiramente dentro deste media query: a classe não tem nenhum efeito
+   acima de 640px, mesmo que chegue a ser aplicada. */
+@media (max-width: 639.98px) {
+  .ficha-cientifica__painel {
+    /* Sem gap acima (top: 0, não var(--espaco-4)): painel e cards ficam
+       empilhados na mesma coluna aqui, então o respiro de 16px do valor
+       padrão (pensado para a paisagem, onde painel e cards nunca se
+       sobrepõem) deixava uma fresta sem cobertura no topo — por onde o
+       texto do card rolando por trás aparecia por um instante antes de
+       ficar coberto. Só a paisagem mantém o respiro original. */
+    top: 0;
+    transition: padding 220ms ease, gap 220ms ease;
+  }
+
+  .ficha-cientifica__imagem-wrapper {
+    transition: max-width 220ms ease;
+  }
+
+  .ficha-cientifica__nome,
+  .ficha-cientifica__nome-cientifico {
+    transition: font-size 220ms ease;
+  }
+
+  .ficha-cientifica__selo-risco {
+    transition: font-size 220ms ease, padding 220ms ease;
+  }
+
+  .ficha-cientifica__selo,
+  .ficha-cientifica__metadado {
+    transition: opacity 180ms ease, max-height 220ms ease, margin 220ms ease;
+    max-height: 40px;
+    opacity: 1;
+  }
+
+  .ficha-cientifica__painel--compacto {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    gap: 4px;
+  }
+
+  .ficha-cientifica__painel--compacto .ficha-cientifica__imagem-wrapper {
+    max-width: 60px;
+  }
+
+  .ficha-cientifica__painel--compacto .ficha-cientifica__nome {
+    font-size: 1.05rem;
+  }
+
+  .ficha-cientifica__painel--compacto .ficha-cientifica__nome-cientifico {
+    font-size: 0.8rem;
+  }
+
+  .ficha-cientifica__painel--compacto .ficha-cientifica__selo-risco {
+    font-size: 0.65rem;
+    padding: 3px 10px;
+  }
+
+  .ficha-cientifica__painel--compacto .ficha-cientifica__selo,
+  .ficha-cientifica__painel--compacto .ficha-cientifica__metadado {
+    /* animation: none anula a "entrada-selo" (opacity/transform, ver acima):
+       com animation-fill-mode: both, o valor final da animação (opacity: 1)
+       continua vencendo a cascata normal indefinidamente — sem isto, o
+       opacity: 0 abaixo nunca tinha efeito no selo. */
+    animation: none;
+    max-height: 0;
+    opacity: 0;
+    margin: 0;
+    overflow: hidden;
+    pointer-events: none;
   }
 }
 
