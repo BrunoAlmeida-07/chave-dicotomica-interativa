@@ -121,13 +121,17 @@ Evitar excesso de elementos visuais.
 
 # Orientação da Interface
 
-O jogo deverá ser desenvolvido prioritariamente para utilização em **modo horizontal (landscape)**.
+*(Atualizado em 2026-08-06: a orientação principal mudou de horizontal para vertical — o app será usado em smartphones durante a aplicação de pesquisa em campo, e o usuário não deve precisar girar o aparelho.)*
 
-Toda nova tela deve ser pensada primeiro para orientação horizontal.
+O jogo deverá ser desenvolvido prioritariamente para utilização em **modo vertical (portrait)** — é a orientação padrão do app, tanto no PWA instalado quanto no navegador móvel.
 
-A experiência em dispositivos móveis deve incentivar o uso na posição horizontal.
+Toda nova tela deve ser pensada primeiro para orientação vertical.
 
-Evite criar layouts cujo funcionamento dependa exclusivamente da orientação vertical.
+O modo horizontal (landscape) continua funcionando — não foi removido nem quebrado — mas passa a ser tratado como suporte adicional (celular deitado, tablet, desktop), não como o caso principal de uso.
+
+Tecnicamente, isso é feito com CSS "mobile-first": o layout padrão (sem media query) é o empilhado/vertical; o layout horizontal específico de cada tela entra só a partir de `@media (min-width: 640px)`, preservando exatamente o comportamento landscape já existente sem reescrevê-lo.
+
+Evite criar layouts cujo funcionamento dependa exclusivamente da orientação horizontal.
 
 ---
 

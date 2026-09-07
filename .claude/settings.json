@@ -136,7 +136,11 @@
       "Bash(node auditar_overflow_elementos.js)",
       "Bash(node validar_overflow_hidden.js)",
       "Bash(node validar_offline_laboratorio.js)",
-      "Bash(taskkill //PID 17664 //F)"
+      "Bash(taskkill //PID 17664 //F)",
+      "Bash(node validar_retrato.js)",
+      "Bash(node validar_regressao_paisagem.js)",
+      "Bash(powershell -NoProfile -Command \"Get-CimInstance Win32_Process -Filter \\\\\"Name='node.exe'\\\\\" | Select-Object ProcessId, CommandLine | Format-List\")",
+      "Bash(powershell -NoProfile -Command \"Stop-Process -Id 9300 -Force -ErrorAction SilentlyContinue; Stop-Process -Id 12684 -Force -ErrorAction SilentlyContinue; Start-Sleep -Milliseconds 500; Get-CimInstance Win32_Process -Filter \\\\\"Name='node.exe'\\\\\" | Select-Object ProcessId, CommandLine\")"
     ],
     "additionalDirectories": [
       "c:\\Users\\Bruno\\OneDrive\\Área de Trabalho\\chave-dicotomica-interativa\\src"

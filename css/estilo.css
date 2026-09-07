@@ -114,7 +114,15 @@ body {
      perfeitamente no Playwright/DevTools (viewport fixo) e ainda assim
      precisar rolar alguns pixels em aparelho real, com a barra visível.
      dvh acompanha a área visível de verdade. Mesmo raciocínio aplicado a
-     todo clamp() com vh no restante do arquivo. */
+     todo clamp() com vh no restante do arquivo.
+     As três linhas abaixo são uma cascata de suporte, não 3 tentativas
+     redundantes: cada `min-height` só é aplicado se o navegador reconhece
+     aquela unidade (senão a declaração inteira é ignorada), e a última
+     válida vence. `dvh` é o valor realmente usado em qualquer navegador
+     atual; `vh`/`svh` só entram em cena em navegadores tão antigos que
+     não têm `dvh` — nunca deixando `body` sem nenhum `min-height`. */
+  min-height: 100vh;
+  min-height: 100svh;
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
@@ -181,81 +189,21 @@ img {
   }
 }
 
-/* ===== AVISO DE ORIENTAÇÃO (app-shell, não é uma "tela") =====
-   Landscape-first: em retrato, um overlay opaco (position: fixed, sempre
-   presente na mesma posição — só o `display` muda) cobre a aplicação. O
-   app.js e o #tela-atual por trás NUNCA são escondidos via display:none —
-   continuam carregando, montando o DOM e reagindo normalmente, só ficam
-   visualmente cobertos e inacessíveis ao toque (pointer-events: none)
-   enquanto o overlay está ativo. Isso evita que a inicialização do app
-   dependa da orientação no exato momento em que o PWA abre — uma fonte de
-   instabilidade observada na primeira abertura no Android, por conflitar
-   com o bloqueio de orientação do manifest.json.
-
-   A troca é só CSS (ver comentário no index.html) — instantânea ao girar o
-   aparelho, sem perder o estado da investigação em andamento.
-
-   Condição: sempre que a orientação for retrato (independente da largura —
-   um tablet grande "em pé" continua com a proporção errada para este
-   layout), OU quando não houver largura suficiente mesmo em paisagem. Esse
-   segundo número não é arbitrário: é a soma do mínimo do painel da Ficha
-   Científica (220px) com um mínimo razoável para a coluna de cards ao lado
-   dele (~320px) mais espaçamentos — abaixo disso o layout de duas colunas
-   não cabe de jeito nenhum, mesmo paisagem. */
-.tela-rotacao {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 999;
-  align-items: center;
-  justify-content: center;
-  padding: var(--espaco-5);
-  background: linear-gradient(160deg, var(--cor-primaria-escura), var(--cor-primaria));
-}
-
-@media (orientation: portrait), (max-width: 600px) {
-  .tela-rotacao {
-    display: flex;
-  }
-
-  /* Continua renderizando por trás do overlay — só perde a interatividade,
-     nunca é removido do layout nem do fluxo de inicialização do app. */
-  #tela-atual {
-    pointer-events: none;
-  }
-}
-
-.tela-rotacao__cartao {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--espaco-3);
-  max-width: 320px;
-  color: #fff;
-  text-align: center;
-}
-
-.tela-rotacao__icone {
-  display: inline-flex;
-  animation: girar-dispositivo 2.4s ease-in-out infinite;
-}
-
-@keyframes girar-dispositivo {
-  0%, 15% { transform: rotate(0deg); }
-  50%, 65% { transform: rotate(-90deg); }
-  100% { transform: rotate(0deg); }
-}
-
-.tela-rotacao__titulo {
-  font-size: 1.3rem;
-  font-weight: 700;
-}
-
-.tela-rotacao__texto {
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 0.95rem;
-  line-height: 1.5;
-}
+/* ===== ORIENTAÇÃO E LARGURA (2026-08-06) =====
+   Retrato passou a ser a orientação principal do app (celular em pé) —
+   antes, um overlay bloqueava o uso nessa orientação; foi removido. A
+   maioria dos componentes agora é "mobile-first": o CSS fora de qualquer
+   media query já é o layout empilhado, pensado para largura estreita.
+   `@media (min-width: 640px)`, usado em alguns componentes específicos
+   abaixo (Investigação, Seleção de Espécime, Ficha Científica — os que
+   tinham composição lado a lado pensada para paisagem), preserva esse
+   layout horizontal exatamente como já era, para celular deitado, tablet
+   e desktop — nada foi reescrito nem removido dessas telas, só passou a
+   valer condicionalmente. 640px é o mesmo valor já usado por
+   `.menu-principal` (ver "RESPONSIVIDADE GERAL", fim do arquivo) — a
+   largura típica de um celular em pé (até ~430px) fica sempre abaixo
+   dele, e a de um celular deitado (782px+, conforme testado no projeto)
+   sempre acima. */
 
 /* ===== TELA (container padrão de cada tela) =====
    flex-direction: column dá a cada tela um eixo vertical real para
@@ -578,11 +526,16 @@ img {
   background: var(--cor-superficie);
   border-radius: var(--raio-lg);
   box-shadow: var(--sombra-md);
-  padding: clamp(6px, 4dvh, 32px) var(--espaco-5);
+  /* Padding horizontal também fluido (clamp com vw, não só var(--espaco-5)
+     fixo): em celulares muito estreitos (ex.: 320px), sobra mais largura
+     para o texto, o que evita quebras de linha extras — cada linha a menos
+     economiza altura, que é o recurso mais escasso numa tela que não pode
+     rolar. Em telas largas o teto de 24px mantém o respiro original. */
+  padding: clamp(6px, 4dvh, 32px) clamp(14px, 6vw, 24px);
 }
 
 .introducao-cartao h1 {
-  font-size: 1.6rem;
+  font-size: clamp(1.3rem, 5vw + 0.5rem, 1.6rem);
   margin: var(--espaco-1) 0 clamp(4px, 1.5dvh, 12px);
 }
 
@@ -597,7 +550,7 @@ img {
 .introducao-cartao__ocorrencia {
   background: var(--cor-acento);
   border-radius: var(--raio-sm);
-  padding: clamp(4px, 2dvh, 12px) var(--espaco-4);
+  padding: clamp(4px, 2dvh, 12px) clamp(10px, 4vw, 16px);
   color: var(--cor-texto);
   font-size: 0.92rem;
 }
@@ -608,14 +561,24 @@ img {
 
 /* ===== SELEÇÃO DE ESPÉCIME =====
    Grade de fotografias, sem nomear nenhuma espécie — só "Espécime N",
-   escolhido por quem chama (selecaoEspecie.js). Sempre 3 cartões por linha,
-   nunca precisa rolar: linhas e cartões são flex items com `flex: 1` +
-   `min-height: 0` encadeados (mesma filosofia de .cartao-pergunta__imagens
-   na Investigação) — cada nível divide de verdade o espaço que sobrar do
-   nível acima, sem nenhuma fração fixa tipo "50%" e sem breakpoint de
-   dispositivo. Isso funciona igual para 5 espécies ([3, 2], última linha
-   centralizada) e para 6 ([3, 3]) — e continuaria funcionando sem ajustes
-   se um grupo futuro tivesse outra quantidade. */
+   escolhido por quem chama (selecaoEspecie.js).
+
+   Mobile-first (retrato): grid CSS de 2 colunas — largura é o lado
+   apertado num celular em pé, então 2 por linha (em vez de 3) deixa cada
+   foto bem maior. `.selecao-especie__linha` (o agrupamento em linhas de
+   até 3 que selecaoEspecie.js já monta, pensado pra versão ≥640px abaixo)
+   vira `display: contents` aqui — o wrapper desaparece só para fins de
+   layout, e os cartões dentro dele participam direto da grid do nível
+   acima, sem precisar de nenhuma mudança em selecaoEspecie.js. `grid-auto-
+   rows: 1fr` divide a altura disponível em partes iguais entre as linhas
+   que existirem (2 ou 3, dependendo de quantas espécies o grupo tem) —
+   nunca "pede" mais altura do que existe.
+
+   A partir de 640px (celular deitado, tablet, desktop — ver nota no topo
+   do arquivo), volta ao layout original: sempre 3 cartões por linha,
+   linhas como flex items com `flex: 1` + `min-height: 0` encadeados —
+   funciona igual para 5 espécies ([3, 2], última linha centralizada) e
+   para 6 ([3, 3]). */
 .tela-selecao-especie {
   max-width: 900px;
 }
@@ -629,40 +592,25 @@ img {
 .selecao-especie__grade {
   flex: 1;
   min-height: 0;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: 1fr;
   justify-content: center;
-  gap: clamp(4px, 1.5dvh, var(--espaco-4));
+  align-content: center;
+  gap: clamp(6px, 1.5dvh, var(--espaco-4));
 }
 
 .selecao-especie__linha {
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  justify-content: center;
-  gap: clamp(4px, 1.5dvh, var(--espaco-4));
+  display: contents;
 }
 
 .cartao-escolha-especie {
-  /* max-height acompanha max-width (mesma folga de padding/rótulo somada ao
-     teto da foto): sem ele, em telas bem altas o cartão cresceria bem além
-     de 200px de largura, e a foto — quadrada por natureza — ficaria
-     esticada em uma moldura retangular alta em vez de um quadrado. */
-  flex: 1 1 0;
   min-width: 0;
   min-height: 0;
-  max-width: 220px;
-  max-height: 240px;
+  max-height: 260px;
   display: flex;
   flex-direction: column;
-  /* align-items:center (padrão, grade de várias linhas): o quadrado da foto
-     é height-driven (ver .cartao-escolha-especie__imagem-wrapper) — cresce
-     a partir de 0 dentro da altura que a linha realmente tem disponível, o
-     que é seguro em qualquer altura de tela. Numa única linha
-     (.selecao-especie__grade--linha-unica abaixo) o problema se inverte: a
-     altura sobra e a largura é o lado apertado, então esse modificador troca
-     para "stretch" e deixa o quadrado ser width-driven. */
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
   gap: clamp(2px, 0.8dvh, var(--espaco-2));
   padding: clamp(4px, 1dvh, var(--espaco-2));
@@ -681,47 +629,20 @@ img {
 }
 
 .cartao-escolha-especie__imagem-wrapper {
-  /* flex:1 com flex-basis 0% (não "auto"): o quadrado cresce a partir de
-     ZERO dentro da altura real que a linha tem disponível — nunca "pede"
-     mais espaço do que existe, o que é o que garante nunca haver rolagem em
-     grades de várias linhas (onde a altura por linha é o lado apertado).
-     width ausente de propósito: aspect-ratio calcula a largura A PARTIR
-     dessa altura seguramente resolvida, e max-width trava o resultado a
-     100% do cartão (nunca maior que a largura da coluna). */
+  /* flex:1 com flex-basis 0% (não "auto"): o quadro cresce a partir de
+     ZERO dentro da altura real que a célula da grid tem disponível —
+     nunca "pede" mais espaço do que existe. Sem aspect-ratio fixo nesta
+     camada (diferente da versão ≥640px, abaixo): a célula da grid já tem
+     largura e altura definidas simultaneamente, então travar também a
+     proporção quadrada entraria em conflito com um dos dois — object-fit:
+     cover garante que a foto preenche a célula sem esticar, ainda que a
+     célula não seja exatamente quadrada. */
   position: relative;
   flex: 1;
   min-height: 0;
-  max-width: 100%;
-  aspect-ratio: 1 / 1;
   border-radius: var(--raio-sm);
   overflow: hidden;
   background: var(--cor-acento);
-}
-
-/* ===== SELEÇÃO DE ESPÉCIME — LINHA ÚNICA (5 espécies ou menos) =====
-   Numa única linha o problema se inverte: sobra altura (só 1 linha ocupa
-   toda a grade) e a largura vira o lado apertado (N cartões dividindo a
-   largura). Nesse caso o quadrado precisa ser width-driven, não
-   height-driven — daí o par de overrides abaixo. Isso é seguro (nunca
-   ultrapassa a altura disponível) justamente PORQUE é só uma linha: a
-   largura dividida por até 5 cartões já resulta num quadrado bem menor que
-   a altura sobrando, mesmo nas telas mais baixas suportadas. Com 2+ linhas
-   essa mesma conta deixaria de ser segura — por isso o modificador só entra
-   quando `selecaoEspecie.js` de fato monta uma única linha. */
-.selecao-especie__grade--linha-unica .selecao-especie__linha {
-  /* align-items:center (não o "stretch" padrão da linha): sem isto, o
-     cartão tenta esticar para a altura toda da linha (que é a grade
-     inteira, já que só há uma) e só é impedido pelo max-height — sobrando
-     como espaço vazio abaixo do cartão em vez de dividido/centralizado. */
-  align-items: center;
-}
-
-.selecao-especie__grade--linha-unica .cartao-escolha-especie {
-  align-items: stretch;
-}
-
-.selecao-especie__grade--linha-unica .cartao-escolha-especie__imagem-wrapper {
-  flex: 0 1 auto;
 }
 
 .cartao-escolha-especie__imagem {
@@ -738,6 +659,56 @@ img {
   font-weight: 600;
   color: var(--cor-texto);
   text-align: center;
+}
+
+/* ===== SELEÇÃO DE ESPÉCIME — A PARTIR DE 640px =====
+   Layout original: sempre 3 cartões por linha, quadrado da foto
+   height-driven (cresce a partir de zero dentro da altura que a linha
+   tem disponível). Numa única linha (5 espécies ou menos — ver
+   `.selecao-especie__grade--linha-unica`, ligada por selecaoEspecie.js
+   só quando ele de fato monta uma única linha) o problema se inverte:
+   sobra altura e a largura vira o lado apertado, então o quadrado passa a
+   ser width-driven — seguro porque a largura dividida por até 5 cartões
+   já resulta num quadrado bem menor que a altura sobrando. */
+@media (min-width: 640px) {
+  .selecao-especie__grade {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: clamp(4px, 1.5dvh, var(--espaco-4));
+  }
+
+  .selecao-especie__linha {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    justify-content: center;
+    gap: clamp(4px, 1.5dvh, var(--espaco-4));
+  }
+
+  .cartao-escolha-especie {
+    flex: 1 1 0;
+    max-width: 220px;
+    max-height: 240px;
+    align-items: center;
+  }
+
+  .cartao-escolha-especie__imagem-wrapper {
+    max-width: 100%;
+    aspect-ratio: 1 / 1;
+  }
+
+  .selecao-especie__grade--linha-unica .selecao-especie__linha {
+    align-items: center;
+  }
+
+  .selecao-especie__grade--linha-unica .cartao-escolha-especie {
+    align-items: stretch;
+  }
+
+  .selecao-especie__grade--linha-unica .cartao-escolha-especie__imagem-wrapper {
+    flex: 0 1 auto;
+  }
 }
 
 /* ===== INVESTIGAÇÃO ===== */
@@ -800,31 +771,36 @@ img {
 }
 
 /*
- * O cartão ocupa o espaço vertical disponível entre cabeçalho e rodapé, mas
- * com um teto (max-height): em celulares em paisagem, o espaço disponível
- * é menor que o teto, então o cartão simplesmente preenche esse espaço,
- * como antes (sem rolagem). Em telas altas (tablet/desktop), o espaço
- * disponível ultrapassa o teto — sem ele, o cartão esticaria além de uma
- * proporção elegante para sua largura (~960px no máximo), deixando a
- * imagem esticada/distorcida. min-height: 0 é necessário para que o
- * cartão possa de fato encolher abaixo do tamanho natural do seu conteúdo
- * quando o espaço disponível for pequeno (comportamento padrão do
- * flexbox impediria isso). Imagem e pergunta ficam lado a lado em
- * qualquer largura de tela, incluindo celulares.
+ * O cartão ocupa o espaço vertical disponível entre cabeçalho e rodapé.
+ * min-height: 0 é necessário para que o cartão possa de fato encolher
+ * abaixo do tamanho natural do seu conteúdo quando o espaço disponível for
+ * pequeno (comportamento padrão do flexbox impediria isso).
+ *
+ * Mobile-first (retrato, largura estreita — a maioria dos celulares hoje):
+ * pilha vertical — imagem principal, depois a pergunta com seus botões,
+ * depois a imagem de apoio — na mesma ordem em que já vêm no HTML (gerado
+ * por cartaoPergunta.js), então nenhuma mudança de JS foi necessária, só
+ * a direção do flex. Sem max-height fixo aqui: o cartão preenche
+ * exatamente o espaço vertical que .investigacao-corpo tiver disponível
+ * (nunca mais, nunca menos), e cada seção interna divide esse espaço por
+ * peso relativo (flex-grow), então nunca há corte nem rolagem.
+ *
+ * A partir de 640px de largura (celular deitado, tablet, desktop — ver
+ * nota no topo do arquivo), o layout original em 3 colunas volta a valer,
+ * inalterado.
  */
 .cartao-pergunta {
   position: relative;
   flex: 1;
   min-height: 0;
-  max-height: 460px;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: stretch;
-  gap: clamp(8px, 3dvh, 24px);
+  gap: clamp(6px, 1.2dvh, 16px);
   background: var(--cor-superficie);
   border-radius: var(--raio-lg);
   box-shadow: var(--sombra-md);
-  padding: clamp(8px, 3dvh, 24px);
+  padding: clamp(8px, 2dvh, 24px);
   animation: entrada-tela 260ms ease both;
 }
 
@@ -844,23 +820,16 @@ img {
   border-radius: 999px;
 }
 
-/* Três colunas lado a lado: imagem principal | pergunta | imagem de apoio.
-   As duas colunas de imagem têm largura fluida com piso e teto em px
-   (clamp, não breakpoint) — ficam estáveis e previsíveis, parecidas com o
-   painel da Ficha Científica (mesma técnica). ~31% principal / ~25% apoio:
-   a principal continua sendo o maior elemento (e o único com object-fit:
-   cover — sempre preenche o quadro), mas cede uma fatia à imagem de apoio,
-   que precisa de mais área porque nunca é cortada (object-fit: contain). A
-   coluna da pergunta é quem sobra e flexiona de verdade (flex:1),
-   absorvendo tanto o espaço extra em telas largas quanto o aperto em telas
-   estreitas — texto quebra graças a min-width:0. Quando uma das imagens
-   não existe (ex.: Treinamento, sem espécie-alvo), a coluna dela
-   simplesmente não é renderizada — a pergunta ocupa o espaço que sobrar,
-   sem precisar de nenhum ajuste aqui. */
+/* Imagem principal: em retrato ocupa a largura toda do cartão, com uma
+   fatia da altura (flex-grow, basis 0% — cresce a partir de zero, nunca
+   "pede" mais espaço do que existe). 3 partes contra 2 da imagem de apoio
+   abaixo — continua sendo o elemento de maior destaque, só que a
+   proporção agora é de altura, não de largura. */
 .cartao-pergunta__imagem-principal-wrapper {
   position: relative;
-  flex: 0 0 clamp(120px, 31%, 300px);
+  flex: 3 1 0;
   min-height: 0;
+  width: 100%;
   border-radius: var(--raio-md);
   overflow: hidden;
   box-shadow: var(--sombra-sm);
@@ -880,27 +849,29 @@ img {
 }
 
 .cartao-pergunta__conteudo {
-  flex: 1 1 0;
+  /* flex:0 0 auto (não grow): o texto da pergunta + botões usa só a
+     altura que precisa — quem cresce para preencher o espaço são as duas
+     imagens (acima e abaixo), não o conteúdo de texto. */
+  flex: 0 0 auto;
+  width: 100%;
   min-width: 0; /* permite ao texto encolher/quebrar em vez de forçar a linha a crescer */
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: clamp(6px, 1.5dvh, 12px);
+  gap: clamp(4px, 1dvh, 10px);
 }
 
+/* Imagem de apoio: mesma lógica da principal (flex-grow a partir de
+   zero), 2 partes contra as 3 da principal. Sem aspect-ratio fixo aqui
+   (diferente da versão ≥640px): a altura já vem do flex-grow, então
+   travar também a proporção entraria em conflito com o crescimento —
+   object-fit:contain garante que a foto nunca é cortada, ainda que a
+   célula não seja exatamente 3:2 nesta camada. */
 .cartao-pergunta__imagem-wrapper {
-  /* align-self:center + aspect-ratio (em vez de esticar para a altura
-     cheia do cartão, como a coluna da imagem principal): as fotos de apoio
-     são todas 3:2 (checado nas imagens reais de perguntas.json, nos três
-     grupos). Um quadro que já nasce 3:2 faz o object-fit:contain preencher
-     a célula quase por completo — sem essa moldura extra, a foto de 190px
-     de largura ficava esticada numa célula de ~424px de altura e
-     "sobrava" (contain) a maior parte do espaço em branco ao redor dela. */
   position: relative;
-  align-self: center;
-  flex: 0 0 clamp(70px, 25%, 190px);
-  aspect-ratio: 3 / 2;
+  flex: 2 1 0;
   min-height: 0;
+  width: 100%;
   border-radius: var(--raio-md);
   overflow: hidden;
   box-shadow: var(--sombra-sm);
@@ -926,13 +897,13 @@ img {
   align-items: center;
   gap: var(--espaco-2);
   color: var(--cor-texto-secundario);
-  font-size: 0.85rem;
+  font-size: 0.8rem;
 }
 
 .cartao-pergunta__texto {
-  font-size: 1.25rem;
+  font-size: 1.05rem;
   font-weight: 600;
-  line-height: 1.4;
+  line-height: 1.35;
   overflow-wrap: break-word;
 }
 
@@ -940,81 +911,100 @@ img {
   display: flex;
   flex-wrap: wrap; /* rede de segurança: se algum dia não couberem lado a lado, quebra em vez de vazar da coluna */
   gap: var(--espaco-3);
-  margin-top: var(--espaco-2);
+  margin-top: var(--espaco-1);
 }
 
 .botao-resposta {
   min-width: 0; /* evita que o texto do botão force o flex a não encolher */
-  /* Um pouco mais estreito que o padrão de .botao (20px): a coluna da
-     pergunta agora divide espaço com a imagem de apoio ao lado, então os
-     botões cedem um pouco de largura primeiro — ainda confortáveis ao
-     toque (altura/padding vertical intactos). */
-  padding-left: 16px;
-  padding-right: 16px;
+  /* Altura/padding generosos por padrão (retrato): os botões de resposta
+     são o alvo de toque mais repetido da investigação inteira. */
+  padding: 14px 16px;
 }
 
-/* Telas médias (tablets pequenos, celulares em landscape): reduz um pouco antes de precisar cortar mais. */
-@media (max-width: 599px) {
+/* A partir de 640px (celular deitado, tablet, desktop): volta ao layout
+   original de 3 colunas lado a lado, exatamente como era antes da
+   adaptação para retrato. */
+@media (min-width: 640px) {
   .cartao-pergunta {
-    gap: var(--espaco-3);
-    padding: var(--espaco-3);
+    flex-direction: row;
+    gap: clamp(8px, 3dvh, 24px);
+    padding: clamp(8px, 3dvh, 24px);
+    max-height: 460px;
   }
 
-  .cartao-pergunta__texto {
-    font-size: 1.05rem;
-  }
-
-  .cartao-pergunta__dica {
-    font-size: 0.8rem;
-  }
-
-  .botao-resposta {
-    padding: 10px 12px;
-    font-size: 0.9rem;
-  }
-}
-
-/* Celulares estreitos: reduz mais ainda, mas mantém a orientação horizontal. */
-@media (max-width: 380px) {
-  .cartao-pergunta {
-    gap: var(--espaco-2);
-    padding: var(--espaco-2);
+  /* Três colunas lado a lado: imagem principal | pergunta | imagem de
+     apoio. As duas colunas de imagem têm largura fluida com piso e teto
+     em px (clamp, não breakpoint) — ficam estáveis e previsíveis,
+     parecidas com o painel da Ficha Científica (mesma técnica). ~31%
+     principal / ~25% apoio: a principal continua sendo o maior elemento,
+     mas cede uma fatia à imagem de apoio, que precisa de mais área
+     porque nunca é cortada (object-fit: contain). A coluna da pergunta é
+     quem sobra e flexiona de verdade (flex:1), absorvendo tanto o espaço
+     extra em telas largas quanto o aperto em telas estreitas. Quando uma
+     das imagens não existe (ex.: Treinamento, sem espécie-alvo), a
+     coluna dela simplesmente não é renderizada — a pergunta ocupa o
+     espaço que sobrar, sem precisar de nenhum ajuste aqui. */
+  .cartao-pergunta__imagem-principal-wrapper {
+    flex: 0 0 clamp(120px, 31%, 300px);
+    width: auto;
   }
 
   .cartao-pergunta__conteudo {
-    gap: var(--espaco-2);
+    flex: 1 1 0;
+    gap: clamp(6px, 1.5dvh, 12px);
   }
 
-  .cartao-pergunta__texto {
-    font-size: 0.95rem;
-    line-height: 1.3;
+  /* align-self:center + aspect-ratio (em vez de esticar para a altura
+     cheia do cartão, como a coluna da imagem principal): as fotos de
+     apoio são todas 3:2 (checado nas imagens reais de perguntas.json, nos
+     três grupos). Um quadro que já nasce 3:2 faz o object-fit:contain
+     preencher a célula quase por completo. */
+  .cartao-pergunta__imagem-wrapper {
+    align-self: center;
+    flex: 0 0 clamp(70px, 25%, 190px);
+    width: auto;
+    aspect-ratio: 3 / 2;
   }
 
   .cartao-pergunta__dica {
-    display: none; /* texto de apoio cede espaço primeiro em telas muito estreitas */
+    font-size: 0.85rem;
+  }
+
+  .cartao-pergunta__texto {
+    font-size: 1.25rem;
+    line-height: 1.4;
   }
 
   .cartao-pergunta__botoes {
-    gap: var(--espaco-2);
-    margin-top: var(--espaco-1);
+    margin-top: var(--espaco-2);
   }
 
   .botao-resposta {
-    padding: 8px 6px;
-    font-size: 0.82rem;
+    /* Um pouco mais estreito que o padrão de .botao (20px): a coluna da
+       pergunta divide espaço com a imagem de apoio ao lado, então os
+       botões cedem um pouco de largura primeiro — ainda confortáveis ao
+       toque (altura/padding vertical intactos). */
+    padding: 14px 16px;
+    padding-left: 16px;
+    padding-right: 16px;
   }
 }
 
 /* ===== FICHA CIENTÍFICA (componente reutilizável) =====
-   Guia de campo em duas colunas: painel da espécie (fixo, via position:
-   sticky) e conteúdo científico (cards, rolável). Como a tela de rotação
-   (ver seção RESULTADO / abaixo) já impede o uso em retrato, este é o único
-   layout da ficha — não existe variante empilhada. */
+   Guia de campo: painel da espécie (fixo, via position: sticky) e conteúdo
+   científico (cards). Usado em duas telas roláveis (Resultado e o modal do
+   Laboratório) — o painel continua sticky em ambos os layouts abaixo,
+   grudando no topo enquanto os cards passam por trás dele ao rolar.
+
+   Mobile-first (retrato): empilhado — painel em cima (largura cheia),
+   cards embaixo. A partir de 640px (celular deitado, tablet, desktop — ver
+   nota no topo do arquivo), volta ao layout original em duas colunas lado
+   a lado. */
 .ficha-cientifica {
   display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: var(--espaco-5);
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--espaco-4);
   text-align: left;
 }
 
@@ -1023,7 +1013,6 @@ img {
   top: var(--espaco-4);
   isolation: isolate;
   overflow: hidden;
-  flex: 0 0 clamp(220px, 28vw, 300px);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1034,6 +1023,18 @@ img {
   padding: clamp(12px, 3dvh, 24px) var(--espaco-4);
   text-align: center;
   animation: entrada-tela 380ms ease both;
+}
+
+@media (min-width: 640px) {
+  .ficha-cientifica {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--espaco-5);
+  }
+
+  .ficha-cientifica__painel {
+    flex: 0 0 clamp(220px, 28vw, 300px);
+  }
 }
 
 .ficha-cientifica__painel::before {
@@ -1316,13 +1317,22 @@ img {
 }
 
 /* Curiosidades: cada item vira uma pequena nota, não um bloco de texto.
-   Sempre 3 colunas (não usa auto-fit/minmax) — em vez de quebrar linha
-   quando a coluna direita fica mais estreita, cada nota encolhe um pouco
-   (padding/fonte reduzidos abaixo), mas o layout ┌───┬───┬───┐ se mantém. */
+   Mobile-first: 1 coluna só (a largura em retrato — cartão inteiro na
+   largura da tela — deixaria 3 colunas estreitas demais para frases
+   completas). A partir de 640px, sempre 3 colunas lado a lado (não usa
+   auto-fit/minmax) — em vez de quebrar linha quando a coluna direita fica
+   mais estreita, cada nota encolhe um pouco (padding/fonte reduzidos
+   abaixo), mas o layout ┌───┬───┬───┐ se mantém. */
 .ficha-cientifica__notas {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr;
   gap: var(--espaco-2);
+}
+
+@media (min-width: 640px) {
+  .ficha-cientifica__notas {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 .ficha-cientifica__nota {
