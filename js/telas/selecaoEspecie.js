@@ -45,12 +45,11 @@ export async function renderSelecaoEspecie(container, dados = {}) {
         </button>
         <h1>Qual espécime será investigado?</h1>
       </header>
-      <p class="selecao-especie__instrucao">
-        Escolha uma fotografia para iniciar o caso. A espécie só será revelada ao final da investigação.
-      </p>
+      <span class="etiqueta selecao-especie__dica">Escolha uma fotografia</span>
       <div class="selecao-especie__grade" data-grade>
         <p class="mensagem-carregando">Carregando espécimes...</p>
       </div>
+      <p class="selecao-especie__nota">A espécie só será revelada ao final da investigação.</p>
     </section>
   `;
 

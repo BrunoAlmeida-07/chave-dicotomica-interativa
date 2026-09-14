@@ -524,16 +524,21 @@ img {
   max-width: 900px;
 }
 
-/* Etiqueta "Mapa de Missões" empilhada acima do nome do grupo (h1) — mesmo
-   padrão de .introducao-cartao (etiqueta + h1 como irmãos diretos), só que
-   dentro de um wrapper para conviver com o botão "Voltar" na mesma linha do
-   cabeçalho. */
+/* Título "Mapa de Missões": mesmo tratamento visual de .etiqueta (verde,
+   caixa alta, letter-spacing) só que em tamanho de título, não de rótulo
+   pequeno — é o h1 da tela agora, não um texto de apoio acima de outro
+   título. Deixou de mostrar o nome do grupo (ex.: "Serpentes"): o grupo
+   continua filtrando as missões normalmente (`dados.grupoId`), só não é
+   mais exibido como um segundo título. min-width:0 deixa o h1 encolher
+   (quebrar linha) em vez de espremer o botão "Voltar" ao lado, em telas
+   muito estreitas. */
 .mapa-missoes__titulo {
   min-width: 0;
-}
-
-.mapa-missoes__titulo h1 {
-  font-size: 1.4rem;
+  font-size: 1.55rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--cor-primaria);
 }
 
 /* Mobile-first (retrato): sempre 2 colunas — aproveita a largura do celular
@@ -691,10 +696,25 @@ img {
   max-width: 900px;
 }
 
-.selecao-especie__instrucao {
+/* Dica curta antes das fotos (substitui o antigo parágrafo de instrução,
+   maior e menos integrado ao cabeçalho): reaproveita .etiqueta (mesmo
+   rótulo verde em caixa alta já usado em Introdução da Missão, Investigação
+   etc.), não um texto novo — funciona como orientação, não como segundo
+   título. */
+.selecao-especie__dica {
+  flex-shrink: 0;
+  margin-bottom: clamp(6px, 1.5dvh, 16px);
+}
+
+/* Nota sobre quando a espécie é revelada: deslocada para depois das fotos
+   (perto de onde a escolha realmente acontece), pequena e discreta — não
+   compete com o título nem com a dica acima da grade. */
+.selecao-especie__nota {
   flex-shrink: 0;
   color: var(--cor-texto-secundario);
-  margin-bottom: clamp(6px, 2dvh, 24px);
+  font-size: 0.82rem;
+  text-align: center;
+  margin-top: clamp(6px, 1.5dvh, 16px);
 }
 
 .selecao-especie__grade {
