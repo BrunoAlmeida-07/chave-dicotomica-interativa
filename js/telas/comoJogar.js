@@ -15,8 +15,9 @@
  *     página.
  *
  * Ao chegar na última página, o botão "Começar investigação" marca o
- * tutorial como visto (`salvarTutorialVisto`, IndexedDB) e leva ao Mapa de
- * Missões. Não há ramificação por "como cheguei aqui".
+ * tutorial como visto (`salvarTutorialVisto`, IndexedDB) e leva à Seleção de
+ * Grupo (etapa antes do Mapa de Missões — ver selecaoGrupo.js). Não há
+ * ramificação por "como cheguei aqui".
  *
  * As 4 imagens em si nunca são alteradas (mesmos arquivos de
  * tutorial/*.png). O que muda é só a moldura: 3 delas trazem, na própria
@@ -98,7 +99,7 @@ export function renderComoJogar(container) {
     salvarTutorialVisto().catch((erro) => {
       console.warn("Não foi possível salvar que o tutorial foi visto:", erro);
     });
-    irPara("mapaMissoes");
+    irPara("selecaoGrupo");
   });
 
   const dicaSwipe = container.querySelector("[data-dica-swipe]");

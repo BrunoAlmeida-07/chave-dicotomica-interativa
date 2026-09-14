@@ -40,13 +40,6 @@ export async function renderEncerramento(container, dados = {}) {
     </section>
   `;
 
-  container.querySelector('[data-acao="mapa-missoes"]').addEventListener("click", () => {
-    irPara("mapaMissoes");
-  });
-  container.querySelector('[data-acao="tela-inicial"]').addEventListener("click", () => {
-    irPara("telaInicial");
-  });
-
   if (dados.missaoId) {
     concluirMissao(dados.missaoId).catch((erro) => {
       console.warn("Não foi possível registrar a conclusão da missão:", erro);
@@ -60,6 +53,15 @@ export async function renderEncerramento(container, dados = {}) {
   }
 
   const missao = await obterMissao(dados);
+  const grupoId = dados.grupoId ?? missao?.grupoId;
+
+  container.querySelector('[data-acao="mapa-missoes"]').addEventListener("click", () => {
+    irPara("mapaMissoes", { grupoId });
+  });
+  container.querySelector('[data-acao="tela-inicial"]').addEventListener("click", () => {
+    irPara("telaInicial");
+  });
+
   if (missao?.explicacaoCientificaFinal) {
     container.querySelector("[data-conteudo-encerramento]").textContent = missao.explicacaoCientificaFinal;
   }

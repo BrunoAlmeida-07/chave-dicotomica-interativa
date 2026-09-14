@@ -7,9 +7,11 @@
  *
  * "Missões" checa `lerTutorialVisto()` antes de decidir para onde ir: na
  * primeira vez (flag ainda não gravada), mostra o tutorial "Como Jogar"
- * primeiro — ele mesmo leva ao Mapa de Missões ao terminar. Da segunda vez
- * em diante, vai direto ao Mapa de Missões, como antes. "Como Jogar" nunca
- * checa a flag — é sempre o replay manual, disponível a qualquer momento.
+ * primeiro — ele mesmo leva à Seleção de Grupo ao terminar. Da segunda vez
+ * em diante, vai direto à Seleção de Grupo, como antes (mesmo destino, só
+ * que agora antes do Mapa de Missões, que passou a depender de um grupo
+ * escolhido — ver selecaoGrupo.js/mapaMissoes.js). "Como Jogar" nunca checa
+ * a flag — é sempre o replay manual, disponível a qualquer momento.
  */
 
 import { irPara } from "../navegacao.js";
@@ -43,7 +45,7 @@ export function renderTelaInicial(container) {
 
   container.querySelector('[data-acao="mapa-missoes"]').addEventListener("click", async () => {
     const tutorialVisto = await lerTutorialVisto();
-    irPara(tutorialVisto ? "mapaMissoes" : "comoJogar");
+    irPara(tutorialVisto ? "selecaoGrupo" : "comoJogar");
   });
 
   container.querySelector('[data-acao="laboratorio"]').addEventListener("click", () => {

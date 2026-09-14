@@ -26,7 +26,11 @@
  * tela estática "Como Jogar" — ver js/telas/comoJogar.js).
  */
 
-import { listarMissoes as listarMissoesDoBanco, obterMissaoPorId } from "../../database/scripts/database.js";
+import {
+  listarMissoes as listarMissoesDoBanco,
+  listarMissoesPorGrupo as listarMissoesPorGrupoDoBanco,
+  obterMissaoPorId,
+} from "../../database/scripts/database.js";
 import { salvarProgressoMissao, lerProgressoMissoes } from "../../database/scripts/indexeddb.js";
 
 export const STATUS_DISPONIVEL = "disponivel";
@@ -40,11 +44,31 @@ export const STATUS_CONCLUIDA = "concluida";
  * `obterMissao`, só não entraria nesta listagem — nenhuma missão usa isso
  * hoje.
  *
+ * Todos os grupos misturados — usada pelo Laboratório (progresso científico
+ * geral, ver progressoCientifico.js), não pelo Mapa de Missões em si (ver
+ * `listarMissoesPorGrupo`, abaixo).
+ *
  * @returns {Promise<object[]>}
  */
 export async function listarMissoes() {
   const [missoes, idsConcluidas] = await Promise.all([listarMissoesDoBanco(), obterIdsConcluidas()]);
+  return montarComStatus(missoes, idsConcluidas);
+}
 
+/**
+ * Mesma listagem que `listarMissoes()`, filtrada a um único grupo — usada
+ * pelo Mapa de Missões depois da Seleção de Grupo. Reaproveita o mesmo
+ * cálculo de `status`; nenhuma lógica de progresso é duplicada.
+ *
+ * @param {string} grupoId
+ * @returns {Promise<object[]>}
+ */
+export async function listarMissoesPorGrupo(grupoId) {
+  const [missoes, idsConcluidas] = await Promise.all([listarMissoesPorGrupoDoBanco(grupoId), obterIdsConcluidas()]);
+  return montarComStatus(missoes, idsConcluidas);
+}
+
+function montarComStatus(missoes, idsConcluidas) {
   return missoes
     .filter((missao) => missao.visivelNoMapaDeMissoes !== false)
     .map((missao) => ({

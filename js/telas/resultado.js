@@ -36,12 +36,32 @@
  */
 
 import { irPara, voltar } from "../navegacao.js";
-import { obterEspeciePorId } from "../../database/scripts/database.js";
+import { obterEspeciePorId, obterMissaoPorId } from "../../database/scripts/database.js";
 import { criarIcone } from "../componentes/icone.js";
 import { criarFichaCientifica } from "../componentes/fichaCientifica.js";
 
 const LARGURA_MAXIMA_RETRATO = 639;
 const LIMIAR_ROLAGEM_COMPACTO = 12;
+
+/**
+ * Resolve o grupo da missão em andamento para "Voltar às missões" retornar
+ * ao mapa do MESMO grupo, não ao mapa geral — `dados.grupoId` já chega
+ * pronto (thread desde mapaMissoes.js), mas cai para buscar pela missão se,
+ * por algum motivo, não estiver presente.
+ *
+ * @param {{ grupoId?: string, missaoId?: string }} dados
+ * @returns {Promise<string|undefined>}
+ */
+async function resolverGrupoId(dados) {
+  if (dados.grupoId) {
+    return dados.grupoId;
+  }
+  if (!dados.missaoId) {
+    return undefined;
+  }
+  const missao = await obterMissaoPorId(dados.missaoId);
+  return missao?.grupoId;
+}
 
 /**
  * Encolhe o painel sticky da Ficha Científica assim que a tela rola, só no
@@ -94,8 +114,8 @@ export async function renderResultado(container, dados = {}) {
     </section>
   `;
 
-  container.querySelector('[data-acao="voltar"]').addEventListener("click", () => {
-    irPara("mapaMissoes");
+  container.querySelector('[data-acao="voltar"]').addEventListener("click", async () => {
+    irPara("mapaMissoes", { grupoId: await resolverGrupoId(dados) });
   });
   container.querySelector('[data-acao="avancar"]').addEventListener("click", () => {
     irPara("encerramento", { ...dados, especieId: dados.especieIdentificada });
@@ -169,8 +189,8 @@ function renderRevisao(container, dados) {
     `;
 
     corpo.querySelector('[data-acao="tentar-novamente-2"]').addEventListener("click", voltar);
-    corpo.querySelector('[data-acao="voltar-mapa"]').addEventListener("click", () => {
-      irPara("mapaMissoes");
+    corpo.querySelector('[data-acao="voltar-mapa"]').addEventListener("click", async () => {
+      irPara("mapaMissoes", { grupoId: await resolverGrupoId(dados) });
     });
 
     const fichaElemento = await criarFichaCientifica(especie, { mostrarRegistro: false });

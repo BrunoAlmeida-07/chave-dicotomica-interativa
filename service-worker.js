@@ -1,4 +1,4 @@
-const CACHE_NAME = "missao-fauna-v10"; // MUDE sempre que atualizar
+const CACHE_NAME = "missao-fauna-v11"; // MUDE sempre que atualizar
 
 // Pré-cache só do essencial para o app abrir (HTML, CSS, JS, manifest,
 // ícones, dados de conteúdo). As imagens de espécies/perguntas (~40 MB) NÃO
@@ -20,6 +20,7 @@ const urlsToCache = [
   "./js/navegacao.js",
   "./js/componentes/cartaoConquista.js",
   "./js/componentes/cartaoEspecie.js",
+  "./js/componentes/cartaoGrupo.js",
   "./js/componentes/cartaoMissao.js",
   "./js/componentes/cartaoPergunta.js",
   "./js/componentes/fichaCientifica.js",
@@ -35,6 +36,7 @@ const urlsToCache = [
   "./js/telas/laboratorio.js",
   "./js/telas/mapaMissoes.js",
   "./js/telas/resultado.js",
+  "./js/telas/selecaoGrupo.js",
   "./js/telas/telaInicial.js",
   "./js/utils/assets.js",
 
@@ -58,13 +60,22 @@ const urlsToCache = [
   "./tutorial/passo-3-investigacao.png",
   "./tutorial/passo-4-resultado.png",
 
-  // As imagens de aranhas/, escorpioes/ e serpentes/ (espécies, perguntas,
-  // ficha, laboratório — ~40 MB ao todo) foram removidas de propósito deste
-  // pré-cache. Continuam funcionando offline normalmente: o handler de
-  // "fetch" abaixo já cacheia qualquer requisição na primeira vez que ela
-  // acontece, então cada imagem entra em cache sozinha, sob demanda, na
-  // primeira vez que a Investigação, a Ficha Científica ou o Laboratório
-  // realmente a exibem — não mais todas de uma vez na instalação.
+  // CARTÕES DE GRUPO (Seleção de Grupo) — mesmo raciocínio do tutorial
+  // acima: só 3 imagens, aparecem cedo (Missões → Seleção de Grupo, logo no
+  // início de qualquer sessão), diferente das imagens de espécies/perguntas
+  // abaixo, que só entram em cache quando realmente usadas.
+  "./aranhas/imagens/imagem1.jpg",
+  "./escorpioes/imagens/escorpiao_amarelo.jpg",
+  "./serpentes/imagens/coral_verdadeira.jpg",
+
+  // As demais imagens de aranhas/, escorpioes/ e serpentes/ (espécies,
+  // perguntas, ficha, laboratório — ~40 MB ao todo) foram removidas de
+  // propósito deste pré-cache. Continuam funcionando offline normalmente: o
+  // handler de "fetch" abaixo já cacheia qualquer requisição na primeira
+  // vez que ela acontece, então cada imagem entra em cache sozinha, sob
+  // demanda, na primeira vez que a Investigação, a Ficha Científica ou o
+  // Laboratório realmente a exibem — não mais todas de uma vez na
+  // instalação.
 ];
 
 

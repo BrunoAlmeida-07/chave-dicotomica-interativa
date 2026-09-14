@@ -397,6 +397,16 @@ export async function listarMissoes() {
 }
 
 /**
+ * Lista as missões que pertencem a um grupo, ordenadas por `ordemProgressao`.
+ * @param {string} grupoId
+ * @returns {Promise<object[]>}
+ */
+export async function listarMissoesPorGrupo(grupoId) {
+  const { missoes } = await obterBase();
+  return missoes.filter((missao) => missao.grupoId === grupoId).sort((a, b) => a.ordemProgressao - b.ordemProgressao);
+}
+
+/**
  * Obtém uma missão pelo seu id.
  * @param {string} id
  * @returns {Promise<object|null>} A missão encontrada, ou `null` se não existir.

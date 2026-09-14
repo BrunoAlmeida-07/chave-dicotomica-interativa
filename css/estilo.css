@@ -436,9 +436,104 @@ img {
   flex-shrink: 0;
 }
 
+/* ===== SELEÇÃO DE GRUPO =====
+   Entre "Missões" (Tela Inicial) e o Mapa de Missões: 3 cartões, sempre os
+   mesmos grupos, um por linha — cada um uma foto (esquerda) + nome/descrição
+   (direita), o cartão inteiro clicável, mesmo padrão de .cartao-missao/
+   .cartao-escolha-especie. `flex: 1` em cada cartão (não altura fixa)
+   divide o espaço disponível abaixo do cabeçalho em 3 partes iguais,
+   sempre cabendo na viewport sem rolar (tela fixa, fora de TELAS_ROLAVEIS
+   em navegacao.js) — mesma técnica de encadear `flex: 1` + `min-height: 0`
+   usada em todo o app para evitar rolagem por overflow. `max-height` evita
+   que os cartões fiquem enormes em telas muito altas (tablet, desktop). */
+.tela-selecao-grupo {
+  max-width: 700px;
+}
+
+.selecao-grupo__lista {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  gap: clamp(8px, 2.5dvh, var(--espaco-4));
+}
+
+.cartao-grupo {
+  display: flex;
+  align-items: stretch;
+  gap: var(--espaco-4);
+  flex: 1;
+  min-height: 0;
+  max-height: 200px;
+  width: 100%;
+  padding: var(--espaco-3);
+  background: var(--cor-superficie);
+  border: none;
+  border-radius: var(--raio-lg);
+  box-shadow: var(--sombra-sm);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: transform var(--transicao), box-shadow var(--transicao);
+}
+
+.cartao-grupo:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--sombra-md);
+}
+
+.cartao-grupo__imagem-wrapper {
+  position: relative;
+  flex: 0 0 clamp(88px, 32%, 150px);
+  min-height: 0;
+  border-radius: var(--raio-md);
+  overflow: hidden;
+  background: var(--cor-acento);
+}
+
+.cartao-grupo__imagem {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cartao-grupo__conteudo {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(2px, 0.8dvh, var(--espaco-2));
+}
+
+.cartao-grupo__nome {
+  font-size: 1.15rem;
+  color: var(--cor-texto);
+}
+
+.cartao-grupo__descricao {
+  color: var(--cor-texto-secundario);
+  font-size: 0.85rem;
+  line-height: 1.35;
+}
+
 /* ===== MAPA DE MISSÕES ===== */
 .tela-mapa-missoes {
   max-width: 900px;
+}
+
+/* Etiqueta "Mapa de Missões" empilhada acima do nome do grupo (h1) — mesmo
+   padrão de .introducao-cartao (etiqueta + h1 como irmãos diretos), só que
+   dentro de um wrapper para conviver com o botão "Voltar" na mesma linha do
+   cabeçalho. */
+.mapa-missoes__titulo {
+  min-width: 0;
+}
+
+.mapa-missoes__titulo h1 {
+  font-size: 1.4rem;
 }
 
 /* Mobile-first (retrato): sempre 2 colunas — aproveita a largura do celular
